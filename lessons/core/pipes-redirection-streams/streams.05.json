@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "id": "streams.05",
+  "title": "Redirecting Errors",
+  "level": "foundation",
+  "module": "pipes-redirection-streams",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "streams.04"
+  ],
+  "concepts": [
+    "stderr redirection",
+    "diagnostics"
+  ],
+  "commands": [
+    "bash"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Capture diagnostics without mixing them into normal results.",
+    "mentalModel": "Errors conventionally use descriptor 2, so redirecting stdout alone does not catch them. 2> names the error descriptor explicitly.",
+    "syntax": [
+      "command 2> errors.txt"
+    ],
+    "demonstration": [
+      {
+        "command": "command 2> errors.txt",
+        "explanation": "This small example isolates the main idea behind redirecting errors."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "Errors conventionally use descriptor 2, so redirecting stdout alone does not catch them. 2> names the error descriptor explicitly.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "bash"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Run stream-demo and save only its diagnostic stream in /home/student/answers/errors.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/errors.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/errors.txt",
+          "sha256": "e095f77011463ed0353eb400abf9b98146c3ee6eb1de3fc79ea7c725b912aae5"
+        }
+      ],
+      "hints": [
+        "The diagnostic is not on normal stdout.",
+        "Prefix the output operator with descriptor number 2.",
+        "Discard ordinary output in /dev/null if you only need errors."
+      ],
+      "suggestedSolution": "/home/student/lab/stream-demo 2> /home/student/answers/errors.txt > /dev/null",
+      "alternateSolutions": [
+        "/home/student/lab/stream-demo >/dev/null 2>/home/student/answers/errors.txt"
+      ],
+      "knownIncorrectSolution": "/home/student/lab/stream-demo > /home/student/answers/errors.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Redirecting Errors?",
+      "answers": [
+        "Errors conventionally use descriptor 2, so redirecting stdout alone does not catch them. 2> names the error descriptor explicitly.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "Errors conventionally use descriptor 2, so redirecting stdout alone does not catch them. 2> names the error descriptor explicitly."
+    }
+  ]
+}

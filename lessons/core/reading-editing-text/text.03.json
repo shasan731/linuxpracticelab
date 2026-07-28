@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "id": "text.03",
+  "title": "Beginning of Files with head",
+  "level": "beginner",
+  "module": "reading-editing-text",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "text.02"
+  ],
+  "concepts": [
+    "file beginnings",
+    "line limits"
+  ],
+  "commands": [
+    "head"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Inspect the first records of a file quickly.",
+    "mentalModel": "head reads from the start and stops after a requested number of lines, so it avoids processing or displaying the remainder.",
+    "syntax": [
+      "head FILE",
+      "head -n 5 FILE"
+    ],
+    "demonstration": [
+      {
+        "command": "head FILE",
+        "explanation": "This small example isolates the main idea behind beginning of files with head."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "head reads from the start and stops after a requested number of lines, so it avoids processing or displaying the remainder.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "head"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Save exactly the first five lines of items.txt in /home/student/answers/first-five.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/first-five.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/first-five.txt",
+          "sha256": "9e5ba9a6ead2721ce6786ef60d6fbb173e251c9ba5e280acb861a6967d89e026"
+        }
+      ],
+      "hints": [
+        "The needed records are at the beginning.",
+        "head accepts a line count with -n.",
+        "Redirect only those five lines into first-five.txt."
+      ],
+      "suggestedSolution": "head -n 5 /home/student/lab/items.txt > /home/student/answers/first-five.txt",
+      "alternateSolutions": [
+        "sed -n '1,5p' /home/student/lab/items.txt > /home/student/answers/first-five.txt"
+      ],
+      "knownIncorrectSolution": "tail -n 5 /home/student/lab/items.txt > /home/student/answers/first-five.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Beginning of Files with head?",
+      "answers": [
+        "head reads from the start and stops after a requested number of lines, so it avoids processing or displaying the remainder.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "head reads from the start and stops after a requested number of lines, so it avoids processing or displaying the remainder."
+    }
+  ]
+}

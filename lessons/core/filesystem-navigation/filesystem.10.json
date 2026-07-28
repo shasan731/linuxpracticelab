@@ -1,0 +1,86 @@
+{
+  "schemaVersion": 1,
+  "id": "filesystem.10",
+  "title": "Navigation Challenge",
+  "level": "beginner",
+  "module": "filesystem-navigation",
+  "type": "assessment",
+  "estimatedDifficulty": 3,
+  "estimatedMinutes": 15,
+  "prerequisites": [
+    "filesystem.09"
+  ],
+  "concepts": [
+    "navigation strategy",
+    "hidden files",
+    "relative paths"
+  ],
+  "commands": [
+    "cd",
+    "pwd",
+    "find"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Combine path-reading skills inside an unfamiliar directory tree.",
+    "mentalModel": "Reliable navigation is a loop: establish location, inspect entries, move one deliberate step, and verify again.",
+    "syntax": [],
+    "demonstration": [],
+    "summary": {
+      "remember": [
+        "Reliable navigation is a loop: establish location, inspect entries, move one deliberate step, and verify again.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "cd",
+        "pwd",
+        "find"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "assessment",
+      "instruction": "Starting at /home/student/lab/maze/start, navigate into the project reports directory with a relative path. Create /home/student/answers/navigation-challenge.txt containing the final pwd on line one and the absolute path of the hidden .clue file on line two.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/navigation-challenge.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/navigation-challenge.txt",
+          "sha256": "fa9c47fd1f12b4ac18565c85b927040bf981c444d08d87e3eb4614bcb5ce612e"
+        }
+      ],
+      "hints": [],
+      "suggestedSolution": "cd /home/student/lab/maze/start && cd ../project/reports && { pwd; find /home/student/lab/maze/project -name .clue -print; } > /home/student/answers/navigation-challenge.txt",
+      "alternateSolutions": [
+        "cd /home/student/lab/maze/start && cd ../project/reports && printf '%s\\n%s\\n' \"$PWD\" \"$(readlink -f ../.clue)\" > /home/student/answers/navigation-challenge.txt"
+      ],
+      "knownIncorrectSolution": "printf '/home/student/lab/maze/start\\n.clue\\n' > /home/student/answers/navigation-challenge.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Navigation Challenge?",
+      "answers": [
+        "Reliable navigation is a loop: establish location, inspect entries, move one deliberate step, and verify again.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "Reliable navigation is a loop: establish location, inspect entries, move one deliberate step, and verify again."
+    }
+  ]
+}

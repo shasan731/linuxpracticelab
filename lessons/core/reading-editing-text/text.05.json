@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "id": "text.05",
+  "title": "Counting with wc",
+  "level": "beginner",
+  "module": "reading-editing-text",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "text.04"
+  ],
+  "concepts": [
+    "line counts",
+    "word counts",
+    "byte counts"
+  ],
+  "commands": [
+    "wc"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Measure lines, words and bytes in text.",
+    "mentalModel": "wc counts separators and bytes in an input stream. Its options select which measurements are printed; filenames may also appear in its output.",
+    "syntax": [
+      "wc FILE",
+      "wc -l FILE",
+      "wc -w FILE",
+      "wc -c FILE"
+    ],
+    "demonstration": [
+      {
+        "command": "wc FILE",
+        "explanation": "This small example isolates the main idea behind counting with wc."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "wc counts separators and bytes in an input stream. Its options select which measurements are printed; filenames may also appear in its output.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "wc"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Write the line count, word count and byte count of colours.txt as “2 4 22” in /home/student/answers/counts.txt, with no filename.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/counts.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/counts.txt",
+          "sha256": "1890050a6897f041ae07f9d88c52a86346ea7501579421199ee8124112ee3ac8"
+        }
+      ],
+      "hints": [
+        "wc can print all three requested counts in one run.",
+        "Using input redirection avoids appending the filename.",
+        "Normalise the spacing so the answer contains three numbers."
+      ],
+      "suggestedSolution": "wc -l -w -c < /home/student/lab/colours.txt | awk '{print $1, $2, $3}' > /home/student/answers/counts.txt",
+      "alternateSolutions": [
+        "printf '%s %s %s\\n' \"$(wc -l < /home/student/lab/colours.txt)\" \"$(wc -w < /home/student/lab/colours.txt)\" \"$(wc -c < /home/student/lab/colours.txt)\" | xargs > /home/student/answers/counts.txt"
+      ],
+      "knownIncorrectSolution": "wc -l /home/student/lab/colours.txt > /home/student/answers/counts.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Counting with wc?",
+      "answers": [
+        "wc counts separators and bytes in an input stream. Its options select which measurements are printed; filenames may also appear in its output.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "wc counts separators and bytes in an input stream. Its options select which measurements are printed; filenames may also appear in its output."
+    }
+  ]
+}

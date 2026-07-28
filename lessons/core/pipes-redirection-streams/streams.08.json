@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "id": "streams.08",
+  "title": "Multi-Stage Pipelines",
+  "level": "foundation",
+  "module": "pipes-redirection-streams",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "streams.07"
+  ],
+  "concepts": [
+    "pipeline stages",
+    "frequency analysis"
+  ],
+  "commands": [
+    "grep",
+    "awk",
+    "sort",
+    "uniq"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Transform a stream through several small, composable stages.",
+    "mentalModel": "Each pipeline stage should do one clear transformation. Intermediate output can be inspected by running the pipeline only up to that stage.",
+    "syntax": [
+      "grep ERROR app.log | sort | uniq -c | sort -nr"
+    ],
+    "demonstration": [
+      {
+        "command": "grep ERROR app.log | sort | uniq -c | sort -nr",
+        "explanation": "This small example isolates the main idea behind multi-stage pipelines."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "Each pipeline stage should do one clear transformation. Intermediate output can be inspected by running the pipeline only up to that stage.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "grep",
+        "awk",
+        "sort",
+        "uniq"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Create /home/student/answers/error-counts.txt containing “3 disk” then “2 auth”, using a multi-stage pipeline.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/error-counts.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/error-counts.txt",
+          "sha256": "5a4da1a1ace9d31f3dbc8a5408e92a644ef1314a0c8b74cffb9c36a02a6b6883"
+        }
+      ],
+      "hints": [
+        "First isolate errors, then isolate the error name.",
+        "sort makes identical names adjacent so uniq -c can count them.",
+        "A final numeric reverse sort puts the largest count first."
+      ],
+      "suggestedSolution": "grep '^ERROR' /home/student/lab/app.log | awk '{print $2}' | sort | uniq -c | sort -nr | awk '{print $1, $2}' > /home/student/answers/error-counts.txt",
+      "alternateSolutions": [
+        "awk '/^ERROR/{count[$2]++} END{for (name in count) print count[name], name}' /home/student/lab/app.log | sort -nr > /home/student/answers/error-counts.txt"
+      ],
+      "knownIncorrectSolution": "grep '^ERROR' /home/student/lab/app.log > /home/student/answers/error-counts.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Multi-Stage Pipelines?",
+      "answers": [
+        "Each pipeline stage should do one clear transformation. Intermediate output can be inspected by running the pipeline only up to that stage.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "Each pipeline stage should do one clear transformation. Intermediate output can be inspected by running the pipeline only up to that stage."
+    }
+  ]
+}

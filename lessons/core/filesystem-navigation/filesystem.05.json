@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "id": "filesystem.05",
+  "title": "Absolute Paths",
+  "level": "beginner",
+  "module": "filesystem-navigation",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "filesystem.04"
+  ],
+  "concepts": [
+    "absolute paths",
+    "root directory"
+  ],
+  "commands": [
+    "cd",
+    "pwd"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Reach the same location regardless of the shell’s starting directory.",
+    "mentalModel": "An absolute path begins with / and is resolved from the root of the filesystem, so the current directory cannot change its meaning.",
+    "syntax": [
+      "cd /usr/share/doc",
+      "pwd"
+    ],
+    "demonstration": [
+      {
+        "command": "cd /usr/share/doc",
+        "explanation": "This small example isolates the main idea behind absolute paths."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "An absolute path begins with / and is resolved from the root of the filesystem, so the current directory cannot change its meaning.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "cd",
+        "pwd"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "From any starting location, use an absolute path to reach /usr/share/doc and record pwd in /home/student/answers/absolute-path.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/absolute-path.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/absolute-path.txt",
+          "sha256": "de66b394f9bc30fae69799f12e80ac5e4016bfca1426fec5f5996f2937d606ff"
+        }
+      ],
+      "hints": [
+        "Absolute paths always begin at the root directory.",
+        "Use cd with the full path beginning with /.",
+        "Record pwd after reaching the documentation directory."
+      ],
+      "suggestedSolution": "cd /usr/share/doc && pwd > /home/student/answers/absolute-path.txt",
+      "alternateSolutions": [
+        "cd /tmp; cd /usr/share/doc; pwd > /home/student/answers/absolute-path.txt"
+      ],
+      "knownIncorrectSolution": "cd /usr/share && pwd > /home/student/answers/absolute-path.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Absolute Paths?",
+      "answers": [
+        "An absolute path begins with / and is resolved from the root of the filesystem, so the current directory cannot change its meaning.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "An absolute path begins with / and is resolved from the root of the filesystem, so the current directory cannot change its meaning."
+    }
+  ]
+}

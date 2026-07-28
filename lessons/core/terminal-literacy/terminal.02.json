@@ -1,0 +1,108 @@
+{
+  "schemaVersion": 1,
+  "id": "terminal.02",
+  "title": "Short and Long Options",
+  "level": "beginner",
+  "module": "terminal-literacy",
+  "type": "guided-practice",
+  "estimatedDifficulty": 1,
+  "estimatedMinutes": 6,
+  "prerequisites": ["terminal.01"],
+  "concepts": ["short options", "long options", "grouped options"],
+  "commands": ["ls"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false
+  },
+  "content": {
+    "purpose": "Use the compact form when typing and the readable form when writing something down.",
+    "mentalModel": "Most GNU commands accept two spellings of the same option: a single dash with one letter, and two dashes with a word. -a and --all mean exactly the same thing. Single-letter options can be grouped behind one dash, so -l -a -h becomes -lah. Long options cannot be grouped, but they are self-documenting, which is why scripts you will read again should use them.",
+    "syntax": ["ls -a", "ls --all", "ls -lah"],
+    "demonstration": [
+      {
+        "command": "ls -a",
+        "explanation": "Shows hidden entries as well. The same result as ls --all."
+      },
+      {
+        "command": "ls -lah",
+        "explanation": "Three options grouped: long format, all entries, human-readable sizes. Order does not matter here."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "-a and --all are usually the same option in two spellings",
+        "Single-letter options group behind one dash: -lah",
+        "Long options do not group, but they explain themselves"
+      ],
+      "commonOptions": [
+        { "option": "-l", "meaning": "Long format, one entry per line with details" },
+        { "option": "-a", "meaning": "Include entries whose names begin with a dot" },
+        { "option": "-h", "meaning": "Human-readable sizes, so 4.0K instead of 4096" }
+      ],
+      "related": ["getopt", "--help"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "List everything in /etc, including hidden entries, in the long format with human-readable sizes. Save the output to /home/student/etc-listing.txt using grouped short options.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/etc-listing.txt" },
+        {
+          "type": "file_matches_regex",
+          "path": "/home/student/etc-listing.txt",
+          "pattern": "[0-9](\\.[0-9])?[KMG]\\s",
+          "message": "The sizes in etc-listing.txt are still raw byte counts, so the human-readable option was not applied."
+        }
+      ],
+      "hints": [
+        "You need three options: long format, all entries, human-readable.",
+        "They are -l, -a and -h.",
+        "Group them: ls -lah /etc"
+      ],
+      "suggestedSolution": "ls -lah /etc > /home/student/etc-listing.txt",
+      "alternateSolutions": [
+        "ls -l -a -h /etc > /home/student/etc-listing.txt",
+        "ls --all --human-readable -l /etc > /home/student/etc-listing.txt"
+      ],
+      "knownIncorrectSolution": "ls -la /etc > /home/student/etc-listing.txt"
+    },
+    {
+      "id": "task-2",
+      "kind": "independent",
+      "instruction": "Produce the same listing again in /home/student/etc-listing-long.txt, but write every option in its long form so someone reading the command later needs no reference to understand it.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/etc-listing-long.txt" },
+        {
+          "type": "file_matches_regex",
+          "path": "/home/student/etc-listing-long.txt",
+          "pattern": "[0-9](\\.[0-9])?[KMG]\\s"
+        }
+      ],
+      "hints": [
+        "Each short option has a word-length equivalent.",
+        "--all is one of them. Check ls --help for the others.",
+        "The long form of -h is --human-readable."
+      ],
+      "suggestedSolution": "ls --format=long --all --human-readable /etc > /home/student/etc-listing-long.txt",
+      "alternateSolutions": ["ls -l --all --human-readable /etc > /home/student/etc-listing-long.txt"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Why can -lah be written as one word but --all --human-readable cannot?",
+      "answers": [
+        "Single-dash options are single letters, so they can be grouped unambiguously",
+        "Long options are only for scripts",
+        "Grouping long options requires a newer version of the command",
+        "They can be grouped; the example is wrong"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Each character after a single dash is a separate option. A word after two dashes could not be split apart unambiguously."
+    }
+  ]
+}

@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "id": "files.10",
+  "title": "File Metadata",
+  "level": "beginner",
+  "module": "file-management",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "files.09"
+  ],
+  "concepts": [
+    "inode metadata",
+    "file type",
+    "size"
+  ],
+  "commands": [
+    "stat",
+    "file"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Inspect what a file is and the metadata the filesystem stores about it.",
+    "mentalModel": "A directory entry names an inode; stat reports inode metadata while file inspects content signatures to identify likely data type.",
+    "syntax": [
+      "stat FILE",
+      "file FILE",
+      "stat -c '%n %s bytes' FILE"
+    ],
+    "demonstration": [
+      {
+        "command": "stat FILE",
+        "explanation": "This small example isolates the main idea behind file metadata."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "A directory entry names an inode; stat reports inode metadata while file inspects content signatures to identify likely data type.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "stat",
+        "file"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Use stat and file to create /home/student/answers/metadata.txt. It must record that message.txt is 12 bytes and identify it as text.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/metadata.txt"
+        },
+        {
+          "type": "file_contains",
+          "path": "/home/student/answers/metadata.txt",
+          "text": "12 bytes"
+        },
+        {
+          "type": "file_contains",
+          "path": "/home/student/answers/metadata.txt",
+          "text": "text",
+          "caseSensitive": false
+        }
+      ],
+      "hints": [
+        "The task asks for both filesystem metadata and content-based type detection.",
+        "Use stat for the byte count and file for the type.",
+        "Append the second command so it does not overwrite the first result."
+      ],
+      "suggestedSolution": "stat -c '%n %s bytes' /home/student/lab/message.txt > /home/student/answers/metadata.txt && file -b /home/student/lab/message.txt >> /home/student/answers/metadata.txt",
+      "alternateSolutions": [
+        "printf '%s %s bytes\\n' /home/student/lab/message.txt \"$(stat -c %s /home/student/lab/message.txt)\" > /home/student/answers/metadata.txt; file -b /home/student/lab/message.txt >> /home/student/answers/metadata.txt"
+      ],
+      "knownIncorrectSolution": "echo 'message.txt is unknown' > /home/student/answers/metadata.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes File Metadata?",
+      "answers": [
+        "A directory entry names an inode; stat reports inode metadata while file inspects content signatures to identify likely data type.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "A directory entry names an inode; stat reports inode metadata while file inspects content signatures to identify likely data type."
+    }
+  ]
+}

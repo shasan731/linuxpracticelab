@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "id": "search.10",
+  "title": "Removing Duplicates",
+  "level": "foundation",
+  "module": "search-filter-compare",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "search.09"
+  ],
+  "concepts": [
+    "adjacent duplicates",
+    "frequency counts"
+  ],
+  "commands": [
+    "sort",
+    "uniq",
+    "awk"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Collapse repeated records and count how often each one occurs.",
+    "mentalModel": "uniq only compares adjacent lines, so unsorted input must usually pass through sort first. -c prefixes each group with its count.",
+    "syntax": [
+      "sort FILE | uniq",
+      "sort FILE | uniq -c"
+    ],
+    "demonstration": [
+      {
+        "command": "sort FILE | uniq",
+        "explanation": "This small example isolates the main idea behind removing duplicates."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "uniq only compares adjacent lines, so unsorted input must usually pass through sort first. -c prefixes each group with its count.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "sort",
+        "uniq",
+        "awk"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Count each unique service name and save “3 api”, “1 db”, “2 web” as sorted lines in /home/student/answers/service-counts.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/service-counts.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/service-counts.txt",
+          "sha256": "4d779c080f704d4f495a909650856d4a202060571e25e67e1ccd01fd60f689d9"
+        }
+      ],
+      "hints": [
+        "Repeated names are not adjacent in the source.",
+        "Sort first, then use uniq -c.",
+        "awk can normalise the leading spaces in the count output."
+      ],
+      "suggestedSolution": "sort /home/student/lab/services.txt | uniq -c | awk '{print $1, $2}' > /home/student/answers/service-counts.txt",
+      "alternateSolutions": [
+        "awk '{count[$0]++} END {for (name in count) print count[name], name}' /home/student/lab/services.txt | sort -k2 > /home/student/answers/service-counts.txt"
+      ],
+      "knownIncorrectSolution": "uniq -c /home/student/lab/services.txt > /home/student/answers/service-counts.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Removing Duplicates?",
+      "answers": [
+        "uniq only compares adjacent lines, so unsorted input must usually pass through sort first. -c prefixes each group with its count.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "uniq only compares adjacent lines, so unsorted input must usually pass through sort first. -c prefixes each group with its count."
+    }
+  ]
+}

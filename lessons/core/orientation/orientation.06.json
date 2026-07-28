@@ -1,0 +1,140 @@
+{
+  "schemaVersion": 1,
+  "id": "orientation.06",
+  "title": "Safe and Dangerous Commands",
+  "level": "orientation",
+  "module": "orientation",
+  "type": "assessment",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 12,
+  "prerequisites": ["orientation.05"],
+  "concepts": ["destructive commands", "wildcards", "least privilege", "snapshots"],
+  "commands": ["rm", "sudo", "chmod", "chown", "kill", "shutdown", "ls", "echo"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Recognise, before pressing Enter, which commands can destroy data.",
+    "mentalModel": "Six commands do most of the damage. rm deletes with no recycle bin. sudo removes the safety net of permissions. chmod and chown change who can reach a file, and can lock you out of your own work or open it to everyone. kill stops a running program, possibly mid-write. shutdown stops the machine. What makes them dangerous is rarely the command itself: it is the argument. rm report.txt is fine; rm -rf / is not, and the difference is one wildcard or one stray space away.",
+    "syntax": [
+      "rm FILE                  delete a file, permanently",
+      "rm -r DIRECTORY          delete a directory and everything in it",
+      "ls PATTERN               see what a wildcard matches before you act on it"
+    ],
+    "demonstration": [
+      {
+        "command": "ls *.tmp",
+        "explanation": "The habit worth building: run ls with the pattern first. The shell expands the wildcard before the command sees it, so this shows you the exact list rm would have deleted."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "rm has no recycle bin, and there is no undo",
+        "The shell expands wildcards before the command runs, so ls with the same pattern tells you what will be affected",
+        "sudo turns a permission error into a completed action, which is sometimes the only thing standing between you and a broken system",
+        "Take a snapshot before anything you are unsure about"
+      ],
+      "commonOptions": [
+        { "option": "-i", "meaning": "Ask before each removal" },
+        { "option": "-r", "meaning": "Recurse into directories, which multiplies the consequences" },
+        { "option": "-f", "meaning": "Force: suppress questions and ignore missing files" }
+      ],
+      "dangerous": [
+        "rm -rf with a wildcard or an absolute path",
+        "A space in the wrong place: rm -rf / home/student is not rm -rf /home/student",
+        "sudo in front of a command you have not read"
+      ],
+      "related": ["trash-cli", "cp", "mv"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "assessment",
+      "instruction": "The directory /home/student/audit contains a mixture of files. Some end in .tmp and are disposable; the rest must survive. Before deleting anything, list what the pattern *.tmp matches inside that directory and save that list to /home/student/audit-plan.txt.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/audit-plan.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/audit-plan.txt",
+          "text": "scratch.tmp",
+          "message": "audit-plan.txt does not list the .tmp files. List what the pattern matches before deleting."
+        },
+        {
+          "type": "file_exists",
+          "path": "/home/student/audit/keep-me.txt",
+          "message": "keep-me.txt has been deleted. The point of listing first is to avoid exactly this."
+        }
+      ],
+      "hints": [],
+      "suggestedSolution": "ls /home/student/audit/*.tmp > /home/student/audit-plan.txt",
+      "alternateSolutions": [
+        "cd /home/student/audit && ls *.tmp > ../audit-plan.txt",
+        "find /home/student/audit -name '*.tmp' > /home/student/audit-plan.txt"
+      ]
+    },
+    {
+      "id": "task-2",
+      "kind": "assessment",
+      "instruction": "Now delete only the disposable files from /home/student/audit. Everything not ending in .tmp must still be there afterwards.",
+      "validators": [
+        {
+          "type": "directory_contains",
+          "path": "/home/student/audit",
+          "entries": ["keep-me.txt", "quarterly-report.txt", "notes.md"],
+          "exact": true,
+          "message": "The audit directory does not contain exactly the files that should have survived. Check that every .tmp file is gone and nothing else was removed."
+        }
+      ],
+      "hints": [],
+      "suggestedSolution": "rm /home/student/audit/*.tmp",
+      "alternateSolutions": [
+        "cd /home/student/audit && rm *.tmp",
+        "find /home/student/audit -name '*.tmp' -delete"
+      ],
+      "knownIncorrectSolution": "rm -rf /home/student/audit"
+    },
+    {
+      "id": "task-3",
+      "kind": "assessment",
+      "instruction": "Write a single line into /home/student/why-dangerous.txt naming the command from this lesson that deletes data with no way to recover it. The file must contain that command's name.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/why-dangerous.txt" },
+        {
+          "type": "file_matches_regex",
+          "path": "/home/student/why-dangerous.txt",
+          "pattern": "\\brm\\b",
+          "message": "why-dangerous.txt does not name the command. Which one deletes files permanently?"
+        }
+      ],
+      "hints": [],
+      "suggestedSolution": "echo 'rm deletes permanently with no recycle bin' > /home/student/why-dangerous.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-select",
+      "question": "Which of these commands can destroy or lose data? Choose all that apply.",
+      "answers": ["rm -rf", "ls -la", "chown -R", "pwd", "kill -9"],
+      "correctAnswers": [0, 2, 4],
+      "explanation": "rm deletes, chown -R can make files unreachable to their owner, and kill -9 stops a program with no chance to save. ls and pwd only read."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "Why does listing a wildcard before deleting with it help?",
+      "answers": [
+        "The shell expands the wildcard before the command runs, so ls shows the exact same list rm would receive",
+        "ls locks the files so they cannot be deleted",
+        "rm ignores wildcards unless you list them first",
+        "It does not help; it is superstition"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Wildcard expansion happens in the shell, not in the command, so any command given the same pattern receives the same list."
+    }
+  ]
+}

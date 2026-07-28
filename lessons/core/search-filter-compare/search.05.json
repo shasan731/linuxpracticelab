@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "id": "search.05",
+  "title": "Finding Files by Name",
+  "level": "foundation",
+  "module": "search-filter-compare",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "search.04"
+  ],
+  "concepts": [
+    "path search",
+    "name patterns"
+  ],
+  "commands": [
+    "find",
+    "sort"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Locate paths when you know a filename pattern but not the directory.",
+    "mentalModel": "find walks a directory tree and applies tests to each path. -name matches case-sensitively; -iname ignores case.",
+    "syntax": [
+      "find . -name '*.log'",
+      "find . -iname '*error*'"
+    ],
+    "demonstration": [
+      {
+        "command": "find . -name '*.log'",
+        "explanation": "This small example isolates the main idea behind finding files by name."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "find walks a directory tree and applies tests to each path. -name matches case-sensitively; -iname ignores case.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "find",
+        "sort"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Find every .log file below /home/student/lab, sort the absolute paths, and save them to /home/student/answers/log-files.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/log-files.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/log-files.txt",
+          "sha256": "65b65ac6925cc40c1fcfe7f7b5e10717b31950ddc0b175cfd40b30a64b69d819"
+        }
+      ],
+      "hints": [
+        "Start the search at the common parent directory.",
+        "Combine -type f with a quoted -name pattern.",
+        "Sort the resulting absolute paths before saving them."
+      ],
+      "suggestedSolution": "find /home/student/lab -type f -name '*.log' | sort > /home/student/answers/log-files.txt",
+      "alternateSolutions": [
+        "find /home/student/lab -name '*.log' -type f -print | sort > /home/student/answers/log-files.txt"
+      ],
+      "knownIncorrectSolution": "find /home/student/lab -name '*.txt' > /home/student/answers/log-files.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Finding Files by Name?",
+      "answers": [
+        "find walks a directory tree and applies tests to each path. -name matches case-sensitively; -iname ignores case.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "find walks a directory tree and applies tests to each path. -name matches case-sensitively; -iname ignores case."
+    }
+  ]
+}

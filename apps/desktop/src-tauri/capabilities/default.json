@@ -1,0 +1,16 @@
+{
+  "$schema": "../gen/schemas/desktop-schema.json",
+  "identifier": "default",
+  "description": "Minimum capability set for the lesson player and terminal. Deliberately excludes the filesystem, shell and process plugins: everything the learner does happens inside the guest, so the webview has no reason to be able to touch the Windows filesystem or run Windows programs.",
+  "windows": ["main"],
+  "permissions": [
+    "core:default",
+    "core:event:default",
+    "core:window:allow-set-title",
+    "core:window:allow-is-maximized",
+    "core:window:allow-toggle-maximize",
+    "dialog:allow-save",
+    "dialog:allow-message",
+    "dialog:allow-confirm"
+  ]
+}

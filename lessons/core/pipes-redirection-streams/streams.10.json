@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "id": "streams.10",
+  "title": "xargs",
+  "level": "foundation",
+  "module": "pipes-redirection-streams",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "streams.09"
+  ],
+  "concepts": [
+    "argument construction",
+    "NUL delimiters",
+    "safe filenames"
+  ],
+  "commands": [
+    "find",
+    "xargs",
+    "rm"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Turn streamed records into arguments for another command.",
+    "mentalModel": "xargs groups input records into command arguments. NUL-delimited input and -0 preserve spaces, quotes and newlines in filenames safely.",
+    "syntax": [
+      "find . -name '*.tmp' -print0 | xargs -0 rm"
+    ],
+    "demonstration": [
+      {
+        "command": "find . -name '*.tmp' -print0 | xargs -0 rm",
+        "explanation": "This small example isolates the main idea behind xargs."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "xargs groups input records into command arguments. NUL-delimited input and -0 preserve spaces, quotes and newlines in filenames safely.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "find",
+        "xargs",
+        "rm"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Use find -print0 and xargs -0 to remove both .tmp files from cache, including the filename with a space, while preserving keep.txt.",
+      "validators": [
+        {
+          "type": "directory_contains",
+          "path": "/home/student/lab/cache",
+          "entries": [
+            "keep.txt"
+          ],
+          "exact": true,
+          "includeHidden": true
+        },
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/cache/keep.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/lab/cache/keep.txt",
+          "sha256": "f660a7996deacfbc7560e4240054a8ad82eb02fe25a95064257e07084bcacb85"
+        }
+      ],
+      "hints": [
+        "Whitespace-delimited filenames would split old item.tmp incorrectly.",
+        "Use -print0 on find and matching -0 on xargs.",
+        "Pass -- to rm before the generated paths."
+      ],
+      "suggestedSolution": "find /home/student/lab/cache -type f -name '*.tmp' -print0 | xargs -0 rm --",
+      "alternateSolutions": [
+        "find /home/student/lab/cache -type f -name '*.tmp' -delete"
+      ],
+      "knownIncorrectSolution": "find /home/student/lab/cache -type f -name '*.tmp' -print | xargs rm"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes xargs?",
+      "answers": [
+        "xargs groups input records into command arguments. NUL-delimited input and -0 preserve spaces, quotes and newlines in filenames safely.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "xargs groups input records into command arguments. NUL-delimited input and -0 preserve spaces, quotes and newlines in filenames safely."
+    }
+  ]
+}

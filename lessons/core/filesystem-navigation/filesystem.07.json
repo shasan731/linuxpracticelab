@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "id": "filesystem.07",
+  "title": "Dot and Dot-Dot",
+  "level": "beginner",
+  "module": "filesystem-navigation",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "filesystem.06"
+  ],
+  "concepts": [
+    "current directory",
+    "parent directory",
+    "path components"
+  ],
+  "commands": [
+    "cd",
+    "pwd"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Refer explicitly to the current directory and its parent.",
+    "mentalModel": ". is the current directory entry and .. is the parent entry. They are real path components that can appear anywhere in a relative path.",
+    "syntax": [
+      "cd .",
+      "cd ..",
+      "cd ../sibling"
+    ],
+    "demonstration": [
+      {
+        "command": "cd .",
+        "explanation": "This small example isolates the main idea behind dot and dot-dot."
+      }
+    ],
+    "summary": {
+      "remember": [
+        ". is the current directory entry and .. is the parent entry. They are real path components that can appear anywhere in a relative path.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "cd",
+        "pwd"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Enter /home/student/lab/tree/parent/child, return to its parent with dot-dot, and save pwd to /home/student/answers/parent-path.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/parent-path.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/parent-path.txt",
+          "sha256": "762907ce9a21bd2673d24a800b929529c5cfd345ca9ccd256612d25f539b7364"
+        }
+      ],
+      "hints": [
+        "One dot stays in place; two dots move one level upward.",
+        "Use cd .. after entering child.",
+        "Run pwd from the parent directory and redirect it."
+      ],
+      "suggestedSolution": "cd /home/student/lab/tree/parent/child && cd .. && pwd > /home/student/answers/parent-path.txt",
+      "alternateSolutions": [
+        "cd /home/student/lab/tree/parent/child/.. && pwd > /home/student/answers/parent-path.txt"
+      ],
+      "knownIncorrectSolution": "cd /home/student/lab/tree/parent/child && cd . && pwd > /home/student/answers/parent-path.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Dot and Dot-Dot?",
+      "answers": [
+        ". is the current directory entry and .. is the parent entry. They are real path components that can appear anywhere in a relative path.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": ". is the current directory entry and .. is the parent entry. They are real path components that can appear anywhere in a relative path."
+    }
+  ]
+}

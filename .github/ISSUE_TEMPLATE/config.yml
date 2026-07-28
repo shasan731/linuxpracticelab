@@ -1,0 +1,8 @@
+blank_issues_enabled: false
+contact_links:
+  - name: Questions and support
+    url: https://github.com/shasan731/linuxpracticelab/discussions
+    about: Ask how-to questions and discuss ideas with the community.
+  - name: Security vulnerability
+    url: https://github.com/shasan731/linuxpracticelab/security/advisories/new
+    about: Report security issues privately; do not disclose them in a public issue.

@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "id": "terminal.03",
+  "title": "Getting Help with --help",
+  "level": "beginner",
+  "module": "terminal-literacy",
+  "type": "guided-practice",
+  "estimatedDifficulty": 1,
+  "estimatedMinutes": 7,
+  "prerequisites": ["terminal.02"],
+  "concepts": ["self-documenting commands", "usage lines"],
+  "commands": ["ls", "cp", "grep"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false
+  },
+  "content": {
+    "purpose": "Answer your own question about a command in five seconds without leaving the terminal.",
+    "mentalModel": "Almost every GNU command accepts --help and prints a summary to the screen. The first line is the usage line, and it uses a convention worth learning: square brackets mean optional, capitals mean you supply a value, and three dots mean the thing can repeat. So Usage: cp [OPTION]... SOURCE... DIRECTORY tells you options are optional, you can pass several sources, and the last argument is a directory.",
+    "syntax": ["command --help"],
+    "demonstration": [
+      {
+        "command": "cp --help",
+        "explanation": "Read only the usage line at the top first. It tells you the shape of the command before you read a single option."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "--help prints a summary straight to the terminal",
+        "In a usage line, [x] is optional, CAPITALS are values you supply, and ... means repeatable",
+        "--help output is long, so pipe it into grep or less rather than scrolling"
+      ],
+      "related": ["man", "info", "less"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Ask cp to describe itself, and save the whole summary to /home/student/cp-help.txt.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/cp-help.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/cp-help.txt",
+          "text": "Usage:",
+          "message": "cp-help.txt does not contain a usage line. Check you redirected the output of cp --help."
+        }
+      ],
+      "hints": [
+        "Every GNU command takes the same option for this.",
+        "The option is --help.",
+        "Redirect the whole output into the file with >."
+      ],
+      "suggestedSolution": "cp --help > /home/student/cp-help.txt"
+    },
+    {
+      "id": "task-2",
+      "kind": "independent",
+      "instruction": "grep has an option that inverts its match, showing the lines that do not match. Find it in grep's own help output, and save just the line describing that option to /home/student/grep-invert.txt.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/grep-invert.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/grep-invert.txt",
+          "text": "invert",
+          "caseSensitive": false,
+          "message": "grep-invert.txt does not describe the inverting option. Search grep's help output for the word invert."
+        }
+      ],
+      "hints": [
+        "grep --help prints many lines. You only want the one mentioning inversion.",
+        "You can search that output by piping it into grep itself.",
+        "grep --help | grep invert"
+      ],
+      "suggestedSolution": "grep --help | grep invert > /home/student/grep-invert.txt",
+      "alternateSolutions": ["grep --help | grep -i 'invert' > /home/student/grep-invert.txt"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "A usage line reads: Usage: tar [OPTION...] [FILE]... What does it tell you?",
+      "answers": [
+        "Both the options and the files are optional, and both can be repeated",
+        "Exactly one option and one file are required",
+        "Options must come after the files",
+        "tar takes no arguments"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Square brackets mean optional and the three dots mean repeatable, so both parts are optional and can appear more than once."
+    }
+  ]
+}

@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "id": "search.06",
+  "title": "Finding by Type and Size",
+  "level": "foundation",
+  "module": "search-filter-compare",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "search.05"
+  ],
+  "concepts": [
+    "file type",
+    "file size",
+    "combined tests"
+  ],
+  "commands": [
+    "find"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Select filesystem objects by metadata rather than by name.",
+    "mentalModel": "find tests such as -type and -size are combined with logical AND by default, so every listed condition must hold.",
+    "syntax": [
+      "find . -type f",
+      "find . -type d",
+      "find . -size +1M"
+    ],
+    "demonstration": [
+      {
+        "command": "find . -type f",
+        "explanation": "This small example isolates the main idea behind finding by type and size."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "find tests such as -type and -size are combined with logical AND by default, so every listed condition must hold.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "find"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Find regular files larger than 1 MiB below /home/student/lab/data and save their absolute paths to /home/student/answers/large-files.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/large-files.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/large-files.txt",
+          "sha256": "6b31eba5443e155bb7ed7a8a435044ebdcb055bd4a5b1feabd3376106a35a68c"
+        }
+      ],
+      "hints": [
+        "The task combines an object type and a size threshold.",
+        "Use -type f and -size +1M.",
+        "The plus sign means strictly larger than the given unit."
+      ],
+      "suggestedSolution": "find /home/student/lab/data -type f -size +1M > /home/student/answers/large-files.txt",
+      "alternateSolutions": [
+        "find /home/student/lab/data -type f -size +1048576c -print > /home/student/answers/large-files.txt"
+      ],
+      "knownIncorrectSolution": "find /home/student/lab/data -type d > /home/student/answers/large-files.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Finding by Type and Size?",
+      "answers": [
+        "find tests such as -type and -size are combined with logical AND by default, so every listed condition must hold.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "find tests such as -type and -size are combined with logical AND by default, so every listed condition must hold."
+    }
+  ]
+}

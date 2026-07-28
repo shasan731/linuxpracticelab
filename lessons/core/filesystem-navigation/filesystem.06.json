@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "id": "filesystem.06",
+  "title": "Relative Paths",
+  "level": "beginner",
+  "module": "filesystem-navigation",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "filesystem.05"
+  ],
+  "concepts": [
+    "relative paths",
+    "working directory",
+    "child directory"
+  ],
+  "commands": [
+    "cd",
+    "pwd"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Navigate nearby directories without repeatedly typing a complete path.",
+    "mentalModel": "A relative path has no leading slash. The shell joins it to the current working directory before looking it up.",
+    "syntax": [
+      "cd reports",
+      "cd projects/reports"
+    ],
+    "demonstration": [
+      {
+        "command": "cd reports",
+        "explanation": "This small example isolates the main idea behind relative paths."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "A relative path has no leading slash. The shell joins it to the current working directory before looking it up.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "cd",
+        "pwd"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Move into /home/student/lab/projects, enter reports using only its relative name, and save pwd to /home/student/answers/relative-path.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/relative-path.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/relative-path.txt",
+          "sha256": "8ca441e47f2acb37149b78bf8cb9fd0cddfac152600b11741038494d5934a300"
+        }
+      ],
+      "hints": [
+        "A child directory can be named relative to the current directory.",
+        "Once inside projects, the relative path is simply reports.",
+        "Do not put / before reports; that would start at the filesystem root."
+      ],
+      "suggestedSolution": "cd /home/student/lab/projects && cd reports && pwd > /home/student/answers/relative-path.txt",
+      "alternateSolutions": [
+        "cd /home/student/lab && cd projects/reports && pwd > /home/student/answers/relative-path.txt"
+      ],
+      "knownIncorrectSolution": "cd /home/student/lab/projects && cd /reports && pwd > /home/student/answers/relative-path.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Relative Paths?",
+      "answers": [
+        "A relative path has no leading slash. The shell joins it to the current working directory before looking it up.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "A relative path has no leading slash. The shell joins it to the current working directory before looking it up."
+    }
+  ]
+}

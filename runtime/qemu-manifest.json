@@ -1,0 +1,37 @@
+{
+  "$comment": "Pins the QEMU build that ships with the application. The Windows build workflow downloads this exact file, verifies the checksum, and refuses to continue on a mismatch. Bumping this version means re-verifying the checksum by hand and updating docs/licensing/qemu-source-offer.md, because the GPL obligation attaches to the specific build distributed.",
+  "version": "9.2.0",
+  "source": {
+    "description": "Stefan Weil's Windows build of QEMU, the customary distribution for Windows hosts.",
+    "url": "https://qemu.weilnetz.de/w64/2024/qemu-w64-setup-20241220.exe",
+    "sha256": "50929f001e5c5ea382430fc79b55e86684facb274889d73c3302e39e60bc024b",
+    "sha512PublishedByVendor": "f0c45849d75ecc75fffc29448741bbfdd732d3bea6f606d7f1a8bc3543845cb25ce0a0b5c716d4661d954877c907007a9d96c6136d015fb96afad29e57687bde"
+  },
+  "upstreamSource": {
+    "description": "Exact upstream commit identified by the vendor binary's version string; published alongside every release as corresponding source.",
+    "commit": "3dd0aeb44b1cc66edb4aa9331dc8ca456bee42cd",
+    "archiveName": "qemu-3dd0aeb44b1cc66edb4aa9331dc8ca456bee42cd.tar.gz",
+    "url": "https://codeload.github.com/qemu/qemu/tar.gz/3dd0aeb44b1cc66edb4aa9331dc8ca456bee42cd",
+    "sha256": "2f69f71641af558e9fc9757cdc5a3c7742214a042d92f7e4546f29ae1f589e12"
+  },
+  "extract": {
+    "$comment": "Only these files are shipped. QEMU's installer contains dozens of system targets and firmware blobs; taking the x86_64 target, the two microvm direct-boot ROMs, and the q35 fallback BIOS keeps the installer inside its 250-500 MB budget.",
+    "binaries": ["qemu-system-x86_64.exe", "qemu-img.exe"],
+    "firmwareFiles": [
+      "bios-microvm.bin",
+      "linuxboot_dma.bin",
+      "bios-256k.bin",
+      "kvmvapic.bin"
+    ],
+    "dllPolicy": "Copy every DLL beside qemu-system-x86_64.exe, then smoke-test both shipped executables. This follows the exact vendor dependency set instead of a hand-maintained subset.",
+    "licenceFiles": ["COPYING", "COPYING.LIB", "LICENSE"],
+    "$excluded": "General-purpose PC firmware, graphical assets, and non-x86 system emulators are not shipped. See docs/architecture/overview.md."
+  },
+  "guest": {
+    "kernel": "vmlinuz",
+    "initrd": "initrd.img",
+    "baseImage": "debian-base.raw.zst",
+    "debianSuite": "trixie",
+    "debianVersion": "13"
+  }
+}

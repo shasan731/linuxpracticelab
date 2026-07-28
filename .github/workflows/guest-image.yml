@@ -1,0 +1,177 @@
+name: Guest image
+
+on:
+  push:
+    branches: [main]
+    paths:
+      - 'guest/**'
+      - 'lessons/**'
+      - '.github/workflows/guest-image.yml'
+  pull_request:
+    paths:
+      - 'guest/**'
+      - 'lessons/**'
+  workflow_dispatch:
+  workflow_call:
+    outputs:
+      image-version:
+        description: Version stamp of the image that was built
+        value: ${{ jobs.build.outputs.image-version }}
+
+concurrency:
+  group: guest-image-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  build:
+    name: Build and boot-test the Debian guest
+    runs-on: ubuntu-24.04
+    timeout-minutes: 60
+    outputs:
+      image-version: ${{ steps.stamp.outputs.version }}
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-unknown-linux-gnu
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Install image build tools
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            debootstrap qemu-system-x86 qemu-utils zstd e2fsprogs
+
+      # The pinned suite is the one thing that silently changes the image out from under us,
+      # so it is asserted rather than assumed.
+      - name: Verify the pinned Debian release
+        run: |
+          set -euo pipefail
+          expected=trixie
+          actual="$(grep -oP '(?<=^readonly DEBIAN_SUITE="\$\{DEBIAN_SUITE:-)[a-z]+' guest/image-builder/build-rootfs.sh)"
+          if [[ "${actual}" != "${expected}" ]]; then
+            echo "the image builder pins ${actual}, but this workflow expects ${expected}" >&2
+            exit 1
+          fi
+          expected_snapshot=20260711T000000Z
+          actual_snapshot="$(grep -oP '(?<=^readonly DEBIAN_SNAPSHOT="\$\{DEBIAN_SNAPSHOT:-)[0-9TZ]+' guest/image-builder/build-rootfs.sh)"
+          if [[ "${actual_snapshot}" != "${expected_snapshot}" ]]; then
+            echo "the image builder pins snapshot ${actual_snapshot}, but this workflow expects ${expected_snapshot}" >&2
+            exit 1
+          fi
+
+      - name: Check the build scripts
+        run: |
+          sudo apt-get install -y --no-install-recommends shellcheck
+          shellcheck --severity=warning \
+            guest/image-builder/build-rootfs.sh \
+            guest/network-labs/lab-net.sh \
+            guest/services/linuxlab-signal-trap \
+            guest/overlay-files/usr/local/lib/linuxlab/linuxlab-boot \
+            lessons/assets/setup/*/setup.sh
+
+      - name: Build the guest agent
+        run: cargo build --release --target x86_64-unknown-linux-gnu -p linuxlab-agent
+
+      - name: Stamp the image version
+        id: stamp
+        run: |
+          version="debian-13-trixie-${GITHUB_RUN_NUMBER}"
+          echo "version=${version}" >> "$GITHUB_OUTPUT"
+          echo "IMAGE_VERSION=${version}" >> "$GITHUB_ENV"
+
+      - name: Build the root filesystem
+        run: sudo -E guest/image-builder/build-rootfs.sh
+        env:
+          IMAGE_VERSION: ${{ steps.stamp.outputs.version }}
+          # Fixed so two builds of the same tree produce the same bytes.
+          SOURCE_DATE_EPOCH: '1783728000'
+
+      # The boot test is the whole point of this workflow: an image that builds but does not
+      # boot is worse than a build failure, because it ships.
+      - name: Boot test
+        run: |
+          set -euo pipefail
+          sudo chown "$(id -u):$(id -g)" guest/out/*
+          token="citest$(date +%s)"
+
+          qemu-img create -q -f qcow2 -F raw -b "$PWD/guest/out/debian-base.raw" /tmp/overlay.qcow2
+
+          timeout 300 qemu-system-x86_64 \
+            -no-user-config -nodefaults \
+            -machine microvm,acpi=on,pit=on,pic=off,rtc=on \
+            -accel tcg,thread=single -cpu max -smp 1 -m 256 \
+            -display none -no-reboot \
+            -global virtio-mmio.force-legacy=false \
+            -kernel guest/out/vmlinuz -initrd guest/out/initrd.img \
+            -append "console=ttyS0,115200 root=/dev/vda rw rootfstype=ext4 init=/lib/systemd/systemd quiet panic=-1 linuxlab.network=offline linuxlab.token=${token}" \
+            -drive id=root,file=/tmp/overlay.qcow2,format=qcow2,if=none \
+            -device virtio-blk-device,drive=root \
+            -device virtio-serial-device,id=vser0 \
+            -chardev socket,id=agent,host=127.0.0.1,port=45003,server=on,wait=off \
+            -device virtserialport,bus=vser0.0,chardev=agent,name=org.linuxlab.agent \
+            -serial file:/tmp/console.log \
+            &
+          qemu_pid=$!
+
+          # Wait for the login prompt rather than a fixed sleep, so a slow runner does not
+          # produce a false failure and a hung boot does not pass.
+          for _ in $(seq 1 120); do
+            if grep -qE 'student@linuxlab|login:' /tmp/console.log 2>/dev/null; then
+              echo "the guest reached a login prompt"
+              break
+            fi
+            if ! kill -0 "${qemu_pid}" 2>/dev/null; then
+              echo "qemu exited before the guest booted" >&2
+              tail -n 60 /tmp/console.log >&2 || true
+              exit 1
+            fi
+            sleep 2
+          done
+
+          if ! grep -qE 'student@linuxlab|login:' /tmp/console.log 2>/dev/null; then
+            echo "the guest did not reach a prompt within 240 seconds" >&2
+            tail -n 60 /tmp/console.log >&2 || true
+            kill "${qemu_pid}" 2>/dev/null || true
+            exit 1
+          fi
+
+          # A login prompt is insufficient: the application depends on the privileged agent
+          # and its authenticated virtio-serial channel. Exercise the same ping used by startup.
+          exec 3<>/dev/tcp/127.0.0.1/45003
+          printf '{"id":1,"token":"%s","request":{"op":"ping"}}\n' "${token}" >&3
+          if ! IFS= read -r -t 30 reply <&3 || [[ "${reply}" != *'"kind":"pong"'* ]]; then
+            echo "the guest agent did not answer an authenticated ping" >&2
+            printf 'reply: %s\n' "${reply:-<none>}" >&2
+            tail -n 80 /tmp/console.log >&2 || true
+            kill "${qemu_pid}" 2>/dev/null || true
+            exit 1
+          fi
+          echo "the guest agent answered over virtio-serial"
+          kill "${qemu_pid}" 2>/dev/null || true
+
+      - name: Console log
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: guest-console-log
+          path: /tmp/console.log
+          if-no-files-found: warn
+
+      - name: Upload guest artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: guest-image
+          path: |
+            guest/out/vmlinuz
+            guest/out/initrd.img
+            guest/out/debian-base.raw.zst
+            guest/out/SHA256SUMS
+            guest/out/image-manifest.json
+            guest/out/image-version
+            guest/out/debian-copyright.txt
+          retention-days: 14
+          compression-level: 0

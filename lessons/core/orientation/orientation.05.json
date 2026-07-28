@@ -1,0 +1,117 @@
+{
+  "schemaVersion": 1,
+  "id": "orientation.05",
+  "title": "Cancelling and Stopping",
+  "level": "orientation",
+  "module": "orientation",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 8,
+  "prerequisites": ["orientation.04"],
+  "concepts": ["interrupt", "end of input", "exiting the shell", "signals"],
+  "commands": ["sleep", "cat", "exit"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false
+  },
+  "content": {
+    "purpose": "Get back to a prompt when a command will not finish on its own.",
+    "mentalModel": "Ctrl+C and Ctrl+D look similar and do completely different things. Ctrl+C sends an interrupt signal to whatever is running, asking it to stop. Ctrl+D sends nothing at all: it closes the input stream, so a program reading input sees that there is no more. When the shell itself sees end of input, it has nothing left to read and exits, which is why Ctrl+D at a prompt logs you out.",
+    "syntax": [
+      "Ctrl+C   interrupt the running command",
+      "Ctrl+D   signal end of input",
+      "exit     leave the shell deliberately"
+    ],
+    "demonstration": [
+      {
+        "command": "sleep 300",
+        "explanation": "Waits five minutes and gives you no prompt back. Press Ctrl+C and it stops immediately."
+      },
+      {
+        "command": "cat",
+        "explanation": "With no file, cat reads what you type and echoes it back. Ctrl+C abandons it; Ctrl+D tells it the input has ended, which is the tidier way out."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "Ctrl+C interrupts a running command",
+        "Ctrl+D means end of input, and at a prompt that ends your shell session",
+        "A command that gives no prompt back is usually waiting, not broken"
+      ],
+      "dangerous": [
+        "Ctrl+C stops a command part-way, which can leave a half-written file behind"
+      ],
+      "related": ["kill", "jobs", "trap"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Run sleep 300 and notice you do not get a prompt back. Press Ctrl+C to interrupt it. Then confirm you are back in control by creating a file called interrupted.txt.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/interrupted.txt" },
+        {
+          "type": "process_not_running",
+          "pattern": "sleep 300",
+          "message": "sleep 300 is still running, so it was not interrupted. Press Ctrl+C in the terminal."
+        }
+      ],
+      "hints": [
+        "The command has not failed; it is doing exactly what you asked and waiting.",
+        "Ctrl+C sends an interrupt to the running command.",
+        "Afterwards run: touch interrupted.txt"
+      ],
+      "suggestedSolution": "touch interrupted.txt"
+    },
+    {
+      "id": "task-2",
+      "kind": "independent",
+      "instruction": "Use cat with no file name to type two lines of your own into typed.txt, then end the input properly rather than interrupting it. If you use Ctrl+C instead of Ctrl+D the file will be empty.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/typed.txt" },
+        {
+          "type": "file_line_count",
+          "path": "/home/student/typed.txt",
+          "min": 2,
+          "message": "typed.txt has fewer than two lines. Ctrl+C abandons cat before it writes; Ctrl+D closes the input so what you typed is saved."
+        }
+      ],
+      "hints": [
+        "cat with no arguments reads from your keyboard. You can redirect that into a file.",
+        "Start with: cat > typed.txt",
+        "Type two lines, then press Ctrl+D on an empty line to signal end of input."
+      ],
+      "suggestedSolution": "printf 'line one\\nline two\\n' | cat > typed.txt",
+      "alternateSolutions": ["printf 'line one\\nline two\\n' > typed.txt"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "You are at an empty prompt and press Ctrl+D. What happens?",
+      "answers": [
+        "The shell sees end of input and your session ends",
+        "Nothing, because no command is running",
+        "The last command is interrupted",
+        "The screen is cleared"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Ctrl+D is end of input, not a cancel. With no more input to read, the shell exits."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "A command has been running for a minute and printed nothing. What is the most likely explanation?",
+      "answers": [
+        "It is working or waiting, and has not finished yet",
+        "The terminal has crashed",
+        "Linux has stopped responding",
+        "The command does not exist"
+      ],
+      "correctAnswer": 0,
+      "explanation": "No prompt means the command has not exited. A command that does not exist reports so immediately."
+    }
+  ]
+}

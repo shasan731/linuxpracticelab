@@ -1,0 +1,130 @@
+{
+  "schemaVersion": 1,
+  "id": "terminal.08",
+  "title": "Exit Codes",
+  "level": "beginner",
+  "module": "terminal-literacy",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": ["terminal.07"],
+  "concepts": ["exit status", "success and failure", "$?"],
+  "commands": ["true", "false", "echo", "ls"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false
+  },
+  "content": {
+    "purpose": "Tell whether the last command succeeded, even when it printed nothing.",
+    "mentalModel": "Every command finishes with a number. Zero means success and anything else means failure, which is the opposite of what most people expect from a true/false value. The shell keeps that number in $? until the next command replaces it, so you have to read it immediately. This is the mechanism every script uses to make decisions, so it is not a detail: it is how if, && and || work.",
+    "syntax": ["command", "echo $?"],
+    "demonstration": [
+      {
+        "command": "true",
+        "explanation": "A command whose only job is to succeed. It prints nothing."
+      },
+      {
+        "command": "echo $?",
+        "explanation": "Zero, meaning the previous command succeeded.",
+        "output": "0"
+      },
+      {
+        "command": "ls missing-file",
+        "explanation": "Fails, prints an error, and leaves a non-zero code behind. On Debian, ls uses 2 for a missing operand."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "Zero means success; anything else means failure",
+        "$? holds the exit code of the previous command only, so read it straight away",
+        "echo $? is itself a command, so it replaces $? with its own exit code"
+      ],
+      "dangerous": [
+        "Reading $? after any intervening command, including echo, gives you the wrong answer"
+      ],
+      "related": ["if", "&&", "||", "set -e"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Run true, then capture its exit code into /home/student/exit-success.txt. The file must contain 0.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/exit-success.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/exit-success.txt",
+          "text": "0",
+          "trim": true,
+          "message": "exit-success.txt does not contain 0. Check nothing ran in between true and echo $?."
+        }
+      ],
+      "hints": [
+        "The shell keeps the previous command's code in a special variable.",
+        "That variable is $?.",
+        "Run true, then: echo $? > /home/student/exit-success.txt"
+      ],
+      "suggestedSolution": "true; echo $? > /home/student/exit-success.txt"
+    },
+    {
+      "id": "task-2",
+      "kind": "independent",
+      "instruction": "Now capture the exit code of a command that fails, into /home/student/exit-failure.txt. The file must contain a number other than 0.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/exit-failure.txt" },
+        {
+          "type": "file_matches_regex",
+          "path": "/home/student/exit-failure.txt",
+          "pattern": "^[1-9][0-9]*\\s*$",
+          "message": "exit-failure.txt does not contain a non-zero code. false and ls on a missing file both fail."
+        }
+      ],
+      "hints": [
+        "There is a command whose only job is to fail.",
+        "It is false. Listing a file that does not exist also works.",
+        "Run it, then immediately redirect echo $? into the file, with nothing in between."
+      ],
+      "suggestedSolution": "false; echo $? > /home/student/exit-failure.txt",
+      "alternateSolutions": ["ls no-such-file 2>/dev/null; echo $? > /home/student/exit-failure.txt"]
+    },
+    {
+      "id": "task-3",
+      "kind": "mistake",
+      "instruction": "Someone tried to check whether their command failed and always got 0. Explain why to yourself, then create /home/student/why-zero.txt containing the word overwritten.",
+      "brokenCommand": "ls missing-file\necho \"checking\"\necho $?",
+      "diagnosis": "$? only ever holds the exit code of the command immediately before it. The echo \"checking\" succeeded, so it replaced the failing ls's code with its own 0. To keep an exit code across other commands, save it first: status=$?",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/why-zero.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/why-zero.txt",
+          "text": "overwritten",
+          "caseSensitive": false
+        }
+      ],
+      "hints": [
+        "How many commands ran between the failure and the check?",
+        "Each one sets $? to its own result. Write the single word that describes what happened."
+      ],
+      "suggestedSolution": "echo overwritten > /home/student/why-zero.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "A command finishes with exit code 1. What does that mean?",
+      "answers": ["It failed", "It succeeded", "It is still running", "It printed one line"],
+      "correctAnswer": 0,
+      "explanation": "Zero is success; every other value indicates some kind of failure, and the specific number is up to the command."
+    },
+    {
+      "type": "command-recall",
+      "question": "Which variable holds the exit code of the last command?",
+      "acceptedAnswers": ["$?", "?"],
+      "explanation": "$? expands to the previous command's exit status."
+    }
+  ]
+}

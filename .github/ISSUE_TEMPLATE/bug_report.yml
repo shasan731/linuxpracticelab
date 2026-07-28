@@ -1,0 +1,72 @@
+name: Bug report
+description: Report a reproducible problem with the application, runtime, or curriculum.
+title: "[Bug]: "
+labels:
+  - bug
+body:
+  - type: markdown
+    attributes:
+      value: |
+        Thanks for helping improve Linux Practice Lab. Do not include control tokens, local
+        databases, personal paths, or security vulnerabilities in this public report.
+  - type: input
+    id: app-version
+    attributes:
+      label: Application and runtime version
+      description: These are shown at the bottom-left of the app.
+      placeholder: App 0.1.0, runtime 0.1.0
+    validations:
+      required: true
+  - type: input
+    id: windows-version
+    attributes:
+      label: Windows version
+      placeholder: Windows 11 24H2
+    validations:
+      required: true
+  - type: dropdown
+    id: distribution
+    attributes:
+      label: Distribution
+      options:
+        - Installer
+        - Portable ZIP
+        - Development build
+    validations:
+      required: true
+  - type: textarea
+    id: description
+    attributes:
+      label: What happened?
+      description: Include the complete learner-safe error text and what you expected instead.
+    validations:
+      required: true
+  - type: textarea
+    id: reproduce
+    attributes:
+      label: Steps to reproduce
+      placeholder: |
+        1. Open ...
+        2. Click ...
+        3. Observe ...
+    validations:
+      required: true
+  - type: textarea
+    id: environment
+    attributes:
+      label: Practice environment details
+      description: Include acceleration mode, machine type, memory, and health-check results.
+  - type: textarea
+    id: additional
+    attributes:
+      label: Additional context
+      description: Add sanitized screenshots or logs if useful.
+  - type: checkboxes
+    id: checks
+    attributes:
+      label: Safety checks
+      options:
+        - label: I removed tokens, private paths, and personal data from this report.
+          required: true
+        - label: This is not a security vulnerability.
+          required: true

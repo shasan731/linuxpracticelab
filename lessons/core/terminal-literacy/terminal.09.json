@@ -1,0 +1,123 @@
+{
+  "schemaVersion": 1,
+  "id": "terminal.09",
+  "title": "Terminal Literacy Assessment",
+  "level": "beginner",
+  "module": "terminal-literacy",
+  "type": "assessment",
+  "estimatedDifficulty": 3,
+  "estimatedMinutes": 15,
+  "prerequisites": ["terminal.08"],
+  "concepts": ["documentation", "command lookup", "exit codes", "history"],
+  "commands": ["man", "type", "which", "echo", "history", "apropos"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false
+  },
+  "content": {
+    "purpose": "Prove you can answer your own questions about an unfamiliar command.",
+    "mentalModel": "Everything in this assessment is something you did in this module. There are no hints and no worked examples: the point is to find out what you can do unaided, which is the only measurement worth having.",
+    "summary": {
+      "remember": [
+        "--help for a summary, man for the full reference, apropos when you do not know the name",
+        "type tells you what will actually run",
+        "$? tells you whether it worked"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "assessment",
+      "instruction": "Find the documentation for mkdir and save its one-line description to /home/student/answers/mkdir-description.txt. Create the answers directory if it does not exist.",
+      "validators": [
+        { "type": "directory_exists", "path": "/home/student/answers" },
+        { "type": "file_exists", "path": "/home/student/answers/mkdir-description.txt" },
+        {
+          "type": "file_matches_regex",
+          "path": "/home/student/answers/mkdir-description.txt",
+          "pattern": "(?i)mkdir.*director",
+          "message": "The file does not contain mkdir's description."
+        }
+      ],
+      "hints": [],
+      "suggestedSolution": "mkdir -p /home/student/answers && whatis mkdir > /home/student/answers/mkdir-description.txt",
+      "alternateSolutions": [
+        "mkdir -p ~/answers; man -f mkdir > ~/answers/mkdir-description.txt",
+        "mkdir -p ~/answers; man mkdir | head -n 5 > ~/answers/mkdir-description.txt"
+      ]
+    },
+    {
+      "id": "task-2",
+      "kind": "assessment",
+      "instruction": "Determine whether cd is a program on disk or something built into the shell, and record the shell's own verdict in /home/student/answers/cd-verdict.txt.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/answers/cd-verdict.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/answers/cd-verdict.txt",
+          "text": "builtin",
+          "caseSensitive": false,
+          "message": "The file does not record that cd is a builtin."
+        }
+      ],
+      "hints": [],
+      "suggestedSolution": "type cd > /home/student/answers/cd-verdict.txt",
+      "alternateSolutions": ["command -V cd > /home/student/answers/cd-verdict.txt"],
+      "knownIncorrectSolution": "which cd > /home/student/answers/cd-verdict.txt"
+    },
+    {
+      "id": "task-3",
+      "kind": "assessment",
+      "instruction": "Run a command you know will fail, and record its exit code in /home/student/answers/failure-code.txt. The file must contain a single non-zero number.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/answers/failure-code.txt" },
+        {
+          "type": "file_matches_regex",
+          "path": "/home/student/answers/failure-code.txt",
+          "pattern": "^[1-9][0-9]*\\s*$",
+          "message": "The file does not contain a single non-zero exit code."
+        }
+      ],
+      "hints": [],
+      "suggestedSolution": "false; echo $? > /home/student/answers/failure-code.txt",
+      "alternateSolutions": ["ls /definitely-not-here 2>/dev/null; echo $? > /home/student/answers/failure-code.txt"]
+    },
+    {
+      "id": "task-4",
+      "kind": "assessment",
+      "instruction": "You do not know what command reports free disk space. Find it using a keyword search of the manual, and save the search results to /home/student/answers/disk-space-search.txt.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/answers/disk-space-search.txt" },
+        {
+          "type": "file_matches_regex",
+          "path": "/home/student/answers/disk-space-search.txt",
+          "pattern": "(?i)\\bdf\\b|disk (free|space|usage)",
+          "message": "The search results do not include a disk space command. Search the manual descriptions by keyword."
+        }
+      ],
+      "hints": [],
+      "suggestedSolution": "apropos 'space usage' > /home/student/answers/disk-space-search.txt",
+      "alternateSolutions": [
+        "man -k 'space usage' > /home/student/answers/disk-space-search.txt",
+        "apropos 'file system' | grep '^df ' > /home/student/answers/disk-space-search.txt"
+      ]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "You meet a command you have never seen in a script. What is the fastest way to find out what it does?",
+      "answers": [
+        "Run it with --help, or read whatis for a one-line summary",
+        "Run it and see what happens",
+        "Search the internet",
+        "Ask a colleague"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Reading the documentation costs seconds. Running an unknown command from a script to find out what it does is how accidents happen."
+    }
+  ]
+}

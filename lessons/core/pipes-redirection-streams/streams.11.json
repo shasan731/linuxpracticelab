@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "id": "streams.11",
+  "title": "Process Substitution",
+  "level": "foundation",
+  "module": "pipes-redirection-streams",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "streams.10"
+  ],
+  "concepts": [
+    "process substitution",
+    "temporary streams"
+  ],
+  "commands": [
+    "diff",
+    "sort"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Give a command temporary file-like views of generated output.",
+    "mentalModel": "<(command) runs a command and expands to a readable path for its output, so file-oriented tools such as diff can compare pipelines.",
+    "syntax": [
+      "diff <(sort file1) <(sort file2)"
+    ],
+    "demonstration": [
+      {
+        "command": "diff <(sort file1) <(sort file2)",
+        "explanation": "This small example isolates the main idea behind process substitution."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "<(command) runs a command and expands to a readable path for its output, so file-oriented tools such as diff can compare pipelines.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "diff",
+        "sort"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Use process substitution to compare sorted list-1.txt and list-2.txt, saving the empty diff in /home/student/answers/differences.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/differences.txt"
+        },
+        {
+          "type": "file_size",
+          "path": "/home/student/answers/differences.txt",
+          "equals": 0
+        }
+      ],
+      "hints": [
+        "The files contain the same records in different orders.",
+        "Sort each file inside its own <(...) expression.",
+        "diff receives the two generated paths as ordinary arguments."
+      ],
+      "suggestedSolution": "diff <(sort /home/student/lab/list-1.txt) <(sort /home/student/lab/list-2.txt) > /home/student/answers/differences.txt",
+      "alternateSolutions": [
+        "comm -3 <(sort /home/student/lab/list-1.txt) <(sort /home/student/lab/list-2.txt) > /home/student/answers/differences.txt"
+      ],
+      "knownIncorrectSolution": "diff /home/student/lab/list-1.txt /home/student/lab/list-2.txt > /home/student/answers/differences.txt || true"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Process Substitution?",
+      "answers": [
+        "<(command) runs a command and expands to a readable path for its output, so file-oriented tools such as diff can compare pipelines.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "<(command) runs a command and expands to a readable path for its output, so file-oriented tools such as diff can compare pipelines."
+    }
+  ]
+}

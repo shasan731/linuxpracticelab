@@ -1,0 +1,116 @@
+{
+  "schemaVersion": 1,
+  "id": "terminal.06",
+  "title": "Locating Commands",
+  "level": "beginner",
+  "module": "terminal-literacy",
+  "type": "concept",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": ["terminal.05"],
+  "concepts": ["PATH lookup", "executables", "shell builtins", "aliases"],
+  "commands": ["which", "whereis", "type", "command"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false
+  },
+  "content": {
+    "purpose": "Find out what will actually run when you type a name, which is not always a program on disk.",
+    "mentalModel": "When you type ls, the shell searches the directories in PATH for a file called ls and runs it. But not everything you type is a file. Some things are built into the shell itself, and cd has to be one of them: changing directory means changing the shell's own working directory, and a separate program could only change its own, then exit. That is why which cd finds nothing while type cd says it is a builtin. type is the honest answer because it reports builtins, aliases and functions as well as files.",
+    "syntax": ["which NAME", "whereis NAME", "type NAME", "command -V NAME"],
+    "demonstration": [
+      {
+        "command": "which bash",
+        "explanation": "The path to the executable the shell would run.",
+        "output": "/usr/bin/bash"
+      },
+      {
+        "command": "type cd",
+        "explanation": "cd is not a file at all.",
+        "output": "cd is a shell builtin"
+      }
+    ],
+    "summary": {
+      "remember": [
+        "which only looks for files in PATH, so it misses builtins, aliases and functions",
+        "type reports whatever the shell would actually use",
+        "cd must be a builtin because a child process cannot change its parent's working directory"
+      ],
+      "related": ["PATH", "alias", "hash"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Find the full path of the bash executable and save it to /home/student/bash-path.txt.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/bash-path.txt" },
+        {
+          "type": "file_matches_regex",
+          "path": "/home/student/bash-path.txt",
+          "pattern": "/bin/bash",
+          "message": "bash-path.txt does not contain a path ending in /bin/bash."
+        }
+      ],
+      "hints": [
+        "One command reports where an executable lives.",
+        "It is which.",
+        "Give it bash as its argument, and redirect the result into the file."
+      ],
+      "suggestedSolution": "which bash > /home/student/bash-path.txt",
+      "alternateSolutions": ["type -p bash > /home/student/bash-path.txt", "command -v bash > /home/student/bash-path.txt"]
+    },
+    {
+      "id": "task-2",
+      "kind": "independent",
+      "instruction": "Establish what kind of thing cd is, and save the shell's own answer to /home/student/cd-kind.txt. The file must contain the word builtin.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/cd-kind.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/cd-kind.txt",
+          "text": "builtin",
+          "caseSensitive": false,
+          "message": "cd-kind.txt does not say cd is a builtin. which searches PATH only, so it cannot answer this."
+        }
+      ],
+      "hints": [
+        "which will not help here: it only looks for files.",
+        "Something asks the shell what it would actually use for a name.",
+        "That command is type. Redirect its answer into the file."
+      ],
+      "suggestedSolution": "type cd > /home/student/cd-kind.txt",
+      "alternateSolutions": ["command -V cd > /home/student/cd-kind.txt"],
+      "knownIncorrectSolution": "which cd > /home/student/cd-kind.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Why must cd be built into the shell rather than being a program?",
+      "answers": [
+        "A separate program could only change its own working directory, then exit",
+        "Because it is used too often to load from disk",
+        "Because it needs root privileges",
+        "It is a program; the lesson is wrong"
+      ],
+      "correctAnswer": 0,
+      "explanation": "A child process gets a copy of the environment. Changing its own directory would have no effect on the shell that started it."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "which something prints nothing, but typing something works. What is the most likely explanation?",
+      "answers": [
+        "It is a builtin, alias or shell function rather than a file in PATH",
+        "The command is broken",
+        "PATH is empty",
+        "which needs sudo"
+      ],
+      "correctAnswer": 0,
+      "explanation": "which only searches PATH for files. type reports the other three possibilities."
+    }
+  ]
+}

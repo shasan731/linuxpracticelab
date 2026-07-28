@@ -1,0 +1,46 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linuxpracticelab.local/schema/module.schema.json",
+  "title": "Linux Practice Lab module manifest",
+  "type": "object",
+  "required": ["schemaVersion", "id", "number", "title", "level", "summary", "lessons"],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "number": { "type": "integer", "minimum": 0, "maximum": 99 },
+    "title": { "type": "string", "minLength": 3 },
+    "level": {
+      "type": "string",
+      "enum": [
+        "orientation",
+        "beginner",
+        "foundation",
+        "intermediate",
+        "advanced",
+        "administrator",
+        "troubleshooting",
+        "capstone"
+      ]
+    },
+    "summary": { "type": "string", "minLength": 20 },
+    "outcomes": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "description": "What the learner can do after finishing the module."
+    },
+    "pack": {
+      "type": "string",
+      "enum": ["core", "optional"],
+      "default": "core"
+    },
+    "lessons": {
+      "type": "array",
+      "items": { "type": "string" },
+      "minItems": 1,
+      "uniqueItems": true,
+      "description": "Lesson ids in teaching order. Every id must resolve to a lesson file in this module directory."
+    }
+  }
+}

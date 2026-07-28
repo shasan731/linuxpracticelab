@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "id": "text.06",
+  "title": "Creating Text with echo",
+  "level": "beginner",
+  "module": "reading-editing-text",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "text.05"
+  ],
+  "concepts": [
+    "shell expansion",
+    "short text output"
+  ],
+  "commands": [
+    "echo"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Produce a short line of text or show an expanded shell value.",
+    "mentalModel": "echo receives already-expanded shell arguments and writes them separated by spaces. Quoting controls expansion and argument boundaries before echo runs.",
+    "syntax": [
+      "echo \"Hello\"",
+      "echo \"$HOME\""
+    ],
+    "demonstration": [
+      {
+        "command": "echo \"Hello\"",
+        "explanation": "This small example isolates the main idea behind creating text with echo."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "echo receives already-expanded shell arguments and writes them separated by spaces. Quoting controls expansion and argument boundaries before echo runs.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "echo"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Create /home/student/answers/greeting.txt containing exactly “Hello from /home/student” on one line, using the HOME variable for the path.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/greeting.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/greeting.txt",
+          "sha256": "905dcd074da73f983f18e935dcf4d627a7ad2a1dcd07211c26ea92208c8852ab"
+        }
+      ],
+      "hints": [
+        "The shell expands variables inside double quotes.",
+        "Single quotes would preserve the dollar sign literally.",
+        "Redirect the expanded echo output into greeting.txt."
+      ],
+      "suggestedSolution": "echo \"Hello from $HOME\" > /home/student/answers/greeting.txt",
+      "alternateSolutions": [
+        "printf 'Hello from %s\\n' \"$HOME\" > /home/student/answers/greeting.txt"
+      ],
+      "knownIncorrectSolution": "echo 'Hello from $HOME' > /home/student/answers/greeting.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Creating Text with echo?",
+      "answers": [
+        "echo receives already-expanded shell arguments and writes them separated by spaces. Quoting controls expansion and argument boundaries before echo runs.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "echo receives already-expanded shell arguments and writes them separated by spaces. Quoting controls expansion and argument boundaries before echo runs."
+    }
+  ]
+}

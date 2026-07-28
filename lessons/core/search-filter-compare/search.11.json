@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "id": "search.11",
+  "title": "Comparing Files",
+  "level": "foundation",
+  "module": "search-filter-compare",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "search.10"
+  ],
+  "concepts": [
+    "text differences",
+    "byte comparison"
+  ],
+  "commands": [
+    "diff",
+    "cmp"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "See whether two files differ and identify the changed lines.",
+    "mentalModel": "cmp answers whether bytes differ and where the first difference occurs; diff produces a line-oriented description useful for text.",
+    "syntax": [
+      "diff OLD NEW",
+      "cmp FILE1 FILE2"
+    ],
+    "demonstration": [
+      {
+        "command": "diff OLD NEW",
+        "explanation": "This small example isolates the main idea behind comparing files."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "cmp answers whether bytes differ and where the first difference occurs; diff produces a line-oriented description useful for text.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "diff",
+        "cmp"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Compare old.conf with new.conf and save a normal diff showing both port values to /home/student/answers/config.diff.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/config.diff"
+        },
+        {
+          "type": "file_contains",
+          "path": "/home/student/answers/config.diff",
+          "text": "< port=8080"
+        },
+        {
+          "type": "file_contains",
+          "path": "/home/student/answers/config.diff",
+          "text": "> port=9090"
+        }
+      ],
+      "hints": [
+        "The answer must show changed text lines, not only a byte position.",
+        "Use diff with the old file first and the new file second.",
+        "diff uses exit code 1 for ordinary differences, which is not a command failure."
+      ],
+      "suggestedSolution": "diff /home/student/lab/old.conf /home/student/lab/new.conf > /home/student/answers/config.diff || true",
+      "alternateSolutions": [
+        "diff --normal /home/student/lab/old.conf /home/student/lab/new.conf > /home/student/answers/config.diff || true"
+      ],
+      "knownIncorrectSolution": "cmp /home/student/lab/old.conf /home/student/lab/new.conf > /home/student/answers/config.diff || true"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Comparing Files?",
+      "answers": [
+        "cmp answers whether bytes differ and where the first difference occurs; diff produces a line-oriented description useful for text.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "cmp answers whether bytes differ and where the first difference occurs; diff produces a line-oriented description useful for text."
+    }
+  ]
+}

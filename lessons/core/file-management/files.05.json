@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "id": "files.05",
+  "title": "Moving and Renaming with mv",
+  "level": "beginner",
+  "module": "file-management",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "files.04"
+  ],
+  "concepts": [
+    "renaming",
+    "moving files"
+  ],
+  "commands": [
+    "mv"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Change a path without duplicating the underlying file.",
+    "mentalModel": "Within one filesystem, mv usually changes directory entries rather than copying file data. A new name and a new parent directory are the same operation.",
+    "syntax": [
+      "mv OLD NEW",
+      "mv FILE DIRECTORY/"
+    ],
+    "demonstration": [
+      {
+        "command": "mv OLD NEW",
+        "explanation": "This small example isolates the main idea behind moving and renaming with mv."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "Within one filesystem, mv usually changes directory entries rather than copying file data. A new name and a new parent directory are the same operation.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "mv"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Rename draft.txt to quarterly-report.txt and place it inside /home/student/lab/documents.",
+      "validators": [
+        {
+          "type": "file_missing",
+          "path": "/home/student/lab/draft.txt"
+        },
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/documents/quarterly-report.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/lab/documents/quarterly-report.txt",
+          "sha256": "086c491f7596b946fb680af470f8f00afa3e3b6f741eb9b7727b068e74db1cb3"
+        }
+      ],
+      "hints": [
+        "The original path must disappear, so this is not a copy.",
+        "mv accepts the old path followed by the complete new path.",
+        "The destination path can rename and move in one command."
+      ],
+      "suggestedSolution": "mv /home/student/lab/draft.txt /home/student/lab/documents/quarterly-report.txt",
+      "alternateSolutions": [
+        "cd /home/student/lab && mv draft.txt documents/quarterly-report.txt"
+      ],
+      "knownIncorrectSolution": "cp /home/student/lab/draft.txt /home/student/lab/documents/quarterly-report.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Moving and Renaming with mv?",
+      "answers": [
+        "Within one filesystem, mv usually changes directory entries rather than copying file data. A new name and a new parent directory are the same operation.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "Within one filesystem, mv usually changes directory entries rather than copying file data. A new name and a new parent directory are the same operation."
+    }
+  ]
+}

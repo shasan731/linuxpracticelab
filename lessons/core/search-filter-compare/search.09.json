@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "id": "search.09",
+  "title": "Sorting Text",
+  "level": "foundation",
+  "module": "search-filter-compare",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "search.08"
+  ],
+  "concepts": [
+    "lexical order",
+    "numeric order",
+    "reverse order"
+  ],
+  "commands": [
+    "sort"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Put text records into a predictable lexical or numeric order.",
+    "mentalModel": "sort compares whole lines by default. -n compares numeric value, and -r reverses the chosen order.",
+    "syntax": [
+      "sort FILE",
+      "sort -n FILE",
+      "sort -r FILE"
+    ],
+    "demonstration": [
+      {
+        "command": "sort FILE",
+        "explanation": "This small example isolates the main idea behind sorting text."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "sort compares whole lines by default. -n compares numeric value, and -r reverses the chosen order.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "sort"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Sort numbers.txt numerically from largest to smallest and save the result to /home/student/answers/numbers-sorted.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/numbers-sorted.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/numbers-sorted.txt",
+          "sha256": "3efadc1a1d1b33b552d4e376540120c83aeaac75558c2c1c84e95dfe621fe30c"
+        }
+      ],
+      "hints": [
+        "Text order and numeric order are different for 100 and 20.",
+        "Use -n for numbers and -r for descending order.",
+        "The options can be grouped as -nr."
+      ],
+      "suggestedSolution": "sort -nr /home/student/lab/numbers.txt > /home/student/answers/numbers-sorted.txt",
+      "alternateSolutions": [
+        "sort -n /home/student/lab/numbers.txt | tac > /home/student/answers/numbers-sorted.txt"
+      ],
+      "knownIncorrectSolution": "sort -r /home/student/lab/numbers.txt > /home/student/answers/numbers-sorted.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Sorting Text?",
+      "answers": [
+        "sort compares whole lines by default. -n compares numeric value, and -r reverses the chosen order.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "sort compares whole lines by default. -n compares numeric value, and -r reverses the chosen order."
+    }
+  ]
+}

@@ -1,0 +1,50 @@
+#!/usr/bin/env bash
+#
+# Boot preparation for the practice guest.
+#
+# Extracts the control token the host passed on the kernel command line and stores it where
+# only root can read it. The token is passed this way rather than through a file in the image
+# because it is generated per VM run: baking it into the image would mean every installation
+# shared one secret.
+
+set -Eeuo pipefail
+
+readonly RUNTIME_DIR=/run/linuxlab
+readonly TOKEN_FILE="${RUNTIME_DIR}/control-token"
+
+install -d -m 0700 "${RUNTIME_DIR}"
+install -d -m 0700 "${RUNTIME_DIR}/signals"
+install -d -m 0700 "${RUNTIME_DIR}/checkpoints"
+
+# The token arrives as linuxlab.token=<hex> on the kernel command line.
+token=""
+for parameter in $(tr '\0' ' ' < /proc/cmdline); do
+    case "${parameter}" in
+        linuxlab.token=*) token="${parameter#linuxlab.token=}" ;;
+        linuxlab.network=*) printf '%s\n' "${parameter#linuxlab.network=}" > "${RUNTIME_DIR}/network-mode" ;;
+    esac
+done
+
+if [[ -n "${token}" ]]; then
+    umask 077
+    printf '%s' "${token}" > "${TOKEN_FILE}"
+    chmod 0600 "${TOKEN_FILE}"
+else
+    # Without a token the agent refuses to start, which is the correct failure: the host will
+    # report that the guest never became ready rather than accepting unauthenticated control.
+    echo "no linuxlab.token= on the kernel command line; the agent will not accept requests" >&2
+fi
+
+# /proc/cmdline is world readable, so the token is visible to any process in the guest for as
+# long as it is there. Blanking the file the learner can read closes that window; the kernel's
+# own copy is unavoidable, which is why the token authorises nothing outside this disposable VM.
+if [[ -w /proc/sys/kernel/dmesg_restrict ]]; then
+    echo 1 > /proc/sys/kernel/dmesg_restrict || true
+fi
+
+# A stable machine-id per installation, generated on first boot rather than shipped.
+if [[ ! -s /etc/machine-id ]]; then
+    systemd-machine-id-setup >/dev/null 2>&1 || true
+fi
+
+exit 0

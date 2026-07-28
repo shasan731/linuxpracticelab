@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "id": "filesystem.09",
+  "title": "Home Directory Shortcuts",
+  "level": "beginner",
+  "module": "filesystem-navigation",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "filesystem.08"
+  ],
+  "concepts": [
+    "home directory",
+    "tilde expansion",
+    "environment variables"
+  ],
+  "commands": [
+    "cd",
+    "pwd",
+    "echo"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Return to the current user’s home directory without hard-coding its path.",
+    "mentalModel": "~ is expanded by the shell and $HOME is an environment variable. With no argument, cd also chooses the current user’s home.",
+    "syntax": [
+      "cd",
+      "cd ~",
+      "echo \"$HOME\""
+    ],
+    "demonstration": [
+      {
+        "command": "cd",
+        "explanation": "This small example isolates the main idea behind home directory shortcuts."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "~ is expanded by the shell and $HOME is an environment variable. With no argument, cd also chooses the current user’s home.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "cd",
+        "pwd",
+        "echo"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Move to /tmp, return home using a home-directory shortcut, and save pwd to /home/student/answers/home-shortcut.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/home-shortcut.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/home-shortcut.txt",
+          "sha256": "c4ba02b8653e65d89de591c9bd3ee0f07637957f20947875e215955ce5c30259"
+        }
+      ],
+      "hints": [
+        "The shell has more than one way to name your home directory.",
+        "Use cd ~, cd \"$HOME\", or cd with no argument.",
+        "Record pwd only after returning home."
+      ],
+      "suggestedSolution": "cd /tmp && cd ~ && pwd > /home/student/answers/home-shortcut.txt",
+      "alternateSolutions": [
+        "cd /tmp && cd \"$HOME\" && pwd > /home/student/answers/home-shortcut.txt",
+        "cd /tmp && cd && pwd > /home/student/answers/home-shortcut.txt"
+      ],
+      "knownIncorrectSolution": "cd /tmp && pwd > /home/student/answers/home-shortcut.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Home Directory Shortcuts?",
+      "answers": [
+        "~ is expanded by the shell and $HOME is an environment variable. With no argument, cd also chooses the current user’s home.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "~ is expanded by the shell and $HOME is an environment variable. With no argument, cd also chooses the current user’s home."
+    }
+  ]
+}

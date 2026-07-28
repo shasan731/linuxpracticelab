@@ -1,0 +1,15 @@
+# Packages fetched into /opt/linuxlab/repository so package-management lessons work offline.
+#
+# Keep this list short. Every entry adds to the installer download, and section 5.3 is explicit
+# that only packages used by lessons and common free-practice tools belong here.
+#
+# tree: installed by lesson 10.3 as the worked example.
+tree
+# cowsay and sl: harmless packages for practising install and purge without touching anything
+# the system depends on.
+cowsay
+sl
+# ncdu: used by the storage module to find what is consuming space.
+ncdu
+# figlet: second install target so a lesson can ask for a package it has not seen demonstrated.
+figlet

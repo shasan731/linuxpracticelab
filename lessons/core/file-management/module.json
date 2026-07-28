@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "file-management",
+  "number": 3,
+  "title": "Creating and managing files",
+  "level": "beginner",
+  "summary": "Create, copy, move, remove, inspect and link files safely, including directories, wildcard groups and names containing spaces.",
+  "outcomes": [
+    "Create directory trees and empty files",
+    "Copy, move and remove files and directories without collateral damage",
+    "Use wildcards and quoting deliberately",
+    "Inspect metadata and distinguish hard links from symbolic links",
+    "Organise a disordered project directory in a state-based assessment"
+  ],
+  "pack": "core",
+  "lessons": [
+    "files.01",
+    "files.02",
+    "files.03",
+    "files.04",
+    "files.05",
+    "files.06",
+    "files.07",
+    "files.08",
+    "files.09",
+    "files.10",
+    "files.11",
+    "files.12"
+  ]
+}

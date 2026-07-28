@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "id": "files.09",
+  "title": "File Names with Spaces",
+  "level": "beginner",
+  "module": "file-management",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "files.08"
+  ],
+  "concepts": [
+    "quoting",
+    "escaping",
+    "arguments"
+  ],
+  "commands": [
+    "touch",
+    "rm"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Pass a spaced filename to a command as one argument.",
+    "mentalModel": "The shell normally splits unquoted whitespace into argument boundaries. Quotes or backslash escapes suppress that split.",
+    "syntax": [
+      "touch \"monthly report.txt\"",
+      "rm monthly\\ report.txt"
+    ],
+    "demonstration": [
+      {
+        "command": "touch \"monthly report.txt\"",
+        "explanation": "This small example isolates the main idea behind file names with spaces."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "The shell normally splits unquoted whitespace into argument boundaries. Quotes or backslash escapes suppress that split.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "touch",
+        "rm"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Create an empty file named monthly report.txt inside /home/student/lab. The space must be part of the filename.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/monthly report.txt"
+        },
+        {
+          "type": "file_size",
+          "path": "/home/student/lab/monthly report.txt",
+          "equals": 0
+        },
+        {
+          "type": "file_missing",
+          "path": "/home/student/lab/monthly"
+        }
+      ],
+      "hints": [
+        "The shell must receive the whole path as one argument.",
+        "Wrap the path in quotes or escape the space with a backslash.",
+        "Check with ls -l before assuming two visible words mean two files."
+      ],
+      "suggestedSolution": "touch \"/home/student/lab/monthly report.txt\"",
+      "alternateSolutions": [
+        "touch /home/student/lab/monthly\\ report.txt"
+      ],
+      "knownIncorrectSolution": "touch /home/student/lab/monthly /home/student/lab/report.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes File Names with Spaces?",
+      "answers": [
+        "The shell normally splits unquoted whitespace into argument boundaries. Quotes or backslash escapes suppress that split.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "The shell normally splits unquoted whitespace into argument boundaries. Quotes or backslash escapes suppress that split."
+    }
+  ]
+}

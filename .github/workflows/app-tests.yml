@@ -1,0 +1,128 @@
+name: Application tests
+
+on:
+  push:
+    branches: [main]
+  pull_request:
+  workflow_dispatch:
+
+# A newer push makes an in-flight run pointless.
+concurrency:
+  group: app-tests-${{ github.ref }}
+  cancel-in-progress: true
+
+env:
+  CARGO_TERM_COLOR: always
+  RUSTFLAGS: -D warnings
+
+jobs:
+  lessons:
+    name: Lesson packages
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Check generated MVP curriculum
+        run: |
+          npm run lessons:generate
+          git diff --exit-code -- lessons/core lessons/assets/setup
+
+      # Runs before anything expensive: a malformed lesson is cheap to detect and would make
+      # every later job fail confusingly.
+      - name: Validate lesson packages
+        run: npm run lessons:validate
+
+  frontend:
+    name: Frontend
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Typecheck
+        run: npm run check --workspace apps/desktop
+
+      - name: Unit tests
+        run: npm run test --workspace apps/desktop
+
+      - name: Build
+        run: npm run build:vite --workspace apps/desktop
+
+  rust:
+    name: Rust (${{ matrix.os }})
+    runs-on: ${{ matrix.os }}
+    strategy:
+      fail-fast: false
+      matrix:
+        # Ubuntu covers the guest agent, whose validators only compile and run on Linux.
+        # Windows covers the host application, including the Job Object containment.
+        os: [ubuntu-latest, windows-latest]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          components: clippy, rustfmt
+
+      - uses: Swatinem/rust-cache@v2
+        with:
+          key: ${{ matrix.os }}
+
+      # Tauri needs GTK and WebKit headers on Linux even though the product is Windows-only.
+      - name: Install Linux build dependencies
+        if: runner.os == 'Linux'
+        run: |
+          sudo apt-get update
+          sudo apt-get install -y --no-install-recommends \
+            libwebkit2gtk-4.1-dev libgtk-3-dev libayatana-appindicator3-dev librsvg2-dev
+
+      - name: Formatting
+        run: cargo fmt --all -- --check
+
+      - name: Clippy (Linux workspace)
+        if: runner.os == 'Linux'
+        run: cargo clippy --workspace --all-targets
+
+      - name: Clippy (Windows host)
+        if: runner.os == 'Windows'
+        run: cargo clippy --workspace --exclude linuxlab-agent --all-targets
+
+      # The guest agent's tests inspect /proc, /etc/passwd and real file permissions, so they
+      # are meaningful on Linux and meaningless on Windows.
+      - name: Test the guest agent
+        if: runner.os == 'Linux'
+        run: cargo test -p linuxlab-agent
+
+      - name: Test the host crates
+        run: >
+          cargo test -p shared-types -p vm-manager -p lesson-engine
+          -p progress-store -p runtime-manager
+
+  schema:
+    name: Schema and registry consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dtolnay/rust-toolchain@stable
+
+      - uses: Swatinem/rust-cache@v2
+
+      # shared-types compiles validators.json in, and its tests assert every declared
+      # validator is documented, categorised and consistent. This job is what makes the
+      # single-source-of-truth claim real rather than aspirational.
+      - name: Validator registry tests
+        run: cargo test -p shared-types registry

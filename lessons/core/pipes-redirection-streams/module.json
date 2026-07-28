@@ -1,0 +1,30 @@
+{
+  "schemaVersion": 1,
+  "id": "pipes-redirection-streams",
+  "number": 6,
+  "title": "Pipes, redirection, and streams",
+  "level": "foundation",
+  "summary": "Connect commands through standard streams, redirect normal output and errors deliberately, and build reliable multi-stage text-processing pipelines.",
+  "outcomes": [
+    "Distinguish standard input, standard output and standard error",
+    "Create, overwrite and append files with redirection",
+    "Build and inspect multi-stage pipelines",
+    "Use tee, xargs and process substitution safely",
+    "Produce a ranked incident report while preserving diagnostic errors"
+  ],
+  "pack": "core",
+  "lessons": [
+    "streams.01",
+    "streams.02",
+    "streams.03",
+    "streams.04",
+    "streams.05",
+    "streams.06",
+    "streams.07",
+    "streams.08",
+    "streams.09",
+    "streams.10",
+    "streams.11",
+    "streams.12"
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "id": "files.03",
+  "title": "Copying Files with cp",
+  "level": "beginner",
+  "module": "file-management",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "files.02"
+  ],
+  "concepts": [
+    "copying",
+    "source and destination"
+  ],
+  "commands": [
+    "cp"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Duplicate a file while keeping the original in place.",
+    "mentalModel": "cp reads bytes from a source and writes a separate destination object. Later changes to one copy do not affect the other.",
+    "syntax": [
+      "cp SOURCE DESTINATION",
+      "cp FILE DIRECTORY/"
+    ],
+    "demonstration": [
+      {
+        "command": "cp SOURCE DESTINATION",
+        "explanation": "This small example isolates the main idea behind copying files with cp."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "cp reads bytes from a source and writes a separate destination object. Later changes to one copy do not affect the other.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "cp"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Copy /home/student/lab/source.conf to /home/student/lab/backup.conf without changing or removing the source.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/source.conf"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/lab/source.conf",
+          "sha256": "749e4bf0b58b8a66aa8e516efb2091b4ae000a550589cc1f5346ccf59ece2591"
+        },
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/backup.conf"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/lab/backup.conf",
+          "sha256": "749e4bf0b58b8a66aa8e516efb2091b4ae000a550589cc1f5346ccf59ece2591"
+        }
+      ],
+      "hints": [
+        "The original must still exist afterwards.",
+        "cp takes a source followed by a destination.",
+        "Name backup.conf as the second path."
+      ],
+      "suggestedSolution": "cp /home/student/lab/source.conf /home/student/lab/backup.conf",
+      "alternateSolutions": [
+        "install -m 0644 /home/student/lab/source.conf /home/student/lab/backup.conf"
+      ],
+      "knownIncorrectSolution": "mv /home/student/lab/source.conf /home/student/lab/backup.conf"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Copying Files with cp?",
+      "answers": [
+        "cp reads bytes from a source and writes a separate destination object. Later changes to one copy do not affect the other.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "cp reads bytes from a source and writes a separate destination object. Later changes to one copy do not affect the other."
+    }
+  ]
+}

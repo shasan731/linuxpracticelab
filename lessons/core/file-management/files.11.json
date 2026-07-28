@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "id": "files.11",
+  "title": "Links",
+  "level": "beginner",
+  "module": "file-management",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "files.10"
+  ],
+  "concepts": [
+    "inodes",
+    "hard links",
+    "symbolic links"
+  ],
+  "commands": [
+    "ln"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Create another filesystem name or a path reference to an existing file.",
+    "mentalModel": "A hard link is another name for the same inode. A symbolic link is a small object containing a target path and can become dangling.",
+    "syntax": [
+      "ln ORIGINAL HARD_LINK",
+      "ln -s TARGET SYMBOLIC_LINK"
+    ],
+    "demonstration": [
+      {
+        "command": "ln ORIGINAL HARD_LINK",
+        "explanation": "This small example isolates the main idea behind links."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "A hard link is another name for the same inode. A symbolic link is a small object containing a target path and can become dangling.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "ln"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Create /home/student/lab/hard-link as a hard link to original.txt and /home/student/lab/symbolic-link as a symbolic link to original.txt.",
+      "validators": [
+        {
+          "type": "hard_link_exists",
+          "path": "/home/student/lab/hard-link",
+          "linkTo": "/home/student/lab/original.txt"
+        },
+        {
+          "type": "symbolic_link_exists",
+          "path": "/home/student/lab/symbolic-link",
+          "resolved": true,
+          "target": "/home/student/lab/original.txt"
+        }
+      ],
+      "hints": [
+        "A copy has different data; the task asks for two kinds of links.",
+        "ln creates a hard link by default, and -s creates a symbolic link.",
+        "Using a relative symbolic target keeps the link readable inside the same directory."
+      ],
+      "suggestedSolution": "cd /home/student/lab && ln original.txt hard-link && ln -s original.txt symbolic-link",
+      "alternateSolutions": [
+        "ln /home/student/lab/original.txt /home/student/lab/hard-link && ln -s /home/student/lab/original.txt /home/student/lab/symbolic-link"
+      ],
+      "knownIncorrectSolution": "cp /home/student/lab/original.txt /home/student/lab/hard-link && cp /home/student/lab/original.txt /home/student/lab/symbolic-link"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Links?",
+      "answers": [
+        "A hard link is another name for the same inode. A symbolic link is a small object containing a target path and can become dangling.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "A hard link is another name for the same inode. A symbolic link is a small object containing a target path and can become dangling."
+    }
+  ]
+}

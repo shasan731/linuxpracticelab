@@ -1,0 +1,118 @@
+{
+  "schemaVersion": 1,
+  "id": "files.12",
+  "title": "File Management Assessment",
+  "level": "beginner",
+  "module": "file-management",
+  "type": "assessment",
+  "estimatedDifficulty": 3,
+  "estimatedMinutes": 18,
+  "prerequisites": [
+    "files.11"
+  ],
+  "concepts": [
+    "project organisation",
+    "safe deletion",
+    "links"
+  ],
+  "commands": [
+    "mkdir",
+    "mv",
+    "cp",
+    "rm",
+    "ln"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Organise a realistic project directory using the file-management tools together.",
+    "mentalModel": "Good file management is defined by the final tree: correct paths, preserved content, deliberate deletions and links that point where intended.",
+    "syntax": [],
+    "demonstration": [],
+    "summary": {
+      "remember": [
+        "Good file management is defined by the final tree: correct paths, preserved content, deliberate deletions and links that point where intended.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "mkdir",
+        "mv",
+        "cp",
+        "rm",
+        "ln"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "assessment",
+      "instruction": "Organise /home/student/lab/project: create config, reports and backup directories; move app.conf into config; rename draft-report.txt to reports/q1.txt; copy app.conf into backup; delete cache.tmp; and create latest-report as a symbolic link to reports/q1.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/project/config/app.conf"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/lab/project/config/app.conf",
+          "sha256": "732322f37243042be9e5af21441ccfeed748f1cc2dacce6a9cc8cf31b4207083"
+        },
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/project/backup/app.conf"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/lab/project/backup/app.conf",
+          "sha256": "732322f37243042be9e5af21441ccfeed748f1cc2dacce6a9cc8cf31b4207083"
+        },
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/project/reports/q1.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/lab/project/reports/q1.txt",
+          "sha256": "4b3d62f312bf051c51183ffbc2ef3c89350e601e544f0f92ac807e7170aba014"
+        },
+        {
+          "type": "file_missing",
+          "path": "/home/student/lab/project/inbox/cache.tmp"
+        },
+        {
+          "type": "symbolic_link_exists",
+          "path": "/home/student/lab/project/latest-report",
+          "resolved": true,
+          "target": "/home/student/lab/project/reports/q1.txt"
+        }
+      ],
+      "hints": [],
+      "suggestedSolution": "cd /home/student/lab/project && mkdir -p config reports backup && mv inbox/app.conf config/app.conf && mv inbox/draft-report.txt reports/q1.txt && cp config/app.conf backup/app.conf && rm inbox/cache.tmp && ln -s reports/q1.txt latest-report",
+      "alternateSolutions": [
+        "cd /home/student/lab/project && install -d config reports backup && install inbox/app.conf config/app.conf && mv inbox/draft-report.txt reports/q1.txt && cp config/app.conf backup/app.conf && rm inbox/app.conf inbox/cache.tmp && ln -s reports/q1.txt latest-report"
+      ],
+      "knownIncorrectSolution": "rm -rf /home/student/lab/project/inbox && mkdir -p /home/student/lab/project/config"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes File Management Assessment?",
+      "answers": [
+        "Good file management is defined by the final tree: correct paths, preserved content, deliberate deletions and links that point where intended.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "Good file management is defined by the final tree: correct paths, preserved content, deliberate deletions and links that point where intended."
+    }
+  ]
+}

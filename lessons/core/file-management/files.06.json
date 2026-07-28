@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "id": "files.06",
+  "title": "Removing Files with rm",
+  "level": "beginner",
+  "module": "file-management",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "files.05"
+  ],
+  "concepts": [
+    "deletion",
+    "interactive confirmation",
+    "no recycle bin"
+  ],
+  "commands": [
+    "rm",
+    "ls"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Delete selected files deliberately and verify the pattern first.",
+    "mentalModel": "rm unlinks names immediately; it does not use a recycle bin. Permissions and open file handles may delay reclaimed storage, but the path is gone.",
+    "syntax": [
+      "rm FILE",
+      "rm -i FILE"
+    ],
+    "demonstration": [
+      {
+        "command": "rm FILE",
+        "explanation": "This small example isolates the main idea behind removing files with rm."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "rm unlinks names immediately; it does not use a recycle bin. Permissions and open file handles may delay reclaimed storage, but the path is gone.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "rm",
+        "ls"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Remove only /home/student/lab/remove-me.txt. The neighbouring keep-me.txt must survive unchanged.",
+      "validators": [
+        {
+          "type": "file_missing",
+          "path": "/home/student/lab/remove-me.txt"
+        },
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/keep-me.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/lab/keep-me.txt",
+          "sha256": "f660a7996deacfbc7560e4240054a8ad82eb02fe25a95064257e07084bcacb85"
+        }
+      ],
+      "hints": [
+        "Name the exact file rather than using a broad wildcard.",
+        "rm removes a file path; unlink is an equivalent single-file operation.",
+        "Check that the path ends in remove-me.txt before pressing Enter."
+      ],
+      "suggestedSolution": "rm /home/student/lab/remove-me.txt",
+      "alternateSolutions": [
+        "unlink /home/student/lab/remove-me.txt"
+      ],
+      "knownIncorrectSolution": "rm /home/student/lab/keep-me.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Removing Files with rm?",
+      "answers": [
+        "rm unlinks names immediately; it does not use a recycle bin. Permissions and open file handles may delay reclaimed storage, but the path is gone.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "rm unlinks names immediately; it does not use a recycle bin. Permissions and open file handles may delay reclaimed storage, but the path is gone."
+    }
+  ]
+}

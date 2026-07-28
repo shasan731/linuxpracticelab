@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "id": "streams.01",
+  "title": "Standard Input, Output, and Error",
+  "level": "foundation",
+  "module": "pipes-redirection-streams",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "search.12"
+  ],
+  "concepts": [
+    "file descriptors",
+    "standard streams"
+  ],
+  "commands": [
+    "bash"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Treat normal results and diagnostic messages as separate data streams.",
+    "mentalModel": "Every process starts with file descriptors 0, 1 and 2 for standard input, output and error. The shell can connect each descriptor independently.",
+    "syntax": [
+      "stdin = 0",
+      "stdout = 1",
+      "stderr = 2"
+    ],
+    "demonstration": [
+      {
+        "command": "stdin = 0",
+        "explanation": "This small example isolates the main idea behind standard input, output, and error."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "Every process starts with file descriptors 0, 1 and 2 for standard input, output and error. The shell can connect each descriptor independently.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "bash"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Run stream-demo, save stdout in /home/student/answers/stdout.txt and stderr in /home/student/answers/stderr.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/stdout.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/stdout.txt",
+          "sha256": "97587abad8b7a12dddcd6264bd3b0c975cdf36c8b65cf6d82bdbfd20c5eb844a"
+        },
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/stderr.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/stderr.txt",
+          "sha256": "d561de16701fd56229149d875d36cc204968790936187db43cc9ec5f0c571376"
+        }
+      ],
+      "hints": [
+        "Normal output and errors use different numbered descriptors.",
+        "> redirects descriptor 1; 2> redirects descriptor 2.",
+        "Apply both redirections to the same command."
+      ],
+      "suggestedSolution": "/home/student/lab/stream-demo > /home/student/answers/stdout.txt 2> /home/student/answers/stderr.txt",
+      "alternateSolutions": [
+        "{ /home/student/lab/stream-demo 2> /home/student/answers/stderr.txt; } > /home/student/answers/stdout.txt"
+      ],
+      "knownIncorrectSolution": "/home/student/lab/stream-demo > /home/student/answers/stdout.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Standard Input, Output, and Error?",
+      "answers": [
+        "Every process starts with file descriptors 0, 1 and 2 for standard input, output and error. The shell can connect each descriptor independently.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "Every process starts with file descriptors 0, 1 and 2 for standard input, output and error. The shell can connect each descriptor independently."
+    }
+  ]
+}

@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "id": "text.07",
+  "title": "Creating Multiline Files",
+  "level": "beginner",
+  "module": "reading-editing-text",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "text.06"
+  ],
+  "concepts": [
+    "newlines",
+    "here-documents",
+    "multiline text"
+  ],
+  "commands": [
+    "printf",
+    "cat"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Create structured text containing several predictable lines.",
+    "mentalModel": "printf gives explicit control over newlines, while a here-document feeds a block of lines to a command until a chosen delimiter.",
+    "syntax": [
+      "printf 'one\\ntwo\\n'",
+      "cat <<EOF"
+    ],
+    "demonstration": [
+      {
+        "command": "printf 'one\\ntwo\\n'",
+        "explanation": "This small example isolates the main idea behind creating multiline files."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "printf gives explicit control over newlines, while a here-document feeds a block of lines to a command until a chosen delimiter.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "printf",
+        "cat"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Create /home/student/answers/server.conf with exactly three lines: host=web1, port=8080 and mode=training.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/server.conf"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/server.conf",
+          "sha256": "887dbf7bbdb78e3a258d21fb85e08cf1daa180f68611699d26630ff8a60ca04d"
+        }
+      ],
+      "hints": [
+        "The values must occupy separate lines.",
+        "printf recognises explicit newline escapes; a here-document preserves line breaks.",
+        "Check the result with cat before submitting."
+      ],
+      "suggestedSolution": "printf 'host=web1\\nport=8080\\nmode=training\\n' > /home/student/answers/server.conf",
+      "alternateSolutions": [
+        "cat > /home/student/answers/server.conf <<'EOF'\nhost=web1\nport=8080\nmode=training\nEOF"
+      ],
+      "knownIncorrectSolution": "echo 'host=web1 port=8080 mode=training' > /home/student/answers/server.conf"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Creating Multiline Files?",
+      "answers": [
+        "printf gives explicit control over newlines, while a here-document feeds a block of lines to a command until a chosen delimiter.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "printf gives explicit control over newlines, while a here-document feeds a block of lines to a command until a chosen delimiter."
+    }
+  ]
+}

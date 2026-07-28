@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "id": "files.08",
+  "title": "Wildcards",
+  "level": "beginner",
+  "module": "file-management",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "files.07"
+  ],
+  "concepts": [
+    "globbing",
+    "wildcard expansion",
+    "character classes"
+  ],
+  "commands": [
+    "ls",
+    "cp"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Select a predictable group of paths without listing every name.",
+    "mentalModel": "The shell expands wildcard patterns before starting the command. The receiving command gets a concrete list of paths, so previewing with ls shows the same expansion.",
+    "syntax": [
+      "*",
+      "?",
+      "[0-9]",
+      "cp report-?.txt archive/"
+    ],
+    "demonstration": [
+      {
+        "command": "*",
+        "explanation": "This small example isolates the main idea behind wildcards."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "The shell expands wildcard patterns before starting the command. The receiving command gets a concrete list of paths, so previewing with ls shows the same expansion.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "ls",
+        "cp"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Copy only the three single-digit report files into /home/student/lab/archive. Do not copy report-final.txt.",
+      "validators": [
+        {
+          "type": "directory_contains",
+          "path": "/home/student/lab/archive",
+          "entries": [
+            "report-1.txt",
+            "report-2.txt",
+            "report-3.txt"
+          ],
+          "exact": true,
+          "includeHidden": true
+        }
+      ],
+      "hints": [
+        "A broad * also matches the word final.",
+        "? matches exactly one character, and [0-9] matches one digit.",
+        "Preview the pattern with ls before using it with cp."
+      ],
+      "suggestedSolution": "cp /home/student/lab/report-[0-9].txt /home/student/lab/archive/",
+      "alternateSolutions": [
+        "cd /home/student/lab && cp report-?.txt archive/"
+      ],
+      "knownIncorrectSolution": "cp /home/student/lab/report-*.txt /home/student/lab/archive/"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Wildcards?",
+      "answers": [
+        "The shell expands wildcard patterns before starting the command. The receiving command gets a concrete list of paths, so previewing with ls shows the same expansion.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "The shell expands wildcard patterns before starting the command. The receiving command gets a concrete list of paths, so previewing with ls shows the same expansion."
+    }
+  ]
+}

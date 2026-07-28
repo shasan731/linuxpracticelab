@@ -1,0 +1,34 @@
+[Unit]
+Description=LinuxLab Agent
+# The agent needs the control token, which linuxlab-boot extracts from the kernel command line.
+After=linuxlab-boot.service local-fs.target
+Requires=linuxlab-boot.service
+# Validation touches systemd and the journal, so those must be up first.
+After=systemd-journald.service
+
+[Service]
+Type=simple
+ExecStart=/usr/local/lib/linuxlab/linuxlab-agent
+# The agent must be running for the host to consider the guest ready, so a crash is retried
+# rather than left to the learner to notice.
+Restart=always
+RestartSec=1s
+
+# Runs as root because state-based validation has to read /etc/shadow, inspect any process and
+# query systemd. The mitigation is not privilege reduction but isolation: the whole guest is a
+# disposable overlay with no path to the Windows host.
+User=root
+
+# Nothing outside the guest is reachable, and this makes that explicit rather than incidental.
+PrivateNetwork=no
+RuntimeDirectory=linuxlab
+RuntimeDirectoryMode=0700
+
+# The agent writes diagnostics to the journal, not to disk, so the log cannot fill the overlay
+# during a disk-full lesson.
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=linuxlab-agent
+
+[Install]
+WantedBy=multi-user.target

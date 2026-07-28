@@ -1,0 +1,45 @@
+# Node
+node_modules/
+dist/
+.vite/
+*.tsbuildinfo
+
+# Rust
+target/
+**/target/
+
+# Tauri build output
+apps/desktop/src-tauri/gen/
+
+# Runtime artefacts that are downloaded or built, never committed
+runtime/bin/*
+!runtime/bin/0.1.0/
+runtime/bin/0.1.0/*
+!runtime/bin/0.1.0/.gitkeep
+runtime/vendor/
+guest/out/
+guest/image-builder/work/
+*.qcow2
+*.raw
+*.raw.zst
+vmlinuz*
+initrd.img*
+
+# Local state
+*.db
+*.db-wal
+*.db-shm
+*.log
+logs/
+.tmp/
+.env
+.env.local
+portable.mode
+portable-data/
+
+# OS / editor
+Thumbs.db
+.DS_Store
+.idea/
+.vscode/*
+!.vscode/extensions.json

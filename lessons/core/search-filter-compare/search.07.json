@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "id": "search.07",
+  "title": "Finding by Time",
+  "level": "foundation",
+  "module": "search-filter-compare",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "search.06"
+  ],
+  "concepts": [
+    "modification time",
+    "age tests"
+  ],
+  "commands": [
+    "find"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Locate files changed within a useful time window.",
+    "mentalModel": "find compares stored timestamps to age tests. -mtime uses rounded 24-hour periods; -mmin gives minute-level windows.",
+    "syntax": [
+      "find . -mtime -1",
+      "find . -mmin -30"
+    ],
+    "demonstration": [
+      {
+        "command": "find . -mtime -1",
+        "explanation": "This small example isolates the main idea behind finding by time."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "find compares stored timestamps to age tests. -mtime uses rounded 24-hour periods; -mmin gives minute-level windows.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "find"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Find files modified within the last 30 minutes in /home/student/lab/time and save only their names to /home/student/answers/recent-files.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/recent-files.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/recent-files.txt",
+          "sha256": "cdf1027cb1c2b2f06a66644ee604b955b035491970ca05a1b45a009a96b58235"
+        }
+      ],
+      "hints": [
+        "Use minute precision rather than rounded days.",
+        "-mmin -30 means younger than 30 minutes.",
+        "-printf can emit only the filename component."
+      ],
+      "suggestedSolution": "find /home/student/lab/time -type f -mmin -30 -printf '%f\\n' > /home/student/answers/recent-files.txt",
+      "alternateSolutions": [
+        "find /home/student/lab/time -type f -newermt '30 minutes ago' -printf '%f\\n' > /home/student/answers/recent-files.txt"
+      ],
+      "knownIncorrectSolution": "find /home/student/lab/time -type f -mmin +30 -printf '%f\\n' > /home/student/answers/recent-files.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Finding by Time?",
+      "answers": [
+        "find compares stored timestamps to age tests. -mtime uses rounded 24-hour periods; -mmin gives minute-level windows.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "find compares stored timestamps to age tests. -mtime uses rounded 24-hour periods; -mmin gives minute-level windows."
+    }
+  ]
+}

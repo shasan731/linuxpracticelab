@@ -1,0 +1,128 @@
+{
+  "schemaVersion": 1,
+  "id": "orientation.01",
+  "title": "What Linux Is",
+  "level": "orientation",
+  "module": "orientation",
+  "type": "concept",
+  "estimatedDifficulty": 1,
+  "estimatedMinutes": 8,
+  "prerequisites": [],
+  "concepts": ["kernel", "distribution", "shell", "terminal", "command-line interface"],
+  "commands": ["uname", "cat"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false
+  },
+  "content": {
+    "purpose": "Know what you are actually talking to before you start typing at it.",
+    "mentalModel": "Four different things get called \"Linux\". The kernel is the program that manages hardware, memory and processes. A distribution such as Debian is the kernel plus thousands of programs packaged together. The shell is a program that reads what you type and runs it; here that shell is Bash. The terminal is just the window the shell's text appears in. When someone says \"learn Linux\", they almost always mean learn the shell.",
+    "syntax": ["uname [options]"],
+    "demonstration": [
+      {
+        "command": "uname",
+        "explanation": "Prints the kernel name, and nothing else. This is the kernel, not the distribution.",
+        "output": "Linux"
+      },
+      {
+        "command": "uname -a",
+        "explanation": "Everything the kernel will tell you about itself: name, host name, version, build date and architecture."
+      },
+      {
+        "command": "cat /etc/os-release",
+        "explanation": "This is the distribution. Debian writes its identity into a file, and cat prints the file."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "The kernel manages hardware; the distribution is the kernel plus its software; the shell runs your commands; the terminal displays them",
+        "uname describes the kernel and says nothing about which distribution you are on",
+        "/etc/os-release is where a Linux system records which distribution it is"
+      ],
+      "commonOptions": [
+        { "option": "-a", "meaning": "Print everything uname knows" },
+        { "option": "-r", "meaning": "Print only the kernel release, useful in scripts" },
+        { "option": "-m", "meaning": "Print the machine architecture, such as x86_64" }
+      ],
+      "related": ["hostnamectl", "lsb_release", "cat"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Ask the kernel to describe itself in full, and write what it says into a file called kernel.txt in your home directory. Use a redirect: put > kernel.txt on the end of the command.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/kernel.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/kernel.txt",
+          "text": "Linux",
+          "message": "kernel.txt exists but does not contain the kernel's output. Check that you redirected uname and not something else."
+        },
+        {
+          "type": "file_contains",
+          "path": "/home/student/kernel.txt",
+          "text": "x86_64",
+          "message": "kernel.txt contains only the kernel name. Use uname's option that prints the full kernel and machine description."
+        }
+      ],
+      "hints": [
+        "One command prints information about the kernel. You saw it in the example above.",
+        "The option that prints everything is -a.",
+        "Adding > kernel.txt to the end of a command sends its output into that file instead of the screen."
+      ],
+      "suggestedSolution": "uname -a > kernel.txt",
+      "alternateSolutions": ["uname --all > /home/student/kernel.txt", "uname -a > ~/kernel.txt"],
+      "knownIncorrectSolution": "uname > kernel.txt"
+    },
+    {
+      "id": "task-2",
+      "kind": "independent",
+      "instruction": "Find out which Linux distribution this system is, and save the line that names it into distribution.txt in your home directory. The file must contain the word Debian.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/distribution.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/distribution.txt",
+          "text": "Debian",
+          "caseSensitive": false,
+          "message": "distribution.txt does not mention Debian. The distribution's name is recorded in a file under /etc."
+        }
+      ],
+      "hints": [
+        "The kernel does not know which distribution it is running. The distribution records that itself, in a file.",
+        "Look at /etc/os-release.",
+        "You can redirect the whole file: cat /etc/os-release > distribution.txt"
+      ],
+      "suggestedSolution": "cat /etc/os-release > distribution.txt",
+      "alternateSolutions": [
+        "grep PRETTY_NAME /etc/os-release > distribution.txt",
+        "cp /etc/os-release /home/student/distribution.txt"
+      ]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which of these is the program that reads the commands you type and runs them?",
+      "answers": ["The shell", "The kernel", "The terminal", "The distribution"],
+      "correctAnswer": 0,
+      "explanation": "The shell, here Bash, interprets what you type. The terminal only displays it, and the kernel only runs the resulting programs."
+    },
+    {
+      "type": "multiple-choice",
+      "question": "You run uname -a and see the word Linux. What have you learned about the distribution?",
+      "answers": [
+        "Nothing: uname describes the kernel, not the distribution",
+        "That it is Debian",
+        "That it is not Ubuntu",
+        "That no distribution is installed"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Every distribution runs the Linux kernel, so uname cannot tell them apart. /etc/os-release can."
+    }
+  ]
+}

@@ -1,0 +1,62 @@
+#!/usr/bin/env bash
+#
+# Records the signals a process receives, so a lesson can verify *how* the learner stopped
+# something rather than only that it stopped.
+#
+# There is no way to ask a running process "were you sent SIGTERM?", and there is no trace left
+# once it exits. So process-management lessons launch their target through this wrapper, which
+# traps the catchable signals and appends each one to /run/linuxlab/signals/<handle>. The
+# process_signal_received validator reads that file.
+#
+# Usage: linuxlab-signal-trap <handle> <command> [args...]
+#
+# Note SIGKILL cannot be trapped by anyone, by design. A lesson that asks the learner to use
+# kill -9 checks that the process is gone, and the absence of a SIGTERM record is what
+# distinguishes "killed outright" from "asked to stop first".
+
+set -Eeuo pipefail
+
+readonly SIGNAL_DIR=/run/linuxlab/signals
+
+if (( $# < 2 )); then
+    echo "usage: linuxlab-signal-trap <handle> <command> [args...]" >&2
+    exit 64
+fi
+
+handle="${1//[^A-Za-z0-9_-]/}"
+shift
+[[ -n "${handle}" ]] || { echo "the handle must contain a letter or digit" >&2; exit 64; }
+
+install -d -m 0755 "${SIGNAL_DIR}"
+readonly LOG="${SIGNAL_DIR}/${handle}"
+: > "${LOG}"
+chmod 0644 "${LOG}"
+
+child_pid=""
+
+record() {
+    local signal="$1"
+    printf '%s\n' "${signal}" >> "${LOG}"
+    # Forward the signal on, so the wrapper does not change how the program behaves. A lesson
+    # about stopping a service must observe the service actually stopping.
+    if [[ -n "${child_pid}" ]] && kill -0 "${child_pid}" 2>/dev/null; then
+        kill "-${signal#SIG}" "${child_pid}" 2>/dev/null || true
+    fi
+}
+
+for signal in SIGTERM SIGINT SIGHUP SIGQUIT SIGUSR1 SIGUSR2 SIGCONT; do
+    # shellcheck disable=SC2064  # expand the signal name now, not when the trap fires
+    trap "record ${signal}" "${signal}"
+done
+
+"$@" &
+child_pid=$!
+
+# `wait` returns early when a trap fires, so it is retried until the child is genuinely gone.
+status=0
+while kill -0 "${child_pid}" 2>/dev/null; do
+    wait "${child_pid}" && status=$? || status=$?
+done
+
+printf 'exit=%s\n' "${status}" >> "${LOG}"
+exit "${status}"

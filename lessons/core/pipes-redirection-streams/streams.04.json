@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "id": "streams.04",
+  "title": "Redirecting Input",
+  "level": "foundation",
+  "module": "pipes-redirection-streams",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "streams.03"
+  ],
+  "concepts": [
+    "stdin redirection",
+    "input streams"
+  ],
+  "commands": [
+    "sort"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Provide a file as a command’s standard input.",
+    "mentalModel": "< asks the shell to connect descriptor 0 to a file. This is useful for commands that read stdin and avoids a filename in their output.",
+    "syntax": [
+      "sort < names.txt"
+    ],
+    "demonstration": [
+      {
+        "command": "sort < names.txt",
+        "explanation": "This small example isolates the main idea behind redirecting input."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "< asks the shell to connect descriptor 0 to a file. This is useful for commands that read stdin and avoids a filename in their output.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "sort"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Sort names.txt using input redirection and save the result in /home/student/answers/names-sorted.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/names-sorted.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/names-sorted.txt",
+          "sha256": "31382f7b0c357d29b28e196d01b02b6c74789d8abd0e3e3875e668ff1629cf33"
+        }
+      ],
+      "hints": [
+        "The command can read the data through descriptor 0.",
+        "Place < and the input file before the output redirection.",
+        "Use a separate > for the sorted result."
+      ],
+      "suggestedSolution": "sort < /home/student/lab/names.txt > /home/student/answers/names-sorted.txt",
+      "alternateSolutions": [
+        "sort /home/student/lab/names.txt > /home/student/answers/names-sorted.txt"
+      ],
+      "knownIncorrectSolution": "cat /home/student/lab/names.txt > /home/student/answers/names-sorted.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Redirecting Input?",
+      "answers": [
+        "< asks the shell to connect descriptor 0 to a file. This is useful for commands that read stdin and avoids a filename in their output.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "< asks the shell to connect descriptor 0 to a file. This is useful for commands that read stdin and avoids a filename in their output."
+    }
+  ]
+}

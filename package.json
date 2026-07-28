@@ -1,0 +1,38 @@
+{
+  "name": "linux-practice-lab",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Offline-first Windows desktop app that gives learners a real, disposable Debian Linux command line",
+  "license": "GPL-2.0-or-later",
+  "homepage": "https://github.com/shasan731/linuxpracticelab#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/shasan731/linuxpracticelab.git"
+  },
+  "bugs": {
+    "url": "https://github.com/shasan731/linuxpracticelab/issues"
+  },
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "workspaces": [
+    "apps/desktop"
+  ],
+  "scripts": {
+    "dev": "npm run dev --workspace apps/desktop",
+    "build": "npm run build --workspace apps/desktop",
+    "check": "npm run check --workspace apps/desktop",
+    "test": "npm run test --workspace apps/desktop",
+    "lessons:generate": "tsx scripts/generate-mvp-lessons.ts",
+    "lessons:validate": "tsx scripts/validate-lessons.ts",
+    "lessons:solutions": "tsx scripts/test-solutions.ts",
+    "verify": "npm run check && npm run test && npm run lessons:validate"
+  },
+  "devDependencies": {
+    "ajv": "^8.17.1",
+    "ajv-formats": "^3.0.1",
+    "tsx": "^4.19.2",
+    "typescript": "^5.7.2"
+  }
+}

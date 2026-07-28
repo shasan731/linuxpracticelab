@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "id": "search.02",
+  "title": "Case-Insensitive and Inverted Search",
+  "level": "foundation",
+  "module": "search-filter-compare",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "search.01"
+  ],
+  "concepts": [
+    "case-insensitive matching",
+    "inverted matching"
+  ],
+  "commands": [
+    "grep"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Match text regardless of case and exclude unwanted lines.",
+    "mentalModel": "-i changes how grep compares letters; -v reverses the decision so nonmatching lines are selected.",
+    "syntax": [
+      "grep -i error FILE",
+      "grep -v success FILE"
+    ],
+    "demonstration": [
+      {
+        "command": "grep -i error FILE",
+        "explanation": "This small example isolates the main idea behind case-insensitive and inverted search."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "-i changes how grep compares letters; -v reverses the decision so nonmatching lines are selected.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "grep"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Find error lines in mixed.log regardless of case, exclude any line containing success regardless of case, and save the result to /home/student/answers/filtered.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/filtered.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/filtered.txt",
+          "sha256": "0a37673a4a8788c0f169e7fc203d1b86d7085d73c68021ffe61fe939a30ff4ce"
+        }
+      ],
+      "hints": [
+        "The file contains more than one capitalisation.",
+        "Use -i for case-insensitive matching and -v for exclusion.",
+        "A second grep stage can remove lines you do not want."
+      ],
+      "suggestedSolution": "grep -i error /home/student/lab/mixed.log | grep -vi success > /home/student/answers/filtered.txt",
+      "alternateSolutions": [
+        "awk 'tolower($0) ~ /error/ && tolower($0) !~ /success/' /home/student/lab/mixed.log > /home/student/answers/filtered.txt"
+      ],
+      "knownIncorrectSolution": "grep error /home/student/lab/mixed.log > /home/student/answers/filtered.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Case-Insensitive and Inverted Search?",
+      "answers": [
+        "-i changes how grep compares letters; -v reverses the decision so nonmatching lines are selected.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "-i changes how grep compares letters; -v reverses the decision so nonmatching lines are selected."
+    }
+  ]
+}

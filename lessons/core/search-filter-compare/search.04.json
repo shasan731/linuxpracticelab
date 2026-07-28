@@ -1,0 +1,103 @@
+{
+  "schemaVersion": 1,
+  "id": "search.04",
+  "title": "Line Numbers and Context",
+  "level": "foundation",
+  "module": "search-filter-compare",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "search.03"
+  ],
+  "concepts": [
+    "line numbers",
+    "context lines"
+  ],
+  "commands": [
+    "grep"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Show where a match occurred and the nearby records that explain it.",
+    "mentalModel": "-n annotates matches with line numbers; -A, -B and -C include surrounding lines without changing which line actually matched.",
+    "syntax": [
+      "grep -n PATTERN FILE",
+      "grep -C 1 PATTERN FILE"
+    ],
+    "demonstration": [
+      {
+        "command": "grep -n PATTERN FILE",
+        "explanation": "This small example isolates the main idea behind line numbers and context."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "-n annotates matches with line numbers; -A, -B and -C include surrounding lines without changing which line actually matched.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "grep"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Save the ERROR line from request.log with its line number and one line of context before and after to /home/student/answers/error-context.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/error-context.txt"
+        },
+        {
+          "type": "file_contains",
+          "path": "/home/student/answers/error-context.txt",
+          "text": "3:ERROR timeout"
+        },
+        {
+          "type": "file_contains",
+          "path": "/home/student/answers/error-context.txt",
+          "text": "user=student"
+        },
+        {
+          "type": "file_contains",
+          "path": "/home/student/answers/error-context.txt",
+          "text": "retry scheduled"
+        }
+      ],
+      "hints": [
+        "The task needs both location and surrounding evidence.",
+        "Use -n for line numbers and -C 1 for one line on each side.",
+        "grep separates context lines with a hyphen after the line number."
+      ],
+      "suggestedSolution": "grep -n -C 1 ERROR /home/student/lab/request.log > /home/student/answers/error-context.txt",
+      "alternateSolutions": [
+        "awk 'NR >= 2 && NR <= 4 {print NR \":\" $0}' /home/student/lab/request.log > /home/student/answers/error-context.txt"
+      ],
+      "knownIncorrectSolution": "grep ERROR /home/student/lab/request.log > /home/student/answers/error-context.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Line Numbers and Context?",
+      "answers": [
+        "-n annotates matches with line numbers; -A, -B and -C include surrounding lines without changing which line actually matched.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "-n annotates matches with line numbers; -A, -B and -C include surrounding lines without changing which line actually matched."
+    }
+  ]
+}

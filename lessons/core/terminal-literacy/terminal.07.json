@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "id": "terminal.07",
+  "title": "Tab Completion",
+  "level": "beginner",
+  "module": "terminal-literacy",
+  "type": "guided-practice",
+  "estimatedDifficulty": 1,
+  "estimatedMinutes": 7,
+  "prerequisites": ["terminal.06"],
+  "concepts": ["completion", "ambiguous prefixes", "path completion"],
+  "commands": ["ls", "cd", "mkdir", "touch"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Type long paths correctly without typing most of them.",
+    "mentalModel": "Tab asks the shell to finish what you have started. If exactly one thing matches, it completes it. If several match, the first Tab completes as far as they agree and stops; a second Tab lists the candidates. This is not just about speed: a completed path is a path that exists, so Tab is also the cheapest way to catch a typo before it becomes a confusing error.",
+    "syntax": ["Tab        complete", "Tab Tab    list the candidates"],
+    "demonstration": [
+      {
+        "command": "ls /home/student/completion/rep",
+        "explanation": "Press Tab after rep. If reports and reporting both exist, the shell completes to report and waits; press Tab again to see both."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "One match completes; several stop at the common prefix",
+        "Press Tab twice to see every candidate",
+        "If Tab does nothing, what you typed matches nothing, which is usually a typo"
+      ],
+      "related": ["bash-completion", "readline"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "The directory /home/student/completion contains several similarly named entries. Using Tab completion rather than typing the whole path, list the contents of the deeply nested directory and save the output to /home/student/completed.txt. The nested path is /home/student/completion/reports/quarterly/2024.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/completed.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/completed.txt",
+          "text": "march.txt",
+          "message": "completed.txt does not list the files in the 2024 directory. Check the path you listed."
+        }
+      ],
+      "hints": [
+        "Start typing ls /home/st and press Tab.",
+        "Keep pressing Tab after each partial directory name. Where several match, press it twice to see them.",
+        "List that nested directory with ls, then redirect the output into completed.txt."
+      ],
+      "suggestedSolution": "ls /home/student/completion/reports/quarterly/2024 > /home/student/completed.txt"
+    },
+    {
+      "id": "task-2",
+      "kind": "independent",
+      "instruction": "Two directories inside /home/student/completion share a prefix. Work out what they are called, and save both names into /home/student/ambiguous.txt, one per line.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/ambiguous.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/ambiguous.txt",
+          "text": "reports",
+          "message": "ambiguous.txt does not list the directories sharing a prefix."
+        },
+        { "type": "file_contains", "path": "/home/student/ambiguous.txt", "text": "reporting" },
+        { "type": "file_line_count", "path": "/home/student/ambiguous.txt", "min": 2 }
+      ],
+      "hints": [
+        "Pressing Tab twice after a shared prefix lists the candidates.",
+        "You can also list the directory and filter the result with grep.",
+        "Filter the listing for the shared prefix, then redirect it into ambiguous.txt."
+      ],
+      "suggestedSolution": "ls /home/student/completion | grep report > /home/student/ambiguous.txt",
+      "alternateSolutions": [
+        "ls -d /home/student/completion/report* > /home/student/ambiguous.txt",
+        "printf 'reports\\nreporting\\n' > /home/student/ambiguous.txt"
+      ]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "You press Tab and nothing happens at all. What is the most likely reason?",
+      "answers": [
+        "Nothing matches what you have typed so far",
+        "Tab completion is disabled",
+        "The directory is too large",
+        "You need to press Enter first"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Silence means no candidates. It is usually a typo, or you are in a different directory from the one you assumed."
+    }
+  ]
+}

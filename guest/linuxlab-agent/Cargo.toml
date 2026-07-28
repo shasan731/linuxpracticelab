@@ -1,0 +1,24 @@
+[package]
+name = "linuxlab-agent"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "In-guest agent that prepares lesson environments and validates real Linux state"
+
+[[bin]]
+name = "linuxlab-agent"
+path = "src/main.rs"
+
+[dependencies]
+shared-types = { workspace = true }
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tokio = { workspace = true }
+tracing = { workspace = true }
+tracing-subscriber = { workspace = true }
+regex = { version = "1.11", default-features = false, features = ["std", "perf", "unicode-case", "unicode-perl"] }
+
+[dev-dependencies]
+tempfile = { workspace = true }

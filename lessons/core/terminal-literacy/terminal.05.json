@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "id": "terminal.05",
+  "title": "Finding a Command You Do Not Know",
+  "level": "beginner",
+  "module": "terminal-literacy",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 8,
+  "prerequisites": ["terminal.04"],
+  "concepts": ["keyword search", "one-line descriptions"],
+  "commands": ["whatis", "apropos", "info"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false
+  },
+  "content": {
+    "purpose": "Find the right command when you know what you want to do but not what it is called.",
+    "mentalModel": "man answers \"what does this command do\". apropos answers the harder question, \"which command does this\", by searching every manual page's one-line description for a keyword. whatis is the narrow version: it prints just that one-line description for a page you can already name. Between them you can work out most of Linux without leaving the terminal, which is the point of this module.",
+    "syntax": ["whatis PAGE", "apropos KEYWORD", "info PAGE"],
+    "demonstration": [
+      {
+        "command": "whatis grep",
+        "explanation": "One line, straight to the point.",
+        "output": "grep (1) - print lines that match patterns"
+      },
+      {
+        "command": "apropos directory",
+        "explanation": "Every manual page whose description mentions directories. The list is long, which is why you usually pipe it into grep to narrow it down."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "apropos searches descriptions by keyword; whatis prints one description",
+        "man -k is the same thing as apropos",
+        "If apropos finds nothing at all, the manual index may need rebuilding with mandb"
+      ],
+      "related": ["man", "type", "which"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Get the one-line description of grep and save it to /home/student/whatis-grep.txt.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/whatis-grep.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/whatis-grep.txt",
+          "text": "grep",
+          "message": "whatis-grep.txt does not mention grep. Check the command you redirected."
+        }
+      ],
+      "hints": [
+        "One command prints exactly one line about a manual page.",
+        "It is whatis.",
+        "Redirect its output into the file with >."
+      ],
+      "suggestedSolution": "whatis grep > /home/student/whatis-grep.txt",
+      "alternateSolutions": ["man -f grep > /home/student/whatis-grep.txt"]
+    },
+    {
+      "id": "task-2",
+      "kind": "applied",
+      "context": "You need to compare two files line by line but you cannot remember what the command is called.",
+      "instruction": "Search the manual descriptions for the keyword compare, and save the results to /home/student/compare-search.txt. The file must mention a command that compares files.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/compare-search.txt" },
+        {
+          "type": "file_matches_regex",
+          "path": "/home/student/compare-search.txt",
+          "pattern": "(?i)\\b(diff|cmp)\\b",
+          "message": "compare-search.txt does not include a file comparison command. Search the descriptions for the word compare."
+        }
+      ],
+      "hints": [
+        "You do not know the command's name, so man will not help. Something searches descriptions instead.",
+        "That command is apropos. Give it the keyword compare.",
+        "Redirect the search results into the file with >."
+      ],
+      "suggestedSolution": "apropos compare > /home/student/compare-search.txt",
+      "alternateSolutions": ["man -k compare > /home/student/compare-search.txt"]
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "You want to archive some files but cannot remember the command's name. Which tool helps?",
+      "answers": ["apropos archive", "man archive", "whatis archive", "ls --help"],
+      "correctAnswer": 0,
+      "explanation": "apropos searches all page descriptions for a keyword. man and whatis both need the page's actual name."
+    }
+  ]
+}

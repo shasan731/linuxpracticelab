@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "id": "filesystem.03",
+  "title": "Listing Files with ls",
+  "level": "beginner",
+  "module": "filesystem-navigation",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "filesystem.02"
+  ],
+  "concepts": [
+    "directory entries",
+    "long listing",
+    "hidden entries"
+  ],
+  "commands": [
+    "ls",
+    "sort"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Inspect a directory before choosing a file or changing anything.",
+    "mentalModel": "ls reads directory entries. Options change which entries are shown and how their metadata is presented; they do not change the files.",
+    "syntax": [
+      "ls",
+      "ls -la",
+      "ls -Ah DIRECTORY"
+    ],
+    "demonstration": [
+      {
+        "command": "ls",
+        "explanation": "This small example isolates the main idea behind listing files with ls."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "ls reads directory entries. Options change which entries are shown and how their metadata is presented; they do not change the files.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "ls",
+        "sort"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "List every entry in /home/student/lab/catalog except . and .., sort the names, and save them to /home/student/answers/catalog-list.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/catalog-list.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/catalog-list.txt",
+          "sha256": "1c62bd34721414f6dbb69ee409111374f846cdfd37a5478a55e10a468af0d2f1"
+        }
+      ],
+      "hints": [
+        "The ordinary listing hides names beginning with a dot.",
+        "Use ls -A to include hidden entries without adding . and ...",
+        "Pipe the listing through sort before redirecting it."
+      ],
+      "suggestedSolution": "ls -A /home/student/lab/catalog | sort > /home/student/answers/catalog-list.txt",
+      "alternateSolutions": [
+        "find /home/student/lab/catalog -mindepth 1 -maxdepth 1 -printf '%f\\n' | sort > /home/student/answers/catalog-list.txt"
+      ],
+      "knownIncorrectSolution": "ls /home/student/lab/catalog > /home/student/answers/catalog-list.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Listing Files with ls?",
+      "answers": [
+        "ls reads directory entries. Options change which entries are shown and how their metadata is presented; they do not change the files.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "ls reads directory entries. Options change which entries are shown and how their metadata is presented; they do not change the files."
+    }
+  ]
+}

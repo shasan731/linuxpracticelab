@@ -1,0 +1,18 @@
+[package]
+name = "progress-store"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Local SQLite progress storage for Linux Practice Lab. Never leaves the machine."
+
+[dependencies]
+shared-types = { workspace = true }
+anyhow = { workspace = true }
+serde = { workspace = true }
+serde_json = { workspace = true }
+tracing = { workspace = true }
+rusqlite = { workspace = true }
+
+[dev-dependencies]
+tempfile = { workspace = true }

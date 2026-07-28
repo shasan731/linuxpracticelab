@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "id": "filesystem.04",
+  "title": "Changing Directories with cd",
+  "level": "beginner",
+  "module": "filesystem-navigation",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "filesystem.03"
+  ],
+  "concepts": [
+    "shell builtin",
+    "working directory",
+    "previous directory"
+  ],
+  "commands": [
+    "cd",
+    "pwd"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Make another directory the starting point for relative paths.",
+    "mentalModel": "cd changes the working directory of the current shell, which is why it must be a shell builtin rather than a separate program.",
+    "syntax": [
+      "cd DIRECTORY",
+      "cd -",
+      "cd ~"
+    ],
+    "demonstration": [
+      {
+        "command": "cd DIRECTORY",
+        "explanation": "This small example isolates the main idea behind changing directories with cd."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "cd changes the working directory of the current shell, which is why it must be a shell builtin rather than a separate program.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "cd",
+        "pwd"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Start in /home/student/lab/start, move to the sibling target directory, and save the resulting pwd output to /home/student/answers/cd-result.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/cd-result.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/cd-result.txt",
+          "sha256": "2f340eec5e82d3039e4b629ac85ef295a5f5bc13ae7dfaaab3b5e8ad4e7ab0e7"
+        }
+      ],
+      "hints": [
+        "The target is beside start, so first move to the parent.",
+        "Use cd .. and then cd target, or name the target directly.",
+        "Run pwd only after the final cd and redirect that output."
+      ],
+      "suggestedSolution": "cd /home/student/lab/start && cd ../target && pwd > /home/student/answers/cd-result.txt",
+      "alternateSolutions": [
+        "cd /home/student/lab/target && pwd > /home/student/answers/cd-result.txt"
+      ],
+      "knownIncorrectSolution": "cd /home/student/lab/start && pwd > /home/student/answers/cd-result.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Changing Directories with cd?",
+      "answers": [
+        "cd changes the working directory of the current shell, which is why it must be a shell builtin rather than a separate program.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "cd changes the working directory of the current shell, which is why it must be a shell builtin rather than a separate program."
+    }
+  ]
+}

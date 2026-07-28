@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "filesystem-navigation",
+  "number": 2,
+  "title": "Filesystem navigation",
+  "level": "beginner",
+  "summary": "Read the Linux directory tree, inspect locations, and move confidently with absolute, relative, hidden, parent, and home-directory paths.",
+  "outcomes": [
+    "Explain the purpose of the major top-level Linux directories",
+    "Use pwd and ls to establish location and available paths",
+    "Navigate with absolute paths, relative paths, dot, dot-dot, tilde and cd dash",
+    "Find hidden entries and complete an unfamiliar navigation challenge"
+  ],
+  "pack": "core",
+  "lessons": [
+    "filesystem.01",
+    "filesystem.02",
+    "filesystem.03",
+    "filesystem.04",
+    "filesystem.05",
+    "filesystem.06",
+    "filesystem.07",
+    "filesystem.08",
+    "filesystem.09",
+    "filesystem.10"
+  ]
+}

@@ -1,0 +1,133 @@
+name: Release
+
+on:
+  push:
+    tags: ['v*']
+
+permissions:
+  contents: write
+
+jobs:
+  verify-versions:
+    name: Version consistency
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      # A tag that disagrees with the manifests produces an installer whose reported version is
+      # a lie, and the runtime layout is keyed on that version.
+      - name: Check the tag against every manifest
+        shell: bash
+        run: |
+          set -euo pipefail
+          tag="${GITHUB_REF_NAME#v}"
+          echo "tag version: ${tag}"
+
+          declare -A found
+          found[Cargo.toml]="$(grep -m1 -oP '(?<=^version = ")[^"]+' Cargo.toml)"
+          found[tauri.conf.json]="$(grep -m1 -oP '(?<="version": ")[^"]+' apps/desktop/src-tauri/tauri.conf.json)"
+          found[package.json]="$(grep -m1 -oP '(?<="version": ")[^"]+' package.json)"
+          found[desktop-package.json]="$(grep -m1 -oP '(?<="version": ")[^"]+' apps/desktop/package.json)"
+          found[runtime-manager]="$(grep -m1 -oP '(?<=RUNTIME_VERSION: &str = ")[^"]+' crates/runtime-manager/src/lib.rs)"
+
+          status=0
+          for name in "${!found[@]}"; do
+            if [[ "${found[$name]}" != "${tag}" ]]; then
+              echo "  MISMATCH ${name}: ${found[$name]}" >&2
+              status=1
+            else
+              echo "  ok ${name}: ${found[$name]}"
+            fi
+          done
+          exit "${status}"
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - run: npm ci
+
+      - name: Validate lesson packages
+        run: npm run lessons:validate
+
+  build:
+    name: Windows build
+    needs: verify-versions
+    uses: ./.github/workflows/windows-build.yml
+    secrets: inherit
+
+  publish:
+    name: Publish
+    needs: build
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: windows-release
+          path: release
+
+      - name: Collect the licensing package
+        run: |
+          set -euo pipefail
+          mkdir -p release/licences
+          cp -r docs/licensing/. release/licences/
+          cp LICENSE release/licences/
+
+          # QEMU is GPL-2.0, so the corresponding source offer has to ship with the binary and
+          # not be promised later. This is a release blocker on purpose.
+          if [[ ! -f release/licences/qemu-source-offer.md ]]; then
+            echo 'the QEMU source offer is missing from docs/licensing' >&2
+            exit 1
+          fi
+
+      - name: Generate checksums
+        run: |
+          set -euo pipefail
+          cd release
+          find . -type f \( -name '*.exe' -o -name '*.zip' -o -name '*.tar.xz' -o -name '*.tar.gz' \) -print0 |
+            xargs -0 --no-run-if-empty sha256sum > SHA256SUMS
+          cat SHA256SUMS
+
+      - name: Generate release notes
+        run: |
+          set -euo pipefail
+          {
+            echo "## Linux Practice Lab ${GITHUB_REF_NAME}"
+            echo
+            echo "### Included"
+            echo "- Debian 13 (trixie) minimal guest image"
+            echo "- Bundled QEMU runtime, see licences/qemu-source-offer.md"
+            echo "- Core curriculum lesson packages"
+            echo
+            echo "### Verifying your download"
+            echo 'Compare the SHA-256 of the installer against SHA256SUMS:'
+            echo
+            echo '```powershell'
+            echo 'Get-FileHash -Algorithm SHA256 .\LinuxPracticeLab-Setup.exe'
+            echo '```'
+            echo
+            echo "### Changes"
+            previous="$(git describe --tags --abbrev=0 HEAD^ 2>/dev/null || true)"
+            if [[ -n "${previous}" ]]; then
+              git log --pretty='- %s' "${previous}..HEAD"
+            else
+              git log --pretty='- %s' HEAD
+            fi
+          } > release-notes.md
+          cat release-notes.md
+
+      - name: Publish the GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          body_path: release-notes.md
+          files: |
+            release/**/*.exe
+            release/**/*.zip
+            release/source/**
+            release/SHA256SUMS
+            release/licences/**
+            release/sbom/**
+          fail_on_unmatched_files: false

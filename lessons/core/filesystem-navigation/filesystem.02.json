@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "id": "filesystem.02",
+  "title": "Current Directory with pwd",
+  "level": "beginner",
+  "module": "filesystem-navigation",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "filesystem.01"
+  ],
+  "concepts": [
+    "working directory",
+    "absolute location"
+  ],
+  "commands": [
+    "pwd",
+    "cd"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Confirm exactly where a shell operation will read or write files.",
+    "mentalModel": "Every shell process has a current working directory. Relative paths start there, and pwd asks the shell to print its absolute location.",
+    "syntax": [
+      "pwd",
+      "cd /var/log && pwd"
+    ],
+    "demonstration": [
+      {
+        "command": "pwd",
+        "explanation": "This small example isolates the main idea behind current directory with pwd."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "Every shell process has a current working directory. Relative paths start there, and pwd asks the shell to print its absolute location.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "pwd",
+        "cd"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Move to /var/log and record the directory reported by pwd in /home/student/answers/location.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/location.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/location.txt",
+          "sha256": "e1184c9d671d66261b82b219da4011a142c8d342ee13b1914cc4393e57b1261f"
+        }
+      ],
+      "hints": [
+        "Change location first, then ask the shell where it is.",
+        "The two commands are cd and pwd.",
+        "Join the commands with && and redirect pwd into the requested file."
+      ],
+      "suggestedSolution": "cd /var/log && pwd > /home/student/answers/location.txt",
+      "alternateSolutions": [
+        "cd /var/log; pwd > ~/answers/location.txt"
+      ],
+      "knownIncorrectSolution": "cd /var && pwd > /home/student/answers/location.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Current Directory with pwd?",
+      "answers": [
+        "Every shell process has a current working directory. Relative paths start there, and pwd asks the shell to print its absolute location.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "Every shell process has a current working directory. Relative paths start there, and pwd asks the shell to print its absolute location."
+    }
+  ]
+}

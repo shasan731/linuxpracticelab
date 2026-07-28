@@ -1,0 +1,114 @@
+{
+  "schemaVersion": 1,
+  "id": "orientation.04",
+  "title": "Command History",
+  "level": "orientation",
+  "module": "orientation",
+  "type": "guided-practice",
+  "estimatedDifficulty": 1,
+  "estimatedMinutes": 8,
+  "prerequisites": ["orientation.03"],
+  "concepts": ["command history", "history expansion", "reverse search"],
+  "commands": ["history", "echo"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false
+  },
+  "content": {
+    "purpose": "Stop retyping commands you have already run.",
+    "mentalModel": "Bash keeps a numbered list of what you have run. Up and Down walk through it, Ctrl+R searches it, and the ! forms paste an old command straight back onto the line. The important caution is that !! and !5 run immediately with no chance to look at them first, so they are only safe when you know exactly what is in that slot.",
+    "syntax": [
+      "history            list your numbered command history",
+      "!!                 repeat the previous command",
+      "!5                 repeat command number 5",
+      "Up / Down arrow    step backwards and forwards through history",
+      "Ctrl+R             search history backwards as you type"
+    ],
+    "demonstration": [
+      {
+        "command": "history",
+        "explanation": "Each line is numbered. Those numbers are what !5 refers to.",
+        "output": "    1  whoami\n    2  pwd\n    3  history"
+      },
+      {
+        "command": "echo first",
+        "explanation": "Run this, then press Up. The line comes back ready to edit rather than run, which is the safe way to reuse it."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "Up and Down give you an old command to edit; !! and !5 run one immediately",
+        "Ctrl+R searches history, and pressing it again finds the next older match",
+        "history numbers are what the ! forms refer to"
+      ],
+      "dangerous": [
+        "!! reruns the previous command with no confirmation, which is how a destructive command gets repeated by accident"
+      ],
+      "related": ["fc", "HISTSIZE"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Run echo one, then echo two, then echo three. Now save your command history into history.txt so you can see the numbering.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/history.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/history.txt",
+          "text": "echo three",
+          "message": "history.txt does not contain the commands you just ran. Redirect the output of history into it."
+        }
+      ],
+      "hints": [
+        "One command lists everything you have typed.",
+        "That command is history.",
+        "Send its output into the file with a > redirect, as you did in earlier lessons."
+      ],
+      "suggestedSolution": "history -s 'echo one'; history -s 'echo two'; history -s 'echo three'; history > history.txt"
+    },
+    {
+      "id": "task-2",
+      "kind": "independent",
+      "instruction": "Use reverse search rather than retyping: press Ctrl+R, type ech, and Bash will find your most recent echo command. Edit the recalled line so it writes the word recalled into recalled.txt, then run it.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/recalled.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/recalled.txt",
+          "text": "recalled",
+          "trim": true
+        }
+      ],
+      "hints": [
+        "Ctrl+R starts a backwards search. Type a few letters of the command you want.",
+        "Once the line you want appears, press the Right arrow or End to stop searching and start editing it.",
+        "You are aiming for: echo recalled > recalled.txt"
+      ],
+      "suggestedSolution": "echo recalled > recalled.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Why is pressing Up safer than typing !!?",
+      "answers": [
+        "Up gives you the command to read and edit before it runs; !! runs it straight away",
+        "Up searches further back in history",
+        "!! only works for the last five commands",
+        "There is no difference"
+      ],
+      "correctAnswer": 0,
+      "explanation": "Anything that runs a remembered command without showing it to you first is a risk, especially if that command was destructive."
+    },
+    {
+      "type": "command-recall",
+      "question": "Which key combination searches backwards through your command history?",
+      "acceptedAnswers": ["ctrl+r", "ctrl-r", "^r", "ctrl r"],
+      "explanation": "Ctrl+R starts an incremental reverse search."
+    }
+  ]
+}

@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "reading-editing-text",
+  "number": 4,
+  "title": "Reading and editing text",
+  "level": "beginner",
+  "summary": "Read short and long text, select file beginnings and endings, count content, create precise text, and make safe edits with terminal editors.",
+  "outcomes": [
+    "Choose cat, less, head or tail for the shape of the reading task",
+    "Measure text with wc and create predictable output with echo and printf",
+    "Create multiline files without accidental expansion",
+    "Make and verify edits with nano or Vim"
+  ],
+  "pack": "core",
+  "lessons": [
+    "text.01",
+    "text.02",
+    "text.03",
+    "text.04",
+    "text.05",
+    "text.06",
+    "text.07",
+    "text.08",
+    "text.09",
+    "text.10"
+  ]
+}

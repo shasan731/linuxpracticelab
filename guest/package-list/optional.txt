@@ -1,0 +1,15 @@
+# Packages used by the advanced modules and by the optional course packs. These add weight to
+# the download, so anything here must be justified by a lesson that needs it.
+dnsmasq
+nginx-light
+socat
+netcat-openbsd
+stress-ng
+sysstat
+iotop
+htop
+tmux
+screen
+make
+gcc
+gdb

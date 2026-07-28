@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "id": "terminal.04",
+  "title": "Manual Pages",
+  "level": "beginner",
+  "module": "terminal-literacy",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 10,
+  "prerequisites": ["terminal.03"],
+  "concepts": ["manual pages", "manual sections", "paging", "searching within a pager"],
+  "commands": ["man", "less"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false
+  },
+  "content": {
+    "purpose": "Read the full reference for a command or a file format, not just its summary.",
+    "mentalModel": "Manual pages are the complete documentation, and they are organised into numbered sections. Section 1 is user commands, section 5 is file formats, section 8 is administration commands. That numbering matters because names collide: passwd is both a command (section 1) and a file format (section 5), so man 5 passwd and man passwd show different pages. man opens the page in a pager, so navigation is the pager's job: / searches, n finds the next match, q quits.",
+    "syntax": ["man COMMAND", "man SECTION PAGE", "man -k KEYWORD"],
+    "demonstration": [
+      {
+        "command": "man ls",
+        "explanation": "Opens the manual for ls. Press / then type sort and Enter to search, n for the next match, and q to quit."
+      },
+      {
+        "command": "man 5 passwd",
+        "explanation": "The format of the /etc/passwd file, which is a completely different page from the passwd command in section 1."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "Section 1 is commands, 5 is file formats, 8 is administration",
+        "Inside a manual page: / to search, n for the next match, q to quit",
+        "man COMMAND shows the lowest-numbered section, which is not always the one you want"
+      ],
+      "commonOptions": [
+        { "option": "-k", "meaning": "Search page descriptions by keyword" },
+        { "option": "-f", "meaning": "Show the one-line description, the same as whatis" }
+      ],
+      "related": ["whatis", "apropos", "info"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Open the manual page for ls, search inside it for the word sort, then quit. Afterwards, record that you have read it by saving the first line of ls's manual to /home/student/man-ls.txt using man ls with a pipe into head -n 1.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/man-ls.txt" },
+        {
+          "type": "file_matches_regex",
+          "path": "/home/student/man-ls.txt",
+          "pattern": "(?i)LS\\(1\\)|ls\\s",
+          "message": "man-ls.txt does not look like it came from ls's manual page."
+        }
+      ],
+      "hints": [
+        "man ls opens the page; / searches; q quits.",
+        "man writes to standard output, so it can be piped like anything else.",
+        "Pipe man's output into head -n 1, then redirect that into the file."
+      ],
+      "suggestedSolution": "man ls | head -n 1 > /home/student/man-ls.txt"
+    },
+    {
+      "id": "task-2",
+      "kind": "independent",
+      "instruction": "There are two manual pages called passwd: one for the command and one for the file format. Save the first line of the file-format page to /home/student/passwd-format.txt. The line should show section 5.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/passwd-format.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/passwd-format.txt",
+          "text": "(5)",
+          "message": "passwd-format.txt is not from section 5. man shows the lowest section by default, so the section has to be named explicitly."
+        }
+      ],
+      "hints": [
+        "man takes a section number before the page name.",
+        "File formats live in section 5.",
+        "man 5 passwd | head -n 1"
+      ],
+      "suggestedSolution": "man 5 passwd | head -n 1 > /home/student/passwd-format.txt",
+      "knownIncorrectSolution": "man passwd | head -n 1 > /home/student/passwd-format.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "You want to know the format of /etc/fstab, not a command. Which section should you look in?",
+      "answers": ["5", "1", "8", "3"],
+      "correctAnswer": 0,
+      "explanation": "Section 5 documents file formats and configuration files."
+    },
+    {
+      "type": "command-recall",
+      "question": "Inside a manual page, which single key quits?",
+      "acceptedAnswers": ["q"],
+      "explanation": "man uses a pager, and q quits the pager."
+    }
+  ]
+}

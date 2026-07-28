@@ -1,0 +1,157 @@
+name: Windows build
+
+on:
+  workflow_call:
+  workflow_dispatch:
+    inputs:
+      guest-run-id:
+        description: Run id of a Guest image workflow whose artefacts should be used
+        required: false
+
+concurrency:
+  group: windows-build-${{ github.ref }}
+  cancel-in-progress: false
+
+jobs:
+  guest:
+    name: Guest image
+    uses: ./.github/workflows/guest-image.yml
+
+  build:
+    name: Installer and portable package
+    needs: guest
+    runs-on: windows-latest
+    timeout-minutes: 90
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '22'
+          cache: npm
+
+      - uses: dtolnay/rust-toolchain@stable
+        with:
+          targets: x86_64-pc-windows-msvc
+
+      - uses: Swatinem/rust-cache@v2
+
+      - name: Download verified guest artefacts
+        uses: actions/download-artifact@v4
+        with:
+          name: guest-image
+          path: runtime/vendor/guest
+
+      # The guest build published checksums; the Windows build re-verifies them rather than
+      # trusting the transport. A corrupted artefact would otherwise become a shipped image
+      # that fails its own startup integrity check on the learner's machine.
+      - name: Verify guest artefact checksums
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          Push-Location runtime/vendor/guest
+          $expected = @{}
+          foreach ($line in Get-Content SHA256SUMS) {
+            if ($line -match '^([0-9a-f]{64})\s+\*?(.+)$') {
+              $expected[$Matches[2].Trim()] = $Matches[1]
+            }
+          }
+          foreach ($name in $expected.Keys) {
+            if (-not (Test-Path $name)) {
+              Write-Host "skipping $name (not published as an artefact)"
+              continue
+            }
+            $actual = (Get-FileHash -Algorithm SHA256 $name).Hash.ToLower()
+            if ($actual -ne $expected[$name]) {
+              throw "$name does not match its published checksum"
+            }
+            Write-Host "$name verified"
+          }
+          Pop-Location
+
+      - name: Download the pinned QEMU runtime
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $manifest = Get-Content runtime/qemu-manifest.json | ConvertFrom-Json
+          New-Item -ItemType Directory -Force runtime/vendor/qemu | Out-Null
+          Write-Host "QEMU $($manifest.version) from $($manifest.source.url)"
+          Invoke-WebRequest -Uri $manifest.source.url -OutFile runtime/vendor/qemu-installer.exe
+          $actual = (Get-FileHash -Algorithm SHA256 runtime/vendor/qemu-installer.exe).Hash.ToLower()
+          if ($actual -ne $manifest.source.sha256.ToLower()) {
+            throw "the downloaded QEMU does not match the pinned checksum in runtime/qemu-manifest.json"
+          }
+          $actualSha512 = (Get-FileHash -Algorithm SHA512 runtime/vendor/qemu-installer.exe).Hash.ToLower()
+          if ($actualSha512 -ne $manifest.source.sha512PublishedByVendor.ToLower()) {
+            throw "the downloaded QEMU does not match the SHA-512 published by the vendor"
+          }
+          Write-Host 'QEMU download verified'
+
+          New-Item -ItemType Directory -Force dist/source | Out-Null
+          $sourceName = $manifest.upstreamSource.archiveName
+          if (-not $sourceName) {
+            throw "runtime/qemu-manifest.json does not name the source archive"
+          }
+          $sourcePath = Join-Path dist/source $sourceName
+          Invoke-WebRequest -Uri $manifest.upstreamSource.url -OutFile $sourcePath
+          $sourceHash = (Get-FileHash -Algorithm SHA256 $sourcePath).Hash.ToLower()
+          if ($sourceHash -ne $manifest.upstreamSource.sha256.ToLower()) {
+            throw "the downloaded QEMU source does not match the pinned checksum"
+          }
+          Write-Host 'QEMU corresponding source verified'
+
+      - name: Assemble the runtime payload
+        shell: pwsh
+        run: ./scripts/package-runtime.ps1 -Verbose
+
+      - run: npm ci
+
+      - name: Validate lesson packages
+        run: npm run lessons:validate
+
+      - name: Build the Tauri application
+        run: npm run tauri --workspace apps/desktop -- build
+        env:
+          # Signing is optional: a build without credentials still produces a usable installer,
+          # it is simply unsigned. Requiring a certificate would block every fork.
+          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
+          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
+
+      - name: Build the portable package
+        shell: pwsh
+        run: |
+          $ErrorActionPreference = 'Stop'
+          $portable = 'dist/portable/LinuxPracticeLab'
+          New-Item -ItemType Directory -Force $portable | Out-Null
+          Copy-Item target/release/linux-practice-lab.exe "$portable/LinuxPracticeLab.exe"
+          Copy-Item lessons "$portable/lessons" -Recurse
+          New-Item -ItemType Directory -Force "$portable/runtime" | Out-Null
+          Copy-Item "runtime/bin/0.1.0" "$portable/runtime/0.1.0" -Recurse
+          Copy-Item LICENSE "$portable/LICENSE"
+          New-Item -ItemType File -Force "$portable/portable.mode" | Out-Null
+          Compress-Archive -Path "$portable/*" -DestinationPath dist/LinuxPracticeLab-portable.zip
+
+      - name: Generate a software bill of materials
+        shell: pwsh
+        run: |
+          New-Item -ItemType Directory -Force dist/sbom | Out-Null
+          cargo tree --workspace --edges normal --prefix none |
+            Sort-Object -Unique |
+            Set-Content dist/sbom/rust-dependencies.txt -Encoding utf8
+          npm ls --all --omit=dev --json |
+            Set-Content dist/sbom/node-dependencies.json -Encoding utf8
+          Copy-Item runtime/qemu-manifest.json dist/sbom/qemu-manifest.json
+
+      - name: Upload release artefacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: windows-release
+          path: |
+            target/release/bundle/nsis/*.exe
+            dist/LinuxPracticeLab-portable.zip
+            dist/source/**
+            dist/sbom/**
+            LICENSE
+            docs/licensing/**
+          if-no-files-found: error

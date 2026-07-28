@@ -1,0 +1,104 @@
+{
+  "schemaVersion": 1,
+  "id": "search.03",
+  "title": "Recursive Search",
+  "level": "foundation",
+  "module": "search-filter-compare",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "search.02"
+  ],
+  "concepts": [
+    "recursive search",
+    "configuration discovery"
+  ],
+  "commands": [
+    "grep",
+    "sort"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Find a setting across an unfamiliar directory tree.",
+    "mentalModel": "Recursive grep descends into directories and prefixes matches with filenames so you can locate the source as well as the text.",
+    "syntax": [
+      "grep -R PATTERN DIRECTORY"
+    ],
+    "demonstration": [
+      {
+        "command": "grep -R PATTERN DIRECTORY",
+        "explanation": "This small example isolates the main idea behind recursive search."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "Recursive grep descends into directories and prefixes matches with filenames so you can locate the source as well as the text.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "grep",
+        "sort"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Recursively search /home/student/lab/project for database_url and save the match, including its filename, to /home/student/answers/database-setting.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/database-setting.txt"
+        },
+        {
+          "type": "file_contains",
+          "path": "/home/student/answers/database-setting.txt",
+          "text": "api/app.env"
+        },
+        {
+          "type": "file_contains",
+          "path": "/home/student/answers/database-setting.txt",
+          "text": "database_url=sqlite:///api.db"
+        },
+        {
+          "type": "file_line_count",
+          "path": "/home/student/answers/database-setting.txt",
+          "equals": 1
+        }
+      ],
+      "hints": [
+        "The setting is somewhere below project, not necessarily in its top directory.",
+        "grep -R descends recursively and reports the matching filename.",
+        "Search for the setting name, not its guessed value."
+      ],
+      "suggestedSolution": "grep -R database_url /home/student/lab/project > /home/student/answers/database-setting.txt",
+      "alternateSolutions": [
+        "find /home/student/lab/project -type f -exec grep -H database_url {} + > /home/student/answers/database-setting.txt"
+      ],
+      "knownIncorrectSolution": "grep -R threads /home/student/lab/project > /home/student/answers/database-setting.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Recursive Search?",
+      "answers": [
+        "Recursive grep descends into directories and prefixes matches with filenames so you can locate the source as well as the text.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "Recursive grep descends into directories and prefixes matches with filenames so you can locate the source as well as the text."
+    }
+  ]
+}

@@ -1,0 +1,293 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "https://linuxpracticelab.local/schema/lesson.schema.json",
+  "title": "Linux Practice Lab lesson",
+  "type": "object",
+  "required": [
+    "schemaVersion",
+    "id",
+    "title",
+    "level",
+    "module",
+    "type",
+    "estimatedDifficulty",
+    "concepts",
+    "commands",
+    "environment",
+    "content"
+  ],
+  "additionalProperties": false,
+  "properties": {
+    "schemaVersion": { "const": 1 },
+    "id": {
+      "type": "string",
+      "pattern": "^[a-z][a-z0-9]*(\\.[a-z0-9-]+)+$",
+      "description": "Stable lesson identifier, for example filesystem.navigation.04. Never renumber a published id."
+    },
+    "title": { "type": "string", "minLength": 3, "maxLength": 80 },
+    "level": {
+      "type": "string",
+      "enum": [
+        "orientation",
+        "beginner",
+        "foundation",
+        "intermediate",
+        "advanced",
+        "administrator",
+        "troubleshooting",
+        "capstone"
+      ]
+    },
+    "module": { "type": "string", "pattern": "^[a-z][a-z0-9-]*$" },
+    "type": {
+      "type": "string",
+      "enum": [
+        "concept",
+        "demonstration",
+        "guided-practice",
+        "independent-practice",
+        "debugging",
+        "scenario",
+        "review",
+        "assessment",
+        "capstone"
+      ]
+    },
+    "estimatedDifficulty": { "type": "integer", "minimum": 1, "maximum": 5 },
+    "estimatedMinutes": { "type": "integer", "minimum": 1, "maximum": 180 },
+    "prerequisites": {
+      "type": "array",
+      "items": { "type": "string" },
+      "uniqueItems": true,
+      "default": []
+    },
+    "concepts": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 2 },
+      "minItems": 1,
+      "uniqueItems": true
+    },
+    "commands": {
+      "type": "array",
+      "items": { "type": "string", "minLength": 1 },
+      "uniqueItems": true,
+      "description": "Commands this lesson introduces or exercises. Drives the command reference cross-links and mastery tracking."
+    },
+    "environment": {
+      "type": "object",
+      "required": ["profile", "resetPolicy", "networkMode", "sudoAllowed"],
+      "additionalProperties": false,
+      "properties": {
+        "profile": {
+          "type": "string",
+          "pattern": "^[a-z][a-z0-9-]*$",
+          "description": "Environment profile id under guest/services or lessons/assets/profiles."
+        },
+        "resetPolicy": {
+          "type": "string",
+          "enum": ["per-attempt", "per-lesson", "manual", "never"]
+        },
+        "networkMode": {
+          "type": "string",
+          "enum": ["disabled", "internal-lab", "restricted-internet"]
+        },
+        "sudoAllowed": { "type": "boolean" },
+        "dangerousAllowed": {
+          "type": "boolean",
+          "description": "Permits destructive commands such as rm -rf --no-preserve-root inside the disposable lesson overlay."
+        },
+        "memoryMb": { "type": "integer", "enum": [256, 384, 512] },
+        "namespaces": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "enum": ["student", "web1", "web2", "dns1", "router1", "db1", "attacker"]
+          },
+          "uniqueItems": true
+        },
+        "setupScript": {
+          "type": "string",
+          "description": "Path relative to the lessons root, run by the agent as root before the first task."
+        },
+        "resetScript": {
+          "type": "string",
+          "description": "Path relative to the lessons root, run by the agent as root on reset. Must be idempotent."
+        },
+        "fixtures": {
+          "type": "array",
+          "items": { "type": "string" },
+          "uniqueItems": true,
+          "description": "Hidden fixture ids required by unit_test_passes validators."
+        }
+      }
+    },
+    "content": {
+      "type": "object",
+      "required": ["purpose", "mentalModel"],
+      "additionalProperties": false,
+      "properties": {
+        "purpose": { "type": "string", "minLength": 10 },
+        "mentalModel": { "type": "string", "minLength": 10 },
+        "syntax": { "type": "array", "items": { "type": "string" } },
+        "demonstration": {
+          "type": "array",
+          "items": {
+            "type": "object",
+            "required": ["command"],
+            "additionalProperties": false,
+            "properties": {
+              "command": { "type": "string" },
+              "explanation": { "type": "string" },
+              "output": { "type": "string" }
+            }
+          }
+        },
+        "explanationMarkdown": {
+          "type": "string",
+          "description": "Path relative to the lessons root. Must exist."
+        },
+        "summary": {
+          "type": "object",
+          "additionalProperties": false,
+          "properties": {
+            "remember": { "type": "array", "items": { "type": "string" }, "minItems": 1 },
+            "commonOptions": {
+              "type": "array",
+              "items": {
+                "type": "object",
+                "required": ["option", "meaning"],
+                "additionalProperties": false,
+                "properties": {
+                  "option": { "type": "string" },
+                  "meaning": { "type": "string" }
+                }
+              }
+            },
+            "dangerous": { "type": "array", "items": { "type": "string" } },
+            "related": { "type": "array", "items": { "type": "string" } }
+          }
+        }
+      }
+    },
+    "tasks": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/task" },
+      "default": []
+    },
+    "reviewQuestions": {
+      "type": "array",
+      "items": { "$ref": "#/$defs/reviewQuestion" },
+      "default": []
+    }
+  },
+  "$defs": {
+    "task": {
+      "type": "object",
+      "required": ["id", "kind", "instruction", "validators"],
+      "additionalProperties": false,
+      "properties": {
+        "id": { "type": "string", "pattern": "^task-[0-9]+$" },
+        "kind": {
+          "type": "string",
+          "enum": ["guided", "independent", "mistake", "applied", "assessment"],
+          "description": "guided shows the command, independent states only the goal, mistake asks the learner to diagnose a broken command, applied places it in a scenario."
+        },
+        "instruction": { "type": "string", "minLength": 10 },
+        "context": {
+          "type": "string",
+          "description": "Extra scenario framing rendered above the instruction."
+        },
+        "brokenCommand": {
+          "type": "string",
+          "description": "Required for mistake tasks: the incorrect command the learner must explain or repair."
+        },
+        "diagnosis": {
+          "type": "string",
+          "description": "Required for mistake tasks: the explanation revealed after the task passes."
+        },
+        "validators": {
+          "type": "array",
+          "items": { "$ref": "#/$defs/validator" },
+          "minItems": 1
+        },
+        "hints": {
+          "type": "array",
+          "items": { "type": "string", "minLength": 5 },
+          "description": "Ordered from conceptual to near-complete. The solution itself is held in suggestedSolution and never counts as a hint."
+        },
+        "suggestedSolution": { "type": "string", "minLength": 1 },
+        "knownIncorrectSolution": {
+          "type": "string",
+          "description": "A plausible wrong answer. CI asserts the validators reject it, which catches validators that pass trivially."
+        },
+        "alternateSolutions": {
+          "type": "array",
+          "items": { "type": "string" },
+          "description": "Other valid answers. CI asserts every one of them passes, which is how the accept-any-valid-solution promise is enforced."
+        },
+        "optional": { "type": "boolean" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "kind": { "const": "mistake" } }, "required": ["kind"] },
+          "then": { "required": ["brokenCommand", "diagnosis"] }
+        },
+        {
+          "if": { "properties": { "kind": { "enum": ["guided", "independent", "applied"] } }, "required": ["kind"] },
+          "then": { "required": ["suggestedSolution"] }
+        }
+      ]
+    },
+    "validator": {
+      "type": "object",
+      "required": ["type"],
+      "properties": {
+        "type": {
+          "type": "string",
+          "description": "Must name an entry in validators.json. Enforced by scripts/validate-lessons.ts and by the guest agent, not by this schema."
+        }
+      }
+    },
+    "reviewQuestion": {
+      "type": "object",
+      "required": ["type", "question"],
+      "additionalProperties": false,
+      "properties": {
+        "type": {
+          "type": "string",
+          "enum": ["multiple-choice", "multiple-select", "short-answer", "command-recall"]
+        },
+        "question": { "type": "string", "minLength": 8 },
+        "answers": { "type": "array", "items": { "type": "string" }, "minItems": 2 },
+        "correctAnswer": { "type": "integer", "minimum": 0 },
+        "correctAnswers": {
+          "type": "array",
+          "items": { "type": "integer", "minimum": 0 },
+          "minItems": 1,
+          "uniqueItems": true
+        },
+        "acceptedAnswers": {
+          "type": "array",
+          "items": { "type": "string" },
+          "minItems": 1,
+          "description": "For short-answer and command-recall. Compared case-insensitively with whitespace collapsed."
+        },
+        "explanation": { "type": "string" }
+      },
+      "allOf": [
+        {
+          "if": { "properties": { "type": { "const": "multiple-choice" } }, "required": ["type"] },
+          "then": { "required": ["answers", "correctAnswer"] }
+        },
+        {
+          "if": { "properties": { "type": { "const": "multiple-select" } }, "required": ["type"] },
+          "then": { "required": ["answers", "correctAnswers"] }
+        },
+        {
+          "if": { "properties": { "type": { "enum": ["short-answer", "command-recall"] } }, "required": ["type"] },
+          "then": { "required": ["acceptedAnswers"] }
+        }
+      ]
+    }
+  }
+}

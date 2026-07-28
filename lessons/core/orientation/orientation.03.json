@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "id": "orientation.03",
+  "title": "Entering and Editing Commands",
+  "level": "orientation",
+  "module": "orientation",
+  "type": "guided-practice",
+  "estimatedDifficulty": 1,
+  "estimatedMinutes": 8,
+  "prerequisites": ["orientation.02"],
+  "concepts": ["line editing", "cursor movement", "keyboard shortcuts"],
+  "commands": ["echo"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false
+  },
+  "content": {
+    "purpose": "Fix a mistyped command without deleting the whole line and starting again.",
+    "mentalModel": "The shell gives you a full line editor before you press Enter. Nothing is sent to Linux until you do, so you can move around and correct as much as you like. These shortcuts come from Bash's readline library, which is why the same keys work in almost every Linux tool that reads a line of input.",
+    "syntax": [
+      "Left and Right arrows   move one character",
+      "Home or Ctrl+A          jump to the start of the line",
+      "End or Ctrl+E           jump to the end of the line",
+      "Ctrl+U                  delete from the cursor back to the start",
+      "Ctrl+K                  delete from the cursor to the end",
+      "Ctrl+W                  delete the word before the cursor",
+      "Backspace / Delete      delete one character before / after the cursor"
+    ],
+    "demonstration": [
+      {
+        "command": "echo Hello wrld",
+        "explanation": "Rather than retyping it, press Left until the cursor sits before the l in wrld, type o, then press Enter. Practise this: it is the single most used skill in a terminal."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "Nothing runs until you press Enter, so the whole line is editable",
+        "Ctrl+A and Ctrl+E jump to the start and end of the line",
+        "Ctrl+U clears the line, which is faster than holding Backspace"
+      ],
+      "dangerous": [
+        "Ctrl+U discards what you typed with no confirmation and no undo"
+      ],
+      "related": ["history", "readline"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Type this line exactly, deliberately misspelled: echo practising editing > editing.txt. Before pressing Enter, use the arrow keys or Ctrl+A and Ctrl+E to move around the line and confirm you can reach both ends. Then press Enter.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/editing.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/editing.txt",
+          "text": "practising editing",
+          "message": "editing.txt does not contain the expected text. Check the words are spelled as the task shows them."
+        }
+      ],
+      "hints": [
+        "Type the whole line first, then move the cursor with the arrow keys before pressing Enter.",
+        "Ctrl+A goes to the start of the line, Ctrl+E to the end.",
+        "The line is: echo practising editing > editing.txt"
+      ],
+      "suggestedSolution": "echo practising editing > editing.txt"
+    },
+    {
+      "id": "task-2",
+      "kind": "independent",
+      "instruction": "Start typing a command you do not want to run, such as rm editing.txt. Then clear the whole line with Ctrl+U instead of pressing Enter. Prove the file survived by creating a second file called still-here.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/editing.txt",
+          "message": "editing.txt is gone, which means the rm actually ran. Ctrl+U should have discarded the line before Enter."
+        },
+        { "type": "file_exists", "path": "/home/student/still-here.txt" }
+      ],
+      "hints": [
+        "Ctrl+U wipes the line you are typing without running it.",
+        "Create the second file with touch still-here.txt"
+      ],
+      "suggestedSolution": "touch still-here.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "You have typed a long command and realise it is completely wrong. What is the quickest way to discard it?",
+      "answers": ["Ctrl+U", "Ctrl+C then retype", "Hold Backspace", "Press Enter and fix it after"],
+      "correctAnswer": 0,
+      "explanation": "Ctrl+U clears the line instantly. Ctrl+C also works but leaves the discarded text on screen, and pressing Enter runs the wrong command."
+    }
+  ]
+}

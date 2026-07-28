@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "id": "files.07",
+  "title": "Removing Directories",
+  "level": "beginner",
+  "module": "file-management",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "files.06"
+  ],
+  "concepts": [
+    "empty directories",
+    "recursive removal"
+  ],
+  "commands": [
+    "rmdir",
+    "rm"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Remove empty directories and deliberately remove populated trees when required.",
+    "mentalModel": "rmdir only succeeds for empty directories. Recursive rm walks through a populated tree, which is powerful because every descendant is affected.",
+    "syntax": [
+      "rmdir EMPTY_DIRECTORY",
+      "rm -r POPULATED_DIRECTORY"
+    ],
+    "demonstration": [
+      {
+        "command": "rmdir EMPTY_DIRECTORY",
+        "explanation": "This small example isolates the main idea behind removing directories."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "rmdir only succeeds for empty directories. Recursive rm walks through a populated tree, which is powerful because every descendant is affected.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "rmdir",
+        "rm"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Remove the empty directory and the populated old-cache tree from /home/student/lab, but leave keep in place.",
+      "validators": [
+        {
+          "type": "directory_missing",
+          "path": "/home/student/lab/empty"
+        },
+        {
+          "type": "directory_missing",
+          "path": "/home/student/lab/old-cache"
+        },
+        {
+          "type": "directory_exists",
+          "path": "/home/student/lab/keep"
+        }
+      ],
+      "hints": [
+        "The two directories need different levels of removal.",
+        "Use rmdir for the empty one and rm -r for the populated tree.",
+        "Name both targets explicitly so keep is never part of the command."
+      ],
+      "suggestedSolution": "rmdir /home/student/lab/empty && rm -r /home/student/lab/old-cache",
+      "alternateSolutions": [
+        "rm -d /home/student/lab/empty && rm -rf /home/student/lab/old-cache"
+      ],
+      "knownIncorrectSolution": "rm -r /home/student/lab/keep"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Removing Directories?",
+      "answers": [
+        "rmdir only succeeds for empty directories. Recursive rm walks through a populated tree, which is powerful because every descendant is affected.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "rmdir only succeeds for empty directories. Recursive rm walks through a populated tree, which is powerful because every descendant is affected."
+    }
+  ]
+}

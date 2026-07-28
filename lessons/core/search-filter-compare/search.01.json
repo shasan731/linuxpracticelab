@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "id": "search.01",
+  "title": "Searching Text with grep",
+  "level": "foundation",
+  "module": "search-filter-compare",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "text.10"
+  ],
+  "concepts": [
+    "line filtering",
+    "patterns"
+  ],
+  "commands": [
+    "grep"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Select lines containing a word or phrase.",
+    "mentalModel": "grep tests each input line against a pattern and writes matching lines. It does not change the source file.",
+    "syntax": [
+      "grep PATTERN FILE",
+      "grep \"connection failed\" app.log"
+    ],
+    "demonstration": [
+      {
+        "command": "grep PATTERN FILE",
+        "explanation": "This small example isolates the main idea behind searching text with grep."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "grep tests each input line against a pattern and writes matching lines. It does not change the source file.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "grep"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Save only the ERROR lines from app.log to /home/student/answers/errors.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/errors.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/errors.txt",
+          "sha256": "c3c0b60ddac420f5f74ae35598e5a4c080d6011fb1cb7f23ca30b03bc7b40b77"
+        }
+      ],
+      "hints": [
+        "Each wanted line shares the same marker.",
+        "grep accepts the marker followed by the filename.",
+        "Redirect the matching lines into errors.txt."
+      ],
+      "suggestedSolution": "grep ERROR /home/student/lab/app.log > /home/student/answers/errors.txt",
+      "alternateSolutions": [
+        "sed -n '/ERROR/p' /home/student/lab/app.log > /home/student/answers/errors.txt"
+      ],
+      "knownIncorrectSolution": "grep INFO /home/student/lab/app.log > /home/student/answers/errors.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Searching Text with grep?",
+      "answers": [
+        "grep tests each input line against a pattern and writes matching lines. It does not change the source file.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "grep tests each input line against a pattern and writes matching lines. It does not change the source file."
+    }
+  ]
+}

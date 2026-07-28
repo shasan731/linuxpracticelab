@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "id": "streams.03",
+  "title": "Appending Output",
+  "level": "foundation",
+  "module": "pipes-redirection-streams",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "streams.02"
+  ],
+  "concepts": [
+    "append redirection",
+    "preserving content"
+  ],
+  "commands": [
+    "echo"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Add new output to the end of an existing file.",
+    "mentalModel": ">> opens the destination in append mode, so each write goes after existing bytes instead of truncating them.",
+    "syntax": [
+      "echo \"second line\" >> report.txt"
+    ],
+    "demonstration": [
+      {
+        "command": "echo \"second line\" >> report.txt",
+        "explanation": "This small example isolates the main idea behind appending output."
+      }
+    ],
+    "summary": {
+      "remember": [
+        ">> opens the destination in append mode, so each write goes after existing bytes instead of truncating them.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "echo"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Append “second line” to report.txt without changing its existing first line.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/report.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/report.txt",
+          "sha256": "c2097f55f01fc297fc7f4acf21438123e06e4d409a818524428534e850642f4f"
+        }
+      ],
+      "hints": [
+        "The existing bytes must remain.",
+        "Use the double redirect operator >>.",
+        "Check both lines with cat after appending."
+      ],
+      "suggestedSolution": "echo 'second line' >> /home/student/answers/report.txt",
+      "alternateSolutions": [
+        "printf 'second line\\n' >> /home/student/answers/report.txt"
+      ],
+      "knownIncorrectSolution": "echo 'second line' > /home/student/answers/report.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Appending Output?",
+      "answers": [
+        ">> opens the destination in append mode, so each write goes after existing bytes instead of truncating them.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": ">> opens the destination in append mode, so each write goes after existing bytes instead of truncating them."
+    }
+  ]
+}

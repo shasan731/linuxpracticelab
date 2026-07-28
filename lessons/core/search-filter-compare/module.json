@@ -1,0 +1,29 @@
+{
+  "schemaVersion": 1,
+  "id": "search-filter-compare",
+  "number": 5,
+  "title": "Searching, filtering, and comparing",
+  "level": "foundation",
+  "summary": "Find relevant lines and files, filter by metadata, sort and count results, and compare versions without reading everything manually.",
+  "outcomes": [
+    "Search text with grep, including case, inversion, recursion and context",
+    "Find paths by name, type, size and modification time",
+    "Sort, deduplicate and count text records",
+    "Compare files and complete a small log-analysis assessment"
+  ],
+  "pack": "core",
+  "lessons": [
+    "search.01",
+    "search.02",
+    "search.03",
+    "search.04",
+    "search.05",
+    "search.06",
+    "search.07",
+    "search.08",
+    "search.09",
+    "search.10",
+    "search.11",
+    "search.12"
+  ]
+}

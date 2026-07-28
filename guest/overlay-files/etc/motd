@@ -1,0 +1,9 @@
+
+Linux Practice Lab
+
+  This is a real Debian system running in a small virtual machine on your computer.
+  Nothing you do in here can reach your Windows files.
+
+  Practice account   student   (password: linuxlab)
+  Administration     use sudo
+  Reset              use the controls in the application window

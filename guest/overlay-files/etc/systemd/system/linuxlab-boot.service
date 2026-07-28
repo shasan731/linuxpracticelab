@@ -1,0 +1,17 @@
+[Unit]
+Description=LinuxLab boot preparation
+DefaultDependencies=no
+After=local-fs.target
+Before=linuxlab-agent.service sysinit.target
+RequiresMountsFor=/run
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/local/lib/linuxlab/linuxlab-boot
+StandardOutput=journal
+StandardError=journal
+SyslogIdentifier=linuxlab-boot
+
+[Install]
+WantedBy=sysinit.target

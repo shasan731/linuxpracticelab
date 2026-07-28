@@ -1,0 +1,788 @@
+{
+  "$comment": "Single source of truth for the validation engine. Consumed by scripts/validate-lessons.ts (lesson authoring checks) and embedded into guest/linuxlab-agent at compile time (request checks + dispatch coverage test). Adding a validator here without implementing it in the agent is allowed only while 'implemented' is false; the agent then rejects it explicitly instead of silently passing.",
+  "schemaVersion": 1,
+  "failureCategories": [
+    "command_not_found",
+    "invalid_option",
+    "wrong_working_directory",
+    "wrong_path",
+    "permission_denied",
+    "file_already_exists",
+    "wrong_file_type",
+    "wrong_file_contents",
+    "wrong_ownership",
+    "wrong_permissions",
+    "process_not_running",
+    "service_not_active",
+    "wrong_port",
+    "incorrect_redirect",
+    "pipeline_output_incorrect",
+    "script_syntax_failure",
+    "script_logic_failure",
+    "network_unreachable",
+    "dns_failure",
+    "task_partially_completed"
+  ],
+  "commonParams": {
+    "message": {
+      "type": "string",
+      "summary": "Learner-facing text shown when this check fails. Falls back to a generated message."
+    },
+    "failureCategory": {
+      "type": "enum",
+      "values": [
+        "command_not_found",
+        "invalid_option",
+        "wrong_working_directory",
+        "wrong_path",
+        "permission_denied",
+        "file_already_exists",
+        "wrong_file_type",
+        "wrong_file_contents",
+        "wrong_ownership",
+        "wrong_permissions",
+        "process_not_running",
+        "service_not_active",
+        "wrong_port",
+        "incorrect_redirect",
+        "pipeline_output_incorrect",
+        "script_syntax_failure",
+        "script_logic_failure",
+        "network_unreachable",
+        "dns_failure",
+        "task_partially_completed"
+      ],
+      "summary": "Overrides the validator's default failure category for feedback routing."
+    },
+    "runAs": {
+      "type": "user",
+      "summary": "Guest user the check runs as. Defaults to root for inspection, which never mutates state."
+    },
+    "namespace": {
+      "type": "string",
+      "summary": "Network namespace to enter before checking. Only meaningful in internal-network lessons."
+    },
+    "weight": {
+      "type": "int",
+      "summary": "Relative contribution to partial-completion reporting. Defaults to 1."
+    }
+  },
+  "validators": {
+    "file_exists": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_path",
+      "summary": "A path exists and is a regular file.",
+      "params": { "path": { "type": "path", "required": true } }
+    },
+    "file_missing": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_path",
+      "summary": "Nothing exists at the given path.",
+      "params": { "path": { "type": "path", "required": true } }
+    },
+    "directory_exists": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_path",
+      "summary": "A path exists and is a directory.",
+      "params": { "path": { "type": "path", "required": true } }
+    },
+    "directory_missing": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_path",
+      "summary": "No directory exists at the given path.",
+      "params": { "path": { "type": "path", "required": true } }
+    },
+    "symbolic_link_exists": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_file_type",
+      "summary": "Path is a symbolic link, optionally pointing at a specific target.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "target": { "type": "string", "summary": "Expected link target, compared after resolving one level." },
+        "resolved": { "type": "bool", "summary": "Compare the fully resolved target instead of the raw link text." }
+      }
+    },
+    "hard_link_exists": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_file_type",
+      "summary": "Two paths share one inode.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "linkTo": { "type": "path", "required": true }
+      }
+    },
+    "file_type": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_file_type",
+      "summary": "Path is of a specific file type.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "fileType": {
+          "type": "enum",
+          "required": true,
+          "values": ["regular", "directory", "symlink", "fifo", "socket", "block", "char"]
+        }
+      }
+    },
+    "file_size": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_file_contents",
+      "summary": "File size in bytes within bounds.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "equals": { "type": "int" },
+        "min": { "type": "int" },
+        "max": { "type": "int" }
+      },
+      "requiresOneOf": ["equals", "min", "max"]
+    },
+    "file_owner": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_ownership",
+      "summary": "File is owned by a user.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "owner": { "type": "user", "required": true }
+      }
+    },
+    "file_group": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_ownership",
+      "summary": "File belongs to a group.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "group": { "type": "group", "required": true }
+      }
+    },
+    "file_mode": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_permissions",
+      "summary": "File permission bits, optionally compared through a mask so only some bits matter.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "mode": { "type": "mode", "required": true },
+        "mask": { "type": "mode", "summary": "Only bits set in the mask are compared. Defaults to 07777." }
+      }
+    },
+    "file_contains": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_file_contents",
+      "summary": "File content includes a literal string.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "text": { "type": "string", "required": true },
+        "caseSensitive": { "type": "bool" },
+        "trim": { "type": "bool", "summary": "Compare with leading and trailing whitespace removed per line." }
+      }
+    },
+    "file_matches_regex": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_file_contents",
+      "summary": "File content matches a regular expression.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "pattern": { "type": "regex", "required": true },
+        "caseSensitive": { "type": "bool" },
+        "multiline": { "type": "bool" }
+      }
+    },
+    "file_line_count": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_file_contents",
+      "summary": "Number of lines in a file within bounds.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "equals": { "type": "int" },
+        "min": { "type": "int" },
+        "max": { "type": "int" }
+      },
+      "requiresOneOf": ["equals", "min", "max"]
+    },
+    "file_checksum": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_file_contents",
+      "summary": "File content hashes to an exact SHA-256 digest.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "sha256": { "type": "sha256", "required": true }
+      }
+    },
+    "directory_contains": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "task_partially_completed",
+      "summary": "Directory contains the named entries, and optionally nothing else.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "entries": { "type": "list<string>", "required": true },
+        "exact": { "type": "bool", "summary": "Fail if the directory holds entries beyond those listed." },
+        "includeHidden": { "type": "bool" }
+      }
+    },
+    "directory_empty": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "task_partially_completed",
+      "summary": "Directory holds no entries.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "includeHidden": { "type": "bool" }
+      }
+    },
+    "current_directory": {
+      "category": "filesystem",
+      "implemented": true,
+      "failureCategory": "wrong_working_directory",
+      "summary": "The learner's interactive shell has this working directory.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "resolveSymlinks": { "type": "bool" }
+      }
+    },
+
+    "process_running": {
+      "category": "process",
+      "implemented": true,
+      "failureCategory": "process_not_running",
+      "summary": "At least one process matches a pattern against its command line.",
+      "params": {
+        "pattern": { "type": "regex", "required": true },
+        "minCount": { "type": "int" },
+        "owner": { "type": "user" }
+      }
+    },
+    "process_not_running": {
+      "category": "process",
+      "implemented": true,
+      "failureCategory": "process_not_running",
+      "summary": "No process matches a pattern.",
+      "params": { "pattern": { "type": "regex", "required": true } }
+    },
+    "process_owner": {
+      "category": "process",
+      "implemented": true,
+      "failureCategory": "wrong_ownership",
+      "summary": "Matching processes run as a given user.",
+      "params": {
+        "pattern": { "type": "regex", "required": true },
+        "owner": { "type": "user", "required": true }
+      }
+    },
+    "process_count": {
+      "category": "process",
+      "implemented": true,
+      "failureCategory": "process_not_running",
+      "summary": "Number of matching processes within bounds.",
+      "params": {
+        "pattern": { "type": "regex", "required": true },
+        "equals": { "type": "int" },
+        "min": { "type": "int" },
+        "max": { "type": "int" }
+      },
+      "requiresOneOf": ["equals", "min", "max"]
+    },
+    "process_command": {
+      "category": "process",
+      "implemented": true,
+      "failureCategory": "process_not_running",
+      "summary": "A matching process was started with a command line containing a string.",
+      "params": {
+        "pattern": { "type": "regex", "required": true },
+        "contains": { "type": "string", "required": true }
+      }
+    },
+    "process_signal_received": {
+      "category": "process",
+      "implemented": true,
+      "failureCategory": "process_not_running",
+      "summary": "A process the lesson started recorded the given signal in its wrapper log. Requires the lesson setup to launch it through linuxlab-signal-trap.",
+      "params": {
+        "handle": { "type": "string", "required": true, "summary": "Handle given to linuxlab-signal-trap by the lesson setup script." },
+        "signal": { "type": "enum", "required": true, "values": ["SIGTERM", "SIGKILL", "SIGHUP", "SIGINT", "SIGUSR1", "SIGUSR2", "SIGSTOP", "SIGCONT"] }
+      }
+    },
+    "background_job_running": {
+      "category": "process",
+      "implemented": true,
+      "failureCategory": "process_not_running",
+      "summary": "A process matching the pattern is in the learner's shell session but is not the foreground process group.",
+      "params": {
+        "pattern": { "type": "regex", "required": true },
+        "detached": { "type": "bool", "summary": "Require the process to have survived its parent shell (reparented to init)." }
+      }
+    },
+
+    "service_active": {
+      "category": "service",
+      "implemented": true,
+      "failureCategory": "service_not_active",
+      "summary": "systemd reports the unit as active.",
+      "params": { "unit": { "type": "unit", "required": true } }
+    },
+    "service_inactive": {
+      "category": "service",
+      "implemented": true,
+      "failureCategory": "service_not_active",
+      "summary": "systemd reports the unit as inactive.",
+      "params": { "unit": { "type": "unit", "required": true } }
+    },
+    "service_enabled": {
+      "category": "service",
+      "implemented": true,
+      "failureCategory": "service_not_active",
+      "summary": "Unit is enabled to start at boot.",
+      "params": { "unit": { "type": "unit", "required": true } }
+    },
+    "service_disabled": {
+      "category": "service",
+      "implemented": true,
+      "failureCategory": "service_not_active",
+      "summary": "Unit is disabled.",
+      "params": { "unit": { "type": "unit", "required": true } }
+    },
+    "service_failed": {
+      "category": "service",
+      "implemented": true,
+      "failureCategory": "service_not_active",
+      "summary": "Unit is in the failed state. Used by debugging lessons that ask the learner to reproduce a fault.",
+      "params": { "unit": { "type": "unit", "required": true } }
+    },
+    "unit_file_valid": {
+      "category": "service",
+      "implemented": true,
+      "failureCategory": "script_syntax_failure",
+      "summary": "systemd-analyze verify reports no errors for the unit.",
+      "params": { "unit": { "type": "unit", "required": true } }
+    },
+    "journal_contains": {
+      "category": "service",
+      "implemented": true,
+      "failureCategory": "service_not_active",
+      "summary": "The journal holds a matching entry.",
+      "params": {
+        "text": { "type": "string", "required": true },
+        "unit": { "type": "unit" },
+        "since": { "type": "string", "summary": "journalctl --since expression. Defaults to the lesson start time." },
+        "priority": { "type": "enum", "values": ["emerg", "alert", "crit", "err", "warning", "notice", "info", "debug"] }
+      }
+    },
+    "port_listening": {
+      "category": "service",
+      "implemented": true,
+      "failureCategory": "wrong_port",
+      "summary": "A socket is listening on a port.",
+      "params": {
+        "port": { "type": "port", "required": true },
+        "protocol": { "type": "enum", "values": ["tcp", "udp"] },
+        "address": { "type": "string", "summary": "Expected bind address, for example 0.0.0.0 or 127.0.0.1." },
+        "process": { "type": "regex", "summary": "Require the listening process command to match." }
+      }
+    },
+
+    "user_exists": {
+      "category": "identity",
+      "implemented": true,
+      "failureCategory": "task_partially_completed",
+      "summary": "Account exists in the password database.",
+      "params": {
+        "user": { "type": "user", "required": true },
+        "uidMin": { "type": "int" }
+      }
+    },
+    "user_missing": {
+      "category": "identity",
+      "implemented": true,
+      "failureCategory": "task_partially_completed",
+      "summary": "Account does not exist.",
+      "params": { "user": { "type": "user", "required": true } }
+    },
+    "group_exists": {
+      "category": "identity",
+      "implemented": true,
+      "failureCategory": "task_partially_completed",
+      "summary": "Group exists.",
+      "params": { "group": { "type": "group", "required": true } }
+    },
+    "group_membership": {
+      "category": "identity",
+      "implemented": true,
+      "failureCategory": "wrong_ownership",
+      "summary": "User is a member of a group, primary or supplementary.",
+      "params": {
+        "user": { "type": "user", "required": true },
+        "group": { "type": "group", "required": true },
+        "primary": { "type": "bool", "summary": "Require it to be the primary group." }
+      }
+    },
+    "sudo_permission": {
+      "category": "identity",
+      "implemented": true,
+      "failureCategory": "permission_denied",
+      "summary": "sudo -l reports the user may or may not run a command.",
+      "params": {
+        "user": { "type": "user", "required": true },
+        "command": { "type": "string", "summary": "Command path to test. Defaults to ALL." },
+        "allowed": { "type": "bool", "summary": "Expected outcome. Defaults to true." }
+      }
+    },
+    "password_locked": {
+      "category": "identity",
+      "implemented": true,
+      "failureCategory": "permission_denied",
+      "summary": "Account password is locked in the shadow database.",
+      "params": {
+        "user": { "type": "user", "required": true },
+        "locked": { "type": "bool", "summary": "Expected state. Defaults to true." }
+      }
+    },
+    "login_shell": {
+      "category": "identity",
+      "implemented": true,
+      "failureCategory": "task_partially_completed",
+      "summary": "Account login shell matches.",
+      "params": {
+        "user": { "type": "user", "required": true },
+        "shell": { "type": "path", "required": true }
+      }
+    },
+    "home_directory": {
+      "category": "identity",
+      "implemented": true,
+      "failureCategory": "task_partially_completed",
+      "summary": "Account home directory is set to a path, and optionally that it exists.",
+      "params": {
+        "user": { "type": "user", "required": true },
+        "path": { "type": "path", "required": true },
+        "mustExist": { "type": "bool" }
+      }
+    },
+    "acl_contains": {
+      "category": "identity",
+      "implemented": true,
+      "failureCategory": "wrong_permissions",
+      "summary": "getfacl output contains an entry.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "entry": { "type": "string", "required": true, "summary": "For example user:analyst:rw-" },
+        "isDefault": { "type": "bool", "summary": "Match a default ACL entry instead of an access entry." }
+      }
+    },
+
+    "interface_exists": {
+      "category": "network",
+      "implemented": true,
+      "failureCategory": "network_unreachable",
+      "summary": "Network interface is present.",
+      "params": { "interface": { "type": "string", "required": true } }
+    },
+    "interface_state": {
+      "category": "network",
+      "implemented": true,
+      "failureCategory": "network_unreachable",
+      "summary": "Interface operational state.",
+      "params": {
+        "interface": { "type": "string", "required": true },
+        "state": { "type": "enum", "required": true, "values": ["up", "down"] }
+      }
+    },
+    "ip_address": {
+      "category": "network",
+      "implemented": true,
+      "failureCategory": "network_unreachable",
+      "summary": "Interface carries an address with prefix.",
+      "params": {
+        "interface": { "type": "string", "required": true },
+        "address": { "type": "string", "required": true, "summary": "CIDR form, for example 10.20.0.10/24." }
+      }
+    },
+    "route_exists": {
+      "category": "network",
+      "implemented": true,
+      "failureCategory": "network_unreachable",
+      "summary": "Routing table holds a route to a destination.",
+      "params": {
+        "destination": { "type": "string", "required": true },
+        "via": { "type": "string" },
+        "dev": { "type": "string" }
+      }
+    },
+    "default_route": {
+      "category": "network",
+      "implemented": true,
+      "failureCategory": "network_unreachable",
+      "summary": "A default route exists.",
+      "params": {
+        "via": { "type": "string" },
+        "dev": { "type": "string" }
+      }
+    },
+    "dns_resolution": {
+      "category": "network",
+      "implemented": true,
+      "failureCategory": "dns_failure",
+      "summary": "A name resolves, optionally to an expected address.",
+      "params": {
+        "name": { "type": "string", "required": true },
+        "expect": { "type": "string" },
+        "server": { "type": "string" }
+      }
+    },
+    "tcp_connection": {
+      "category": "network",
+      "implemented": true,
+      "failureCategory": "network_unreachable",
+      "summary": "A TCP connection can be established.",
+      "params": {
+        "host": { "type": "string", "required": true },
+        "port": { "type": "port", "required": true },
+        "timeoutMs": { "type": "int" }
+      }
+    },
+    "udp_listener": {
+      "category": "network",
+      "implemented": true,
+      "failureCategory": "wrong_port",
+      "summary": "A UDP socket is bound to a port.",
+      "params": {
+        "port": { "type": "port", "required": true },
+        "address": { "type": "string" }
+      }
+    },
+    "http_status": {
+      "category": "network",
+      "implemented": true,
+      "failureCategory": "network_unreachable",
+      "summary": "An HTTP request returns a status code.",
+      "params": {
+        "url": { "type": "string", "required": true },
+        "status": { "type": "int", "required": true },
+        "method": { "type": "enum", "values": ["GET", "HEAD", "POST"] },
+        "timeoutMs": { "type": "int" }
+      }
+    },
+    "http_body": {
+      "category": "network",
+      "implemented": true,
+      "failureCategory": "network_unreachable",
+      "summary": "An HTTP response body contains a string.",
+      "params": {
+        "url": { "type": "string", "required": true },
+        "contains": { "type": "string", "required": true },
+        "timeoutMs": { "type": "int" }
+      }
+    },
+    "firewall_rule": {
+      "category": "network",
+      "implemented": true,
+      "failureCategory": "network_unreachable",
+      "summary": "nft ruleset contains a rule fragment.",
+      "params": {
+        "contains": { "type": "string", "required": true },
+        "table": { "type": "string" },
+        "chain": { "type": "string" }
+      }
+    },
+    "ssh_key_valid": {
+      "category": "network",
+      "implemented": true,
+      "failureCategory": "permission_denied",
+      "summary": "An SSH key file parses, and optionally is of a key type and has safe permissions.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "keyType": { "type": "enum", "values": ["rsa", "ed25519", "ecdsa"] },
+        "requireSafeMode": { "type": "bool", "summary": "Private key must not be group or world readable." }
+      }
+    },
+    "remote_file_exists": {
+      "category": "network",
+      "implemented": true,
+      "failureCategory": "network_unreachable",
+      "summary": "A file exists on a lab host reached over SSH.",
+      "params": {
+        "host": { "type": "string", "required": true },
+        "path": { "type": "path", "required": true },
+        "user": { "type": "user" }
+      }
+    },
+
+    "script_exists": {
+      "category": "script",
+      "implemented": true,
+      "failureCategory": "wrong_path",
+      "summary": "A script file exists and starts with a shebang.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "interpreter": { "type": "string", "summary": "Substring required in the shebang line, for example bash." }
+      }
+    },
+    "script_executable": {
+      "category": "script",
+      "implemented": true,
+      "failureCategory": "wrong_permissions",
+      "summary": "Script has an execute bit for the given user.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "forUser": { "type": "user" }
+      }
+    },
+    "script_exit_code": {
+      "category": "script",
+      "implemented": true,
+      "failureCategory": "script_logic_failure",
+      "summary": "Running a script yields an exit code.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "exitCode": { "type": "int", "required": true },
+        "args": { "type": "list<string>" },
+        "stdin": { "type": "string" },
+        "timeoutMs": { "type": "int" },
+        "fixture": { "type": "string", "summary": "Hidden fixture directory to run inside, from the lesson package." }
+      }
+    },
+    "stdout_exact": {
+      "category": "script",
+      "implemented": true,
+      "failureCategory": "pipeline_output_incorrect",
+      "summary": "A command's stdout equals an expected value.",
+      "params": {
+        "command": { "type": "command", "required": true },
+        "expected": { "type": "string", "required": true },
+        "trimTrailingNewline": { "type": "bool" },
+        "timeoutMs": { "type": "int" },
+        "fixture": { "type": "string" }
+      }
+    },
+    "stdout_contains": {
+      "category": "script",
+      "implemented": true,
+      "failureCategory": "pipeline_output_incorrect",
+      "summary": "A command's stdout contains a string.",
+      "params": {
+        "command": { "type": "command", "required": true },
+        "text": { "type": "string", "required": true },
+        "timeoutMs": { "type": "int" },
+        "fixture": { "type": "string" }
+      }
+    },
+    "stderr_contains": {
+      "category": "script",
+      "implemented": true,
+      "failureCategory": "script_logic_failure",
+      "summary": "A command's stderr contains a string.",
+      "params": {
+        "command": { "type": "command", "required": true },
+        "text": { "type": "string", "required": true },
+        "timeoutMs": { "type": "int" },
+        "fixture": { "type": "string" }
+      }
+    },
+    "unit_test_passes": {
+      "category": "script",
+      "implemented": true,
+      "failureCategory": "script_logic_failure",
+      "summary": "Runs the learner's script against a hidden fixture set and requires every case to pass. This is what stops a learner hard-coding the visible answer.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "fixture": { "type": "string", "required": true, "summary": "Fixture id under lessons/fixtures." },
+        "timeoutMs": { "type": "int" }
+      }
+    },
+    "shellcheck_passes": {
+      "category": "script",
+      "implemented": true,
+      "failureCategory": "script_syntax_failure",
+      "summary": "shellcheck reports nothing at or above a severity.",
+      "params": {
+        "path": { "type": "path", "required": true },
+        "severity": { "type": "enum", "values": ["error", "warning", "info", "style"] },
+        "exclude": { "type": "list<string>", "summary": "SC codes to ignore." }
+      }
+    },
+    "side_effect_exists": {
+      "category": "script",
+      "implemented": true,
+      "failureCategory": "script_logic_failure",
+      "summary": "Runs a command, then applies nested validators to the state it produced.",
+      "params": {
+        "command": { "type": "command", "required": true },
+        "then": { "type": "validators", "required": true },
+        "timeoutMs": { "type": "int" }
+      }
+    },
+    "idempotent_result": {
+      "category": "script",
+      "implemented": true,
+      "failureCategory": "script_logic_failure",
+      "summary": "Running a command repeatedly produces the same stdout and exit code every time.",
+      "params": {
+        "command": { "type": "command", "required": true },
+        "runs": { "type": "int" },
+        "timeoutMs": { "type": "int" }
+      }
+    },
+
+    "package_installed": {
+      "category": "package",
+      "implemented": true,
+      "failureCategory": "task_partially_completed",
+      "summary": "dpkg reports the package installed.",
+      "params": {
+        "package": { "type": "string", "required": true },
+        "version": { "type": "string" }
+      }
+    },
+    "package_removed": {
+      "category": "package",
+      "implemented": true,
+      "failureCategory": "task_partially_completed",
+      "summary": "Package is not installed. Config files may remain unless purged is set.",
+      "params": {
+        "package": { "type": "string", "required": true },
+        "purged": { "type": "bool" }
+      }
+    },
+    "repository_configured": {
+      "category": "package",
+      "implemented": true,
+      "failureCategory": "task_partially_completed",
+      "summary": "An apt source list references a URI.",
+      "params": {
+        "uri": { "type": "string", "required": true },
+        "file": { "type": "path" }
+      }
+    },
+    "package_version": {
+      "category": "package",
+      "implemented": true,
+      "failureCategory": "task_partially_completed",
+      "summary": "Installed package version compares as expected.",
+      "params": {
+        "package": { "type": "string", "required": true },
+        "version": { "type": "string", "required": true },
+        "comparison": { "type": "enum", "values": ["eq", "ge", "gt", "le", "lt"] }
+      }
+    },
+    "apt_cache_updated": {
+      "category": "package",
+      "implemented": true,
+      "failureCategory": "task_partially_completed",
+      "summary": "The apt package lists were refreshed recently.",
+      "params": { "maxAgeSeconds": { "type": "int" } }
+    }
+  }
+}

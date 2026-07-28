@@ -1,0 +1,97 @@
+{
+  "schemaVersion": 1,
+  "id": "text.02",
+  "title": "Viewing Long Files with less",
+  "level": "beginner",
+  "module": "reading-editing-text",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "text.01"
+  ],
+  "concepts": [
+    "pagers",
+    "interactive search"
+  ],
+  "commands": [
+    "less",
+    "grep"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Read and search a long file without flooding terminal scrollback.",
+    "mentalModel": "less is a pager: it keeps the file separate, displays one screen at a time, and lets you search and move without modifying the source.",
+    "syntax": [
+      "less FILE",
+      "/pattern",
+      "n",
+      "q"
+    ],
+    "demonstration": [
+      {
+        "command": "less FILE",
+        "explanation": "This small example isolates the main idea behind viewing long files with less."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "less is a pager: it keeps the file separate, displays one screen at a time, and lets you search and move without modifying the source.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "less",
+        "grep"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Open operations.log with less, search for “release window”, then record the matching full line in /home/student/answers/less-finding.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/less-finding.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/less-finding.txt",
+          "sha256": "8e426e18e97c4fea11cd8d594bedfefb9ed2eca6c332110e8d98202f3f0c5538"
+        }
+      ],
+      "hints": [
+        "Inside less, / begins a forward search and q exits.",
+        "The saved answer must contain the whole matching line, not only the search phrase.",
+        "After viewing, a filtering command can copy the matching line into the answer file."
+      ],
+      "suggestedSolution": "grep 'release window' /home/student/lab/operations.log > /home/student/answers/less-finding.txt",
+      "alternateSolutions": [
+        "sed -n '/release window/p' /home/student/lab/operations.log > /home/student/answers/less-finding.txt"
+      ],
+      "knownIncorrectSolution": "echo 'release window' > /home/student/answers/less-finding.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Viewing Long Files with less?",
+      "answers": [
+        "less is a pager: it keeps the file separate, displays one screen at a time, and lets you search and move without modifying the source.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "less is a pager: it keeps the file separate, displays one screen at a time, and lets you search and move without modifying the source."
+    }
+  ]
+}

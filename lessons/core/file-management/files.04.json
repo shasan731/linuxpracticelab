@@ -1,0 +1,106 @@
+{
+  "schemaVersion": 1,
+  "id": "files.04",
+  "title": "Copying Directories",
+  "level": "beginner",
+  "module": "file-management",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "files.03"
+  ],
+  "concepts": [
+    "recursive copies",
+    "metadata preservation"
+  ],
+  "commands": [
+    "cp"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Duplicate a directory tree, including every file beneath it.",
+    "mentalModel": "A directory copy walks the tree recursively. -r performs the walk; -a also preserves useful metadata such as modes and timestamps.",
+    "syntax": [
+      "cp -r DIRECTORY COPY",
+      "cp -a DIRECTORY ARCHIVE/"
+    ],
+    "demonstration": [
+      {
+        "command": "cp -r DIRECTORY COPY",
+        "explanation": "This small example isolates the main idea behind copying directories."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "A directory copy walks the tree recursively. -r performs the walk; -a also preserves useful metadata such as modes and timestamps.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "cp"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Create a complete copy of /home/student/lab/website at /home/student/lab/website-backup.",
+      "validators": [
+        {
+          "type": "directory_exists",
+          "path": "/home/student/lab/website-backup/assets"
+        },
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/website-backup/index.html"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/lab/website-backup/index.html",
+          "sha256": "60d8a0461429389c3c5d50f890edb138144f853ab26c834d449ea03b846920e2"
+        },
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/website-backup/assets/site.conf"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/lab/website-backup/assets/site.conf",
+          "sha256": "45bda1367db3f855baa6bcd0618b5505572318bc00f4185cb6b01455d0dba48b"
+        }
+      ],
+      "hints": [
+        "The source is a directory, so a plain file copy is not enough.",
+        "Use cp recursively with -r, or preserve the tree with -a.",
+        "The destination should be website-backup, not a single file inside it."
+      ],
+      "suggestedSolution": "cp -a /home/student/lab/website /home/student/lab/website-backup",
+      "alternateSolutions": [
+        "cp -r /home/student/lab/website /home/student/lab/website-backup"
+      ],
+      "knownIncorrectSolution": "cp /home/student/lab/website/index.html /home/student/lab/website-backup"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Copying Directories?",
+      "answers": [
+        "A directory copy walks the tree recursively. -r performs the walk; -a also preserves useful metadata such as modes and timestamps.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "A directory copy walks the tree recursively. -r performs the walk; -a also preserves useful metadata such as modes and timestamps."
+    }
+  ]
+}

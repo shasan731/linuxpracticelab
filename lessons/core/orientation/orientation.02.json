@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "id": "orientation.02",
+  "title": "Understanding the Terminal Prompt",
+  "level": "orientation",
+  "module": "orientation",
+  "type": "concept",
+  "estimatedDifficulty": 1,
+  "estimatedMinutes": 6,
+  "prerequisites": ["orientation.01"],
+  "concepts": ["prompt", "username", "hostname", "working directory", "root"],
+  "commands": ["whoami", "hostname", "pwd", "id"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false
+  },
+  "content": {
+    "purpose": "Read four facts off the prompt before typing anything, so you always know who you are and where you are.",
+    "mentalModel": "The prompt is not decoration. In student@linuxlab:~$ the part before @ is your account, after @ is the machine's name, after : is the directory you are in, and the final character tells you your privilege level. A $ means an ordinary account. A # means you are root and nothing will stop you. Most damage done by beginners happens because they did not notice the character had changed.",
+    "syntax": ["whoami", "hostname", "pwd"],
+    "demonstration": [
+      {
+        "command": "whoami",
+        "explanation": "Confirms the account name shown before the @ in your prompt.",
+        "output": "student"
+      },
+      {
+        "command": "pwd",
+        "explanation": "Prints the working directory in full. The prompt abbreviates your home directory to ~, and pwd shows what ~ stands for.",
+        "output": "/home/student"
+      }
+    ],
+    "summary": {
+      "remember": [
+        "student@linuxlab:~$ reads as account @ machine : directory, then a privilege marker",
+        "~ is shorthand for your home directory, /home/student",
+        "$ means an ordinary account, # means root"
+      ],
+      "related": ["id", "hostnamectl", "cd"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Confirm which account you are using and where you are. Run whoami, then pwd, then save the full path of your working directory into where-am-i.txt.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/where-am-i.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/where-am-i.txt",
+          "text": "/home/student",
+          "message": "where-am-i.txt does not contain your home directory path. Redirect the output of pwd into it."
+        }
+      ],
+      "hints": [
+        "One command prints the working directory in full.",
+        "That command is pwd.",
+        "Send its output to a file with pwd > where-am-i.txt"
+      ],
+      "suggestedSolution": "pwd > where-am-i.txt",
+      "knownIncorrectSolution": "echo /home > where-am-i.txt"
+    },
+    {
+      "id": "task-2",
+      "kind": "mistake",
+      "instruction": "Read the prompt below and explain to yourself what is different about it. Then prove you understand by creating a file called i-would-be-root.txt in your home directory.",
+      "brokenCommand": "root@linuxlab:/# rm -rf /var",
+      "diagnosis": "Two things should have stopped you. The prompt ends in # rather than $, which means the session is root and no permission check will refuse the command. And the directory is / rather than ~, so a relative path would be interpreted from the top of the filesystem. Noticing the # is the habit worth building.",
+      "validators": [{ "type": "file_exists", "path": "/home/student/i-would-be-root.txt" }],
+      "hints": [
+        "Look at the character just before the space, and at the directory.",
+        "Create the file with touch."
+      ],
+      "suggestedSolution": "touch i-would-be-root.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Your prompt reads analyst@linuxlab:/var/log#. What should concern you most?",
+      "answers": [
+        "The # means this session is root",
+        "The account is analyst rather than student",
+        "The directory is /var/log",
+        "Nothing: this is a normal prompt"
+      ],
+      "correctAnswer": 0,
+      "explanation": "The privilege marker matters more than the account or the directory, because as root nothing will refuse a destructive command."
+    },
+    {
+      "type": "command-recall",
+      "question": "Which command prints your working directory in full?",
+      "acceptedAnswers": ["pwd"],
+      "explanation": "pwd stands for print working directory."
+    }
+  ]
+}

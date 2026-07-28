@@ -1,0 +1,27 @@
+{
+  "schemaVersion": 1,
+  "id": "terminal-literacy",
+  "number": 1,
+  "title": "Terminal literacy and command help",
+  "level": "beginner",
+  "summary": "How a command is put together, how to find out what any command does without asking anyone, and how to tell whether the last one worked. This module is what makes the rest of the curriculum self-service.",
+  "outcomes": [
+    "Break any command into its command, options and arguments",
+    "Find what a command does using --help, man, whatis and apropos",
+    "Tell an executable apart from a shell builtin, and say why cd must be a builtin",
+    "Complete commands and paths with Tab instead of typing them out",
+    "Read an exit code and use it to tell success from failure"
+  ],
+  "pack": "core",
+  "lessons": [
+    "terminal.01",
+    "terminal.02",
+    "terminal.03",
+    "terminal.04",
+    "terminal.05",
+    "terminal.06",
+    "terminal.07",
+    "terminal.08",
+    "terminal.09"
+  ]
+}

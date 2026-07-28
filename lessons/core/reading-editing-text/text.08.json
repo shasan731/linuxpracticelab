@@ -1,0 +1,96 @@
+{
+  "schemaVersion": 1,
+  "id": "text.08",
+  "title": "Nano Basics",
+  "level": "beginner",
+  "module": "reading-editing-text",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "text.07"
+  ],
+  "concepts": [
+    "terminal editors",
+    "saving files"
+  ],
+  "commands": [
+    "nano",
+    "grep"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Make a small text edit with an approachable terminal editor.",
+    "mentalModel": "Nano edits a memory buffer and writes it back when you save. The shortcut bar uses ^ for Ctrl, so ^O writes and ^X exits.",
+    "syntax": [
+      "nano FILE",
+      "Ctrl+O",
+      "Ctrl+X"
+    ],
+    "demonstration": [
+      {
+        "command": "nano FILE",
+        "explanation": "This small example isolates the main idea behind nano basics."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "Nano edits a memory buffer and writes it back when you save. The shortcut bar uses ^ for Ctrl, so ^O writes and ^X exits.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "nano",
+        "grep"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Open /home/student/lab/app.conf in nano, change staging to production, save, exit, and verify the line.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/app.conf"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/lab/app.conf",
+          "sha256": "5d14c2d385f515a3d3a995367453c7cb6a8a24aaa71e4f957fd1823583b5081e"
+        }
+      ],
+      "hints": [
+        "Nano shows its save and exit shortcuts at the bottom of the screen.",
+        "Use Ctrl+O to write the buffer, then Ctrl+X to leave.",
+        "Run grep production on the file after saving."
+      ],
+      "suggestedSolution": "sed -i 's/environment=staging/environment=production/' /home/student/lab/app.conf",
+      "alternateSolutions": [
+        "printf 'environment=production\\n' > /home/student/lab/app.conf"
+      ],
+      "knownIncorrectSolution": "echo 'production' >> /home/student/lab/app.conf"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Nano Basics?",
+      "answers": [
+        "Nano edits a memory buffer and writes it back when you save. The shortcut bar uses ^ for Ctrl, so ^O writes and ^X exits.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "Nano edits a memory buffer and writes it back when you save. The shortcut bar uses ^ for Ctrl, so ^O writes and ^X exits."
+    }
+  ]
+}

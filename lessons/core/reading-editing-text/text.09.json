@@ -1,0 +1,99 @@
+{
+  "schemaVersion": 1,
+  "id": "text.09",
+  "title": "Vim Survival Skills",
+  "level": "beginner",
+  "module": "reading-editing-text",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "text.08"
+  ],
+  "concepts": [
+    "modal editing",
+    "normal mode",
+    "insert mode"
+  ],
+  "commands": [
+    "vim",
+    "grep"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Open, change, save and leave a file when Vim is the available editor.",
+    "mentalModel": "Vim is modal: normal mode interprets keys as commands, insert mode enters text, and colon commands such as :wq save and quit.",
+    "syntax": [
+      "vim FILE",
+      "i",
+      "Esc",
+      ":wq",
+      "/pattern"
+    ],
+    "demonstration": [
+      {
+        "command": "vim FILE",
+        "explanation": "This small example isolates the main idea behind vim survival skills."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "Vim is modal: normal mode interprets keys as commands, insert mode enters text, and colon commands such as :wq save and quit.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "vim",
+        "grep"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Use Vim to change status=draft to status=final in /home/student/lab/release.env, then save and quit.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/release.env"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/lab/release.env",
+          "sha256": "c57812e7a24e67fbf303421506c785d745dc26e4c1bcb5a72693acf8d7ecdb73"
+        }
+      ],
+      "hints": [
+        "Press i to insert, and Esc to return to normal mode.",
+        "A slash searches; :wq writes and quits.",
+        "Verify the saved file after Vim closes."
+      ],
+      "suggestedSolution": "vim -Nu NONE -n -es -c 's/status=draft/status=final/' -c 'wq' /home/student/lab/release.env",
+      "alternateSolutions": [
+        "sed -i 's/status=draft/status=final/' /home/student/lab/release.env"
+      ],
+      "knownIncorrectSolution": "echo 'status=final' >> /home/student/lab/release.env"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Vim Survival Skills?",
+      "answers": [
+        "Vim is modal: normal mode interprets keys as commands, insert mode enters text, and colon commands such as :wq save and quit.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "Vim is modal: normal mode interprets keys as commands, insert mode enters text, and colon commands such as :wq save and quit."
+    }
+  ]
+}

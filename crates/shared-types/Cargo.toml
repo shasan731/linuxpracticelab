@@ -1,0 +1,12 @@
+[package]
+name = "shared-types"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+description = "Types shared by the Linux Practice Lab host application, guest agent and frontend"
+
+[dependencies]
+serde = { workspace = true }
+serde_json = { workspace = true }
+thiserror = { workspace = true }

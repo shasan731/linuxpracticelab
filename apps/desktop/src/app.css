@@ -1,0 +1,131 @@
+/* Application styling.
+ *
+ * Dark by default because the terminal is dark and a bright shell around it is fatiguing, with a
+ * light theme available in Settings. Colours are declared once here so a contrast fix happens in
+ * one place rather than in nine components. */
+
+:root {
+  --surface-1: #16181d;
+  --surface-2: #1c1f26;
+  --surface-3: #23262f;
+  --border: #2e333d;
+  --text: #e4e6eb;
+  --muted: #9aa1ad;
+  --accent: #6cb6ff;
+  --accent-soft: rgb(108 182 255 / 0.14);
+  --good: #63c88a;
+  --warn: #e2b447;
+  --bad: #f2777a;
+
+  color-scheme: dark;
+}
+
+:root[data-theme='light'] {
+  --surface-1: #ffffff;
+  --surface-2: #f6f7f9;
+  --surface-3: #eceef2;
+  --border: #d7dbe2;
+  --text: #1c2026;
+  --muted: #5d6672;
+  --accent: #1a63b8;
+  --accent-soft: rgb(26 99 184 / 0.1);
+  --good: #1f8a4c;
+  --warn: #8a6100;
+  --bad: #b3261e;
+
+  color-scheme: light;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+html,
+body {
+  margin: 0;
+  height: 100%;
+  background: var(--surface-1);
+  color: var(--text);
+  font-family:
+    'Segoe UI Variable Text', 'Segoe UI', system-ui, -apple-system, 'Helvetica Neue', sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  /* The terminal handles its own selection; selecting chrome text by accident is a nuisance
+     while dragging the split. */
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Every interactive element gets a visible focus ring: the specification requires
+   keyboard-only navigation to work throughout. */
+:focus-visible {
+  outline: 2px solid var(--accent);
+  outline-offset: 2px;
+}
+
+button {
+  font: inherit;
+  color: var(--text);
+  background: var(--surface-3);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 5px 12px;
+  cursor: pointer;
+}
+
+button:hover:not(:disabled) {
+  border-color: var(--accent);
+}
+
+button:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+button.primary {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #0d1117;
+  font-weight: 600;
+}
+
+:root[data-theme='light'] button.primary {
+  color: #ffffff;
+}
+
+input[type='text'],
+input[type='search'],
+textarea {
+  font: inherit;
+  color: var(--text);
+  background: var(--surface-2);
+  border: 1px solid var(--border);
+  border-radius: 5px;
+  padding: 5px 9px;
+}
+
+code,
+pre {
+  font-family: 'Cascadia Mono', Consolas, 'DejaVu Sans Mono', monospace;
+  font-size: 0.9em;
+}
+
+h1,
+h2,
+h3 {
+  line-height: 1.25;
+}
+
+section {
+  margin: 0;
+}
+
+/* Respect a learner who has asked the operating system for less motion. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
+}

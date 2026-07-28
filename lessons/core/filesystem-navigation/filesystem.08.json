@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "id": "filesystem.08",
+  "title": "Hidden Files",
+  "level": "beginner",
+  "module": "filesystem-navigation",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "filesystem.07"
+  ],
+  "concepts": [
+    "dotfiles",
+    "hidden entries"
+  ],
+  "commands": [
+    "ls",
+    "find",
+    "sort"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Find configuration and state files whose names begin with a dot.",
+    "mentalModel": "A leading dot is only a naming convention. Ordinary listings omit such entries, but the files have normal paths and permissions.",
+    "syntax": [
+      "ls -a",
+      "ls -la",
+      "find DIRECTORY -name '.*'"
+    ],
+    "demonstration": [
+      {
+        "command": "ls -a",
+        "explanation": "This small example isolates the main idea behind hidden files."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "A leading dot is only a naming convention. Ordinary listings omit such entries, but the files have normal paths and permissions.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "ls",
+        "find",
+        "sort"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Find the hidden entry in /home/student/lab/profile and save only its name to /home/student/answers/hidden-files.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/hidden-files.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/hidden-files.txt",
+          "sha256": "0712bcc3906124de3969d177e1023ba5aa64eab95679d5e7d8f3bcc796893184"
+        }
+      ],
+      "hints": [
+        "Hidden names start with a dot and ordinary ls omits them.",
+        "Use ls -A, or find with a name pattern beginning with a dot.",
+        "Save the entry name, not its contents."
+      ],
+      "suggestedSolution": "find /home/student/lab/profile -mindepth 1 -maxdepth 1 -name '.*' -printf '%f\\n' | sort > /home/student/answers/hidden-files.txt",
+      "alternateSolutions": [
+        "ls -A /home/student/lab/profile | grep '^\\.' > /home/student/answers/hidden-files.txt"
+      ],
+      "knownIncorrectSolution": "ls /home/student/lab/profile > /home/student/answers/hidden-files.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Hidden Files?",
+      "answers": [
+        "A leading dot is only a naming convention. Ordinary listings omit such entries, but the files have normal paths and permissions.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "A leading dot is only a naming convention. Ordinary listings omit such entries, but the files have normal paths and permissions."
+    }
+  ]
+}

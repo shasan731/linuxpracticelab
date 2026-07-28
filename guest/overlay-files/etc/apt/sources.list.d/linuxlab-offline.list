@@ -1,0 +1,4 @@
+# The bundled offline repository. `[trusted=yes]` is acceptable here and only here: the
+# repository is a directory inside the read-only base image, it is never fetched over a network,
+# and its contents are hashed as part of the image checksum the application verifies at startup.
+deb [trusted=yes] file:/opt/linuxlab/repository stable main

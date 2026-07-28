@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "id": "text.04",
+  "title": "End of Files with tail",
+  "level": "beginner",
+  "module": "reading-editing-text",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "text.03"
+  ],
+  "concepts": [
+    "file endings",
+    "log following"
+  ],
+  "commands": [
+    "tail"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Inspect the newest or final records in a file.",
+    "mentalModel": "tail starts near the end of a file. With -f it waits for appended data, which makes it useful for live logs.",
+    "syntax": [
+      "tail FILE",
+      "tail -n 4 FILE",
+      "tail -f application.log"
+    ],
+    "demonstration": [
+      {
+        "command": "tail FILE",
+        "explanation": "This small example isolates the main idea behind end of files with tail."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "tail starts near the end of a file. With -f it waits for appended data, which makes it useful for live logs.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "tail"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Save exactly the last four lines of events.log in /home/student/answers/last-four.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/last-four.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/last-four.txt",
+          "sha256": "fd22cf12f69271d159a9769c55e1ac5bda370a14ac00cbcc305533440c0b0f84"
+        }
+      ],
+      "hints": [
+        "The needed records are at the end.",
+        "tail accepts a line count with -n.",
+        "Request four lines, then redirect the output."
+      ],
+      "suggestedSolution": "tail -n 4 /home/student/lab/events.log > /home/student/answers/last-four.txt",
+      "alternateSolutions": [
+        "sed -n '9,12p' /home/student/lab/events.log > /home/student/answers/last-four.txt"
+      ],
+      "knownIncorrectSolution": "head -n 4 /home/student/lab/events.log > /home/student/answers/last-four.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes End of Files with tail?",
+      "answers": [
+        "tail starts near the end of a file. With -f it waits for appended data, which makes it useful for live logs.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "tail starts near the end of a file. With -f it waits for appended data, which makes it useful for live logs."
+    }
+  ]
+}

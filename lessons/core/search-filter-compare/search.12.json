@@ -1,0 +1,109 @@
+{
+  "schemaVersion": 1,
+  "id": "search.12",
+  "title": "Search and Analysis Assessment",
+  "level": "foundation",
+  "module": "search-filter-compare",
+  "type": "assessment",
+  "estimatedDifficulty": 4,
+  "estimatedMinutes": 20,
+  "prerequisites": [
+    "search.11"
+  ],
+  "concepts": [
+    "log analysis",
+    "frequency ranking",
+    "configuration drift"
+  ],
+  "commands": [
+    "grep",
+    "sort",
+    "uniq",
+    "awk",
+    "diff"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Combine searching, counting, sorting and comparison in a small incident report.",
+    "mentalModel": "A useful analysis leaves reproducible evidence: a count, a ranked result and a diff derived from source files rather than guessed.",
+    "syntax": [],
+    "demonstration": [],
+    "summary": {
+      "remember": [
+        "A useful analysis leaves reproducible evidence: a count, a ranked result and a diff derived from source files rather than guessed.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "grep",
+        "sort",
+        "uniq",
+        "awk",
+        "diff"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "assessment",
+      "instruction": "Create three evidence files: error-count.txt containing the number of ERROR lines, common-error.txt containing only the most common error word, and config.diff showing the change between old.conf and new.conf.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/error-count.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/error-count.txt",
+          "sha256": "1121cfccd5913f0a63fec40a6ffd44ea64f9dc135c66634ba001d10bcf4302a2"
+        },
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/common-error.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/common-error.txt",
+          "sha256": "e4afa146b6cac84107134c69a12c93b983d4a09d5f628f325d11aa7347a8e895"
+        },
+        {
+          "type": "file_contains",
+          "path": "/home/student/answers/config.diff",
+          "text": "< port=8080"
+        },
+        {
+          "type": "file_contains",
+          "path": "/home/student/answers/config.diff",
+          "text": "> port=9090"
+        }
+      ],
+      "hints": [],
+      "suggestedSolution": "grep -c '^ERROR' /home/student/lab/app.log > /home/student/answers/error-count.txt && grep '^ERROR' /home/student/lab/app.log | awk '{print $2}' | sort | uniq -c | sort -nr | awk 'NR==1 {print $2}' > /home/student/answers/common-error.txt; diff /home/student/lab/old.conf /home/student/lab/new.conf > /home/student/answers/config.diff || true",
+      "alternateSolutions": [
+        "awk '/^ERROR/{count++; errors[$2]++} END{print count > \"/home/student/answers/error-count.txt\"; for (name in errors) if (errors[name] > max) {max=errors[name]; common=name} print common > \"/home/student/answers/common-error.txt\"}' /home/student/lab/app.log; diff /home/student/lab/old.conf /home/student/lab/new.conf > /home/student/answers/config.diff || true"
+      ],
+      "knownIncorrectSolution": "echo 1 > /home/student/answers/error-count.txt; echo auth > /home/student/answers/common-error.txt; touch /home/student/answers/config.diff"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Search and Analysis Assessment?",
+      "answers": [
+        "A useful analysis leaves reproducible evidence: a count, a ranked result and a diff derived from source files rather than guessed.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "A useful analysis leaves reproducible evidence: a count, a ranked result and a diff derived from source files rather than guessed."
+    }
+  ]
+}

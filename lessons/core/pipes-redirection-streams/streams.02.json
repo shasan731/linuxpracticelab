@@ -1,0 +1,92 @@
+{
+  "schemaVersion": 1,
+  "id": "streams.02",
+  "title": "Redirecting Output",
+  "level": "foundation",
+  "module": "pipes-redirection-streams",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "streams.01"
+  ],
+  "concepts": [
+    "stdout redirection",
+    "file truncation"
+  ],
+  "commands": [
+    "echo"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Save command output in a file, replacing an older file when that is intended.",
+    "mentalModel": "> asks the shell to open the destination for writing and truncate it before the command starts. The command itself does not know a file is involved.",
+    "syntax": [
+      "echo \"report\" > report.txt"
+    ],
+    "demonstration": [
+      {
+        "command": "echo \"report\" > report.txt",
+        "explanation": "This small example isolates the main idea behind redirecting output."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "> asks the shell to open the destination for writing and truncate it before the command starts. The command itself does not know a file is involved.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "echo"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Replace the existing contents of /home/student/answers/report.txt with exactly “new report”.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/report.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/report.txt",
+          "sha256": "eecacae2781f7f22b009c79b68589f7d52c8cabdeefc028dd9d3f817371e21b4"
+        }
+      ],
+      "hints": [
+        "The old line must disappear.",
+        "A single > truncates before writing.",
+        "Use >> only when the old contents must remain."
+      ],
+      "suggestedSolution": "echo 'new report' > /home/student/answers/report.txt",
+      "alternateSolutions": [
+        "printf 'new report\\n' > /home/student/answers/report.txt"
+      ],
+      "knownIncorrectSolution": "echo 'new report' >> /home/student/answers/report.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Redirecting Output?",
+      "answers": [
+        "> asks the shell to open the destination for writing and truncate it before the command starts. The command itself does not know a file is involved.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "> asks the shell to open the destination for writing and truncate it before the command starts. The command itself does not know a file is involved."
+    }
+  ]
+}

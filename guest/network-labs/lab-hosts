@@ -1,0 +1,14 @@
+# DNS records for the internal laboratory network, served by dnsmasq in the dns1 namespace.
+# Addresses must match guest/network-labs/lab-net.sh; a mismatch here is how a DNS
+# troubleshooting lesson accidentally becomes unsolvable.
+10.20.0.10  student.lab student
+10.20.0.21  web1.lab web1
+10.20.0.22  web2.lab web2
+10.20.0.53  dns1.lab dns1
+10.20.0.1   router1.lab router1 gateway.lab
+10.20.0.66  attacker.lab attacker
+10.30.0.31  db1.lab db1
+# Alias used by the web-server module so a virtual-host lesson has a second name for web1.
+10.20.0.21  intranet.lab
+# server1.lab is the SSH target used by module 12.
+10.20.0.21  server1.lab

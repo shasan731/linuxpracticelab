@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "id": "terminal.01",
+  "title": "Command Structure",
+  "level": "beginner",
+  "module": "terminal-literacy",
+  "type": "concept",
+  "estimatedDifficulty": 1,
+  "estimatedMinutes": 7,
+  "prerequisites": ["orientation.06"],
+  "concepts": ["command", "option", "argument", "word splitting"],
+  "commands": ["ls", "echo"],
+  "environment": {
+    "profile": "orientation",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false
+  },
+  "content": {
+    "purpose": "Read any command, however unfamiliar, and say which part is which.",
+    "mentalModel": "Every command line is the same shape: command [options] [arguments]. The command is the program to run. Options change how it behaves and conventionally start with a dash. Arguments are what it acts on. The shell splits the line on spaces, which is why a filename containing a space becomes two arguments unless you quote it, and why an accidental space can change what a command does entirely.",
+    "syntax": ["command [options] [arguments]"],
+    "demonstration": [
+      {
+        "command": "ls -l /home/student",
+        "explanation": "ls is the command, -l is an option asking for the long format, and /home/student is the argument saying which directory to list."
+      },
+      {
+        "command": "echo one two three",
+        "explanation": "echo received three separate arguments, not one. The shell split them on the spaces before echo ever saw them.",
+        "output": "one two three"
+      }
+    ],
+    "summary": {
+      "remember": [
+        "command [options] [arguments], in that order",
+        "The shell splits the line on spaces before the command runs",
+        "Options usually start with a dash; arguments usually do not"
+      ],
+      "dangerous": [
+        "An unintended space turns one argument into two, which is how rm -rf /home /student happens"
+      ],
+      "related": ["quoting", "getopts"]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "List your home directory in the long format and save the result to /home/student/long-listing.txt. Use one command with one option and one argument.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/long-listing.txt" },
+        {
+          "type": "file_matches_regex",
+          "path": "/home/student/long-listing.txt",
+          "pattern": "^[-dl][rwx-]{9}",
+          "message": "long-listing.txt does not look like a long listing. The long format starts each line with permission characters."
+        }
+      ],
+      "hints": [
+        "The command that lists directory contents is ls.",
+        "The option asking for the long format is -l.",
+        "ls -l DIRECTORY, then redirect with >"
+      ],
+      "suggestedSolution": "ls -l /home/student > /home/student/long-listing.txt",
+      "alternateSolutions": ["ls -l ~ > ~/long-listing.txt", "ls --format=long ~ > ~/long-listing.txt"],
+      "knownIncorrectSolution": "ls /home/student > /home/student/long-listing.txt"
+    },
+    {
+      "id": "task-2",
+      "kind": "mistake",
+      "instruction": "Someone meant to print one sentence but got three words on separate arguments. Work out why, then create a file called split-explained.txt containing the word spaces.",
+      "brokenCommand": "echo Hello   world    again",
+      "diagnosis": "echo received three arguments, because the shell collapsed the runs of spaces while splitting the line. echo then printed its arguments separated by a single space each, so the extra spacing disappeared. Quoting the text as \"Hello   world    again\" would have made it a single argument and preserved the spacing exactly.",
+      "validators": [
+        { "type": "file_exists", "path": "/home/student/split-explained.txt" },
+        {
+          "type": "file_contains",
+          "path": "/home/student/split-explained.txt",
+          "text": "spaces",
+          "caseSensitive": false
+        }
+      ],
+      "hints": [
+        "What does the shell do to the line before echo runs?",
+        "echo 'spaces' > split-explained.txt"
+      ],
+      "suggestedSolution": "echo spaces > split-explained.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "In cp -r website website-backup, which part is an option?",
+      "answers": ["-r", "cp", "website", "website-backup"],
+      "correctAnswer": 0,
+      "explanation": "cp is the command; website and website-backup are arguments; -r is the option that makes it recurse."
+    }
+  ]
+}

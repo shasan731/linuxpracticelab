@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "id": "streams.09",
+  "title": "tee",
+  "level": "foundation",
+  "module": "pipes-redirection-streams",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "streams.08"
+  ],
+  "concepts": [
+    "stream duplication",
+    "pipeline evidence"
+  ],
+  "commands": [
+    "grep",
+    "tee"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Save a stream and continue passing the same data through a pipeline.",
+    "mentalModel": "tee copies stdin to each named file and to stdout. It is a T-junction, useful when you need both evidence and continued processing.",
+    "syntax": [
+      "grep ERROR app.log | tee errors.txt"
+    ],
+    "demonstration": [
+      {
+        "command": "grep ERROR app.log | tee errors.txt",
+        "explanation": "This small example isolates the main idea behind tee."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "tee copies stdin to each named file and to stdout. It is a T-junction, useful when you need both evidence and continued processing.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "grep",
+        "tee"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Filter ERROR lines from app.log, use tee to save them in /home/student/answers/errors.txt, and send tee’s displayed copy to /dev/null.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/errors.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/errors.txt",
+          "sha256": "ba33af34dafcda54d7d2075418dc616b1ce48deea3858127690b2840141aa8b6"
+        }
+      ],
+      "hints": [
+        "tee reads the filtered stream, not the original file.",
+        "Place tee after grep in the pipeline.",
+        "Redirect tee’s stdout to /dev/null; the named file still receives a copy."
+      ],
+      "suggestedSolution": "grep ERROR /home/student/lab/app.log | tee /home/student/answers/errors.txt > /dev/null",
+      "alternateSolutions": [
+        "grep ERROR /home/student/lab/app.log | tee /home/student/answers/errors.txt >/dev/null"
+      ],
+      "knownIncorrectSolution": "grep INFO /home/student/lab/app.log | tee /home/student/answers/errors.txt > /dev/null"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes tee?",
+      "answers": [
+        "tee copies stdin to each named file and to stdout. It is a T-junction, useful when you need both evidence and continued processing.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "tee copies stdin to each named file and to stdout. It is a T-junction, useful when you need both evidence and continued processing."
+    }
+  ]
+}

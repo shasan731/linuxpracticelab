@@ -1,0 +1,93 @@
+{
+  "schemaVersion": 1,
+  "id": "streams.06",
+  "title": "Combining Output and Errors",
+  "level": "foundation",
+  "module": "pipes-redirection-streams",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "streams.05"
+  ],
+  "concepts": [
+    "descriptor duplication",
+    "redirection order"
+  ],
+  "commands": [
+    "bash"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Create one chronological log containing both result and diagnostic streams.",
+    "mentalModel": "2>&1 makes descriptor 2 point wherever descriptor 1 points at that moment, so redirection order changes the outcome.",
+    "syntax": [
+      "command > output.txt 2>&1",
+      "command &> output.txt"
+    ],
+    "demonstration": [
+      {
+        "command": "command > output.txt 2>&1",
+        "explanation": "This small example isolates the main idea behind combining output and errors."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "2>&1 makes descriptor 2 point wherever descriptor 1 points at that moment, so redirection order changes the outcome.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "bash"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Run stream-demo and combine both streams in /home/student/answers/combined.log.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/combined.log"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/combined.log",
+          "sha256": "0c806807ba4c72437dab97554d30082081e767f15fea8c782c8401555cb6e7df"
+        }
+      ],
+      "hints": [
+        "Both descriptor 1 and descriptor 2 must reach the same file.",
+        "Redirect stdout first, then duplicate stderr to it with 2>&1.",
+        "Bash also supports the shorthand &>."
+      ],
+      "suggestedSolution": "/home/student/lab/stream-demo > /home/student/answers/combined.log 2>&1",
+      "alternateSolutions": [
+        "/home/student/lab/stream-demo &> /home/student/answers/combined.log"
+      ],
+      "knownIncorrectSolution": "/home/student/lab/stream-demo 2> /home/student/answers/combined.log"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Combining Output and Errors?",
+      "answers": [
+        "2>&1 makes descriptor 2 point wherever descriptor 1 points at that moment, so redirection order changes the outcome.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "2>&1 makes descriptor 2 point wherever descriptor 1 points at that moment, so redirection order changes the outcome."
+    }
+  ]
+}

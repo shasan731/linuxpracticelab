@@ -1,0 +1,100 @@
+{
+  "schemaVersion": 1,
+  "id": "streams.12",
+  "title": "Pipeline Assessment",
+  "level": "foundation",
+  "module": "pipes-redirection-streams",
+  "type": "assessment",
+  "estimatedDifficulty": 4,
+  "estimatedMinutes": 22,
+  "prerequisites": [
+    "streams.11"
+  ],
+  "concepts": [
+    "log pipelines",
+    "ranked counts",
+    "separate diagnostics"
+  ],
+  "commands": [
+    "grep",
+    "awk",
+    "sort",
+    "uniq",
+    "find"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Build a ranked security report and keep diagnostic noise separate.",
+    "mentalModel": "A production pipeline makes its data path explicit: select, extract, sort, count and rank normal records while redirecting errors to their own evidence file.",
+    "syntax": [],
+    "demonstration": [],
+    "summary": {
+      "remember": [
+        "A production pipeline makes its data path explicit: select, extract, sort, count and rank normal records while redirecting errors to their own evidence file.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "grep",
+        "awk",
+        "sort",
+        "uniq",
+        "find"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "assessment",
+      "instruction": "Create /home/student/answers/failed-users.txt containing “2 admin” and “1 root”, highest count first. Also run a search of /root as student and save its diagnostics separately in /home/student/answers/search-errors.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/failed-users.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/failed-users.txt",
+          "sha256": "eb847cf0b52e5751c4bc941b9c02140e875dd24d6f95d59ebd5160e340a42ea6"
+        },
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/search-errors.txt"
+        },
+        {
+          "type": "file_contains",
+          "path": "/home/student/answers/search-errors.txt",
+          "text": "Permission denied",
+          "caseSensitive": false
+        }
+      ],
+      "hints": [],
+      "suggestedSolution": "grep 'Failed password' /home/student/lab/auth.log | awk '{if ($4==\"invalid\") print $6; else print $4}' | sort | uniq -c | sort -nr | awk '{print $1, $2}' > /home/student/answers/failed-users.txt; LC_ALL=C find /root -name definitely-absent > /dev/null 2> /home/student/answers/search-errors.txt || true",
+      "alternateSolutions": [
+        "awk '/Failed password/{if ($4==\"invalid\") count[$6]++; else count[$4]++} END{for (user in count) print count[user], user}' /home/student/lab/auth.log | sort -nr > /home/student/answers/failed-users.txt; LC_ALL=C ls /root > /dev/null 2> /home/student/answers/search-errors.txt || true"
+      ],
+      "knownIncorrectSolution": "printf '1 admin\\n1 root\\n' > /home/student/answers/failed-users.txt; touch /home/student/answers/search-errors.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Pipeline Assessment?",
+      "answers": [
+        "A production pipeline makes its data path explicit: select, extract, sort, count and rank normal records while redirecting errors to their own evidence file.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "A production pipeline makes its data path explicit: select, extract, sort, count and rank normal records while redirecting errors to their own evidence file."
+    }
+  ]
+}

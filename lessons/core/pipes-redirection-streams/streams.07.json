@@ -1,0 +1,95 @@
+{
+  "schemaVersion": 1,
+  "id": "streams.07",
+  "title": "Pipes",
+  "level": "foundation",
+  "module": "pipes-redirection-streams",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "streams.06"
+  ],
+  "concepts": [
+    "pipelines",
+    "stream connections"
+  ],
+  "commands": [
+    "grep",
+    "cat"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Feed one command’s output directly into another command’s input.",
+    "mentalModel": "| connects stdout on the left to stdin on the right. No intermediate file is needed, and stderr remains separate unless redirected.",
+    "syntax": [
+      "cat app.log | grep ERROR",
+      "grep ERROR app.log"
+    ],
+    "demonstration": [
+      {
+        "command": "cat app.log | grep ERROR",
+        "explanation": "This small example isolates the main idea behind pipes."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "| connects stdout on the left to stdin on the right. No intermediate file is needed, and stderr remains separate unless redirected.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "grep",
+        "cat"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Use a pipeline to save only ERROR lines from app.log in /home/student/answers/errors.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/errors.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/errors.txt",
+          "sha256": "ba33af34dafcda54d7d2075418dc616b1ce48deea3858127690b2840141aa8b6"
+        }
+      ],
+      "hints": [
+        "The left command produces all lines and the right command selects some.",
+        "Place | between cat and grep.",
+        "For a single file, grep can also read the file directly."
+      ],
+      "suggestedSolution": "cat /home/student/lab/app.log | grep ERROR > /home/student/answers/errors.txt",
+      "alternateSolutions": [
+        "grep ERROR /home/student/lab/app.log > /home/student/answers/errors.txt"
+      ],
+      "knownIncorrectSolution": "cat /home/student/lab/app.log > /home/student/answers/errors.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Pipes?",
+      "answers": [
+        "| connects stdout on the left to stdin on the right. No intermediate file is needed, and stderr remains separate unless redirected.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "| connects stdout on the left to stdin on the right. No intermediate file is needed, and stderr remains separate unless redirected."
+    }
+  ]
+}

@@ -1,0 +1,87 @@
+{
+  "schemaVersion": 1,
+  "id": "text.10",
+  "title": "Text Editing Assessment",
+  "level": "beginner",
+  "module": "reading-editing-text",
+  "type": "assessment",
+  "estimatedDifficulty": 3,
+  "estimatedMinutes": 15,
+  "prerequisites": [
+    "text.09"
+  ],
+  "concepts": [
+    "configuration repair",
+    "verification"
+  ],
+  "commands": [
+    "nano",
+    "vim",
+    "grep",
+    "printf"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Repair and extend a configuration file, then prove the saved state is correct.",
+    "mentalModel": "An edit is complete only when the file on disk has the intended values, no stale conflicting line, and the required new setting.",
+    "syntax": [],
+    "demonstration": [],
+    "summary": {
+      "remember": [
+        "An edit is complete only when the file on disk has the intended values, no stale conflicting line, and the required new setting.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "nano",
+        "vim",
+        "grep",
+        "printf"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "assessment",
+      "instruction": "Edit /home/student/lab/service.conf so port is 8080, keep the existing host and mode, and add enabled=true as the final line.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/service.conf"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/lab/service.conf",
+          "sha256": "70e3c4b2fab39730c27f0253761e0b643333c5d53b4ff478a2a164d89a19738a"
+        }
+      ],
+      "hints": [],
+      "suggestedSolution": "sed -i 's/port=not-a-number/port=8080/' /home/student/lab/service.conf && printf 'enabled=true\\n' >> /home/student/lab/service.conf",
+      "alternateSolutions": [
+        "printf 'host=web1\\nport=8080\\nmode=training\\nenabled=true\\n' > /home/student/lab/service.conf"
+      ],
+      "knownIncorrectSolution": "echo 'port=8080' > /home/student/lab/service.conf"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Text Editing Assessment?",
+      "answers": [
+        "An edit is complete only when the file on disk has the intended values, no stale conflicting line, and the required new setting.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "An edit is complete only when the file on disk has the intended values, no stale conflicting line, and the required new setting."
+    }
+  ]
+}

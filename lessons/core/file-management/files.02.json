@@ -1,0 +1,102 @@
+{
+  "schemaVersion": 1,
+  "id": "files.02",
+  "title": "Creating Empty Files with touch",
+  "level": "beginner",
+  "module": "file-management",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "files.01"
+  ],
+  "concepts": [
+    "empty files",
+    "timestamps",
+    "brace expansion"
+  ],
+  "commands": [
+    "touch"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Create placeholder files and update timestamps without opening an editor.",
+    "mentalModel": "touch updates access and modification times. When a named file does not exist, its default effect is to create an empty regular file.",
+    "syntax": [
+      "touch notes.txt",
+      "touch report-{1,2,3}.txt"
+    ],
+    "demonstration": [
+      {
+        "command": "touch notes.txt",
+        "explanation": "This small example isolates the main idea behind creating empty files with touch."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "touch updates access and modification times. When a named file does not exist, its default effect is to create an empty regular file.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "touch"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Create the three empty files report-1.txt, report-2.txt and report-3.txt in /home/student/lab.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/report-1.txt"
+        },
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/report-2.txt"
+        },
+        {
+          "type": "file_exists",
+          "path": "/home/student/lab/report-3.txt"
+        },
+        {
+          "type": "file_size",
+          "path": "/home/student/lab/report-1.txt",
+          "equals": 0
+        }
+      ],
+      "hints": [
+        "The required files do not need contents yet.",
+        "touch creates a missing file.",
+        "Brace expansion can generate the three numbered names."
+      ],
+      "suggestedSolution": "touch /home/student/lab/report-{1,2,3}.txt",
+      "alternateSolutions": [
+        "cd /home/student/lab && touch report-1.txt report-2.txt report-3.txt"
+      ],
+      "knownIncorrectSolution": "touch /home/student/lab/report.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Creating Empty Files with touch?",
+      "answers": [
+        "touch updates access and modification times. When a named file does not exist, its default effect is to create an empty regular file.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "touch updates access and modification times. When a named file does not exist, its default effect is to create an empty regular file."
+    }
+  ]
+}

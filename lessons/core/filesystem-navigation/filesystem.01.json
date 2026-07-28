@@ -1,0 +1,94 @@
+{
+  "schemaVersion": 1,
+  "id": "filesystem.01",
+  "title": "Linux Directory Tree",
+  "level": "beginner",
+  "module": "filesystem-navigation",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "terminal.09"
+  ],
+  "concepts": [
+    "root directory",
+    "filesystem hierarchy",
+    "top-level directories"
+  ],
+  "commands": [
+    "ls"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Recognise where Linux keeps configuration, user data, logs, devices and programs.",
+    "mentalModel": "Linux presents one tree rooted at /. Top-level directories are conventions with distinct jobs, not separate drive letters.",
+    "syntax": [
+      "ls /",
+      "ls -d /etc /home /var"
+    ],
+    "demonstration": [
+      {
+        "command": "ls /",
+        "explanation": "This small example isolates the main idea behind linux directory tree."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "Linux presents one tree rooted at /. Top-level directories are conventions with distinct jobs, not separate drive letters.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "ls"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Inspect the root directory, then save the paths /etc, /home and /var as three lines in /home/student/answers/directory-tree.txt.",
+      "validators": [
+        {
+          "type": "file_exists",
+          "path": "/home/student/answers/directory-tree.txt"
+        },
+        {
+          "type": "file_checksum",
+          "path": "/home/student/answers/directory-tree.txt",
+          "sha256": "c0e60f9ad8752c657a2cce60b86a5d806262f20716dc372d2245155b3b17d4e7"
+        }
+      ],
+      "hints": [
+        "The tree begins at /, and ls can show selected paths as well as directory contents.",
+        "Use ls with the -d option so the directory names themselves are printed.",
+        "Redirect the three required absolute paths into the answer file."
+      ],
+      "suggestedSolution": "ls -d /etc /home /var > /home/student/answers/directory-tree.txt",
+      "alternateSolutions": [
+        "printf '/etc\\n/home\\n/var\\n' > /home/student/answers/directory-tree.txt"
+      ],
+      "knownIncorrectSolution": "printf '/tmp\\n' > /home/student/answers/directory-tree.txt"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Linux Directory Tree?",
+      "answers": [
+        "Linux presents one tree rooted at /. Top-level directories are conventions with distinct jobs, not separate drive letters.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "Linux presents one tree rooted at /. Top-level directories are conventions with distinct jobs, not separate drive letters."
+    }
+  ]
+}

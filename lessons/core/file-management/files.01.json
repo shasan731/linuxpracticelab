@@ -1,0 +1,98 @@
+{
+  "schemaVersion": 1,
+  "id": "files.01",
+  "title": "Creating Directories with mkdir",
+  "level": "beginner",
+  "module": "file-management",
+  "type": "guided-practice",
+  "estimatedDifficulty": 2,
+  "estimatedMinutes": 9,
+  "prerequisites": [
+    "filesystem.10"
+  ],
+  "concepts": [
+    "directories",
+    "parent directories"
+  ],
+  "commands": [
+    "mkdir",
+    "ls"
+  ],
+  "environment": {
+    "profile": "beginner-core",
+    "resetPolicy": "per-attempt",
+    "networkMode": "disabled",
+    "sudoAllowed": false,
+    "setupScript": "setup.sh",
+    "resetScript": "setup.sh"
+  },
+  "content": {
+    "purpose": "Create places for related files and build nested directory structures.",
+    "mentalModel": "A directory is a mapping from names to filesystem objects. mkdir creates one mapping level; -p also creates any missing parents.",
+    "syntax": [
+      "mkdir reports",
+      "mkdir -p projects/api/logs"
+    ],
+    "demonstration": [
+      {
+        "command": "mkdir reports",
+        "explanation": "This small example isolates the main idea behind creating directories with mkdir."
+      }
+    ],
+    "summary": {
+      "remember": [
+        "A directory is a mapping from names to filesystem objects. mkdir creates one mapping level; -p also creates any missing parents.",
+        "Verify the resulting state before moving on."
+      ],
+      "related": [
+        "mkdir",
+        "ls"
+      ]
+    }
+  },
+  "tasks": [
+    {
+      "id": "task-1",
+      "kind": "guided",
+      "instruction": "Create /home/student/lab/company/reports/daily, /home/student/lab/company/reports/monthly and /home/student/lab/company/backups.",
+      "validators": [
+        {
+          "type": "directory_exists",
+          "path": "/home/student/lab/company/reports/daily"
+        },
+        {
+          "type": "directory_exists",
+          "path": "/home/student/lab/company/reports/monthly"
+        },
+        {
+          "type": "directory_exists",
+          "path": "/home/student/lab/company/backups"
+        }
+      ],
+      "hints": [
+        "Several parent directories do not exist yet.",
+        "mkdir -p creates missing parents as part of the same operation.",
+        "Brace expansion can name daily and monthly together, but separate commands also pass."
+      ],
+      "suggestedSolution": "mkdir -p /home/student/lab/company/reports/{daily,monthly} /home/student/lab/company/backups",
+      "alternateSolutions": [
+        "install -d /home/student/lab/company/reports/daily /home/student/lab/company/reports/monthly /home/student/lab/company/backups"
+      ],
+      "knownIncorrectSolution": "mkdir /home/student/lab/company"
+    }
+  ],
+  "reviewQuestions": [
+    {
+      "type": "multiple-choice",
+      "question": "Which statement best describes Creating Directories with mkdir?",
+      "answers": [
+        "A directory is a mapping from names to filesystem objects. mkdir creates one mapping level; -p also creates any missing parents.",
+        "Linux accepts the task only when the exact suggested command was typed.",
+        "The command works only while the guest has internet access.",
+        "The operation changes files on the Windows host."
+      ],
+      "correctAnswer": 0,
+      "explanation": "A directory is a mapping from names to filesystem objects. mkdir creates one mapping level; -p also creates any missing parents."
+    }
+  ]
+}
