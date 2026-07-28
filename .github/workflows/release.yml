@@ -132,8 +132,8 @@ jobs:
           files: |
             release/**/*.exe
             release/**/*.zip
-            release/source/**
+            release/dist/source/**
             release/SHA256SUMS
             release/licences/**
-            release/sbom/**
+            release/dist/sbom/**
           fail_on_unmatched_files: false
