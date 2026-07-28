@@ -111,11 +111,7 @@ async fn capture_console(port: u16) -> Result<tokio::task::JoinHandle<std::io::R
     }))
 }
 
-async fn create_legacy_overlay(
-    qemu_img: &Path,
-    base: &Path,
-    overlay: &Path,
-) -> Result<()> {
+async fn create_legacy_overlay(qemu_img: &Path, base: &Path, overlay: &Path) -> Result<()> {
     let legacy_backing = base.to_string_lossy().replace('\\', "/");
     assert!(legacy_backing.starts_with("//?/"), "{legacy_backing}");
     let output = Command::new(qemu_img)
