@@ -2,7 +2,7 @@
 
 use anyhow::{bail, Context, Result};
 use shared_types::{AgentRequest, AgentResponse, NetworkMode, RequestEnvelope, ResponseEnvelope};
-use std::path::PathBuf;
+use std::path::{Path, PathBuf};
 use std::time::Duration;
 use tokio::io::{AsyncBufReadExt, AsyncReadExt, AsyncWriteExt, BufReader};
 use tokio::net::TcpStream;
@@ -112,9 +112,9 @@ async fn capture_console(port: u16) -> Result<tokio::task::JoinHandle<std::io::R
 }
 
 async fn create_legacy_overlay(
-    qemu_img: &PathBuf,
-    base: &PathBuf,
-    overlay: &PathBuf,
+    qemu_img: &Path,
+    base: &Path,
+    overlay: &Path,
 ) -> Result<()> {
     let legacy_backing = base.to_string_lossy().replace('\\', "/");
     assert!(legacy_backing.starts_with("//?/"), "{legacy_backing}");
@@ -133,7 +133,7 @@ async fn create_legacy_overlay(
     Ok(())
 }
 
-async fn assert_rebased(qemu_img: &PathBuf, overlay: &PathBuf) -> Result<()> {
+async fn assert_rebased(qemu_img: &Path, overlay: &Path) -> Result<()> {
     let output = Command::new(qemu_img)
         .args(["info", "--output=json"])
         .arg(qemu_path(overlay))
@@ -145,7 +145,7 @@ async fn assert_rebased(qemu_img: &PathBuf, overlay: &PathBuf) -> Result<()> {
     Ok(())
 }
 
-fn qemu_path(path: &PathBuf) -> String {
+fn qemu_path(path: &Path) -> String {
     path.to_string_lossy()
         .replace('\\', "/")
         .trim_start_matches("//?/")
