@@ -89,7 +89,7 @@ Required for host development:
 
 - Windows 10 22H2 or Windows 11
 - Node.js 20 or newer
-- Rust 1.83
+- Rust 1.85 or newer
 - WebView2 (present on supported Windows installations)
 
 Install dependencies and run the normal checks:

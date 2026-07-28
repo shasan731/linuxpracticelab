@@ -15,7 +15,7 @@ improvements, documentation, and focused code changes are welcome.
 
 ## Development setup
 
-Host development requires Windows 10 22H2 or Windows 11, Node.js 20+, Rust 1.83, and WebView2.
+Host development requires Windows 10 22H2 or Windows 11, Node.js 20+, Rust 1.85+, and WebView2.
 
 ```powershell
 npm ci
