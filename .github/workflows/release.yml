@@ -69,6 +69,27 @@ jobs:
           name: windows-release
           path: release
 
+      - name: Normalize public download names
+        shell: bash
+        run: |
+          set -euo pipefail
+
+          mapfile -d '' installers < <(find release -type f -name '*.exe' -print0)
+          if [[ "${#installers[@]}" -ne 1 ]]; then
+            echo "expected exactly one Windows installer, found ${#installers[@]}" >&2
+            exit 1
+          fi
+          mv "${installers[0]}" release/LinuxPracticeLab-Setup-x64.exe
+
+          mapfile -d '' portable_packages < <(
+            find release -type f -name 'LinuxPracticeLab-portable.zip' -print0
+          )
+          if [[ "${#portable_packages[@]}" -ne 1 ]]; then
+            echo "expected exactly one portable package, found ${#portable_packages[@]}" >&2
+            exit 1
+          fi
+          mv "${portable_packages[0]}" release/LinuxPracticeLab-portable.zip
+
       - name: Collect the licensing package
         run: |
           set -euo pipefail
@@ -112,7 +133,7 @@ jobs:
             echo 'Compare the SHA-256 of the installer against SHA256SUMS:'
             echo
             echo '```powershell'
-            echo 'Get-FileHash -Algorithm SHA256 .\LinuxPracticeLab-Setup.exe'
+            echo 'Get-FileHash -Algorithm SHA256 .\LinuxPracticeLab-Setup-x64.exe'
             echo '```'
             echo
             echo "### Changes"
@@ -130,8 +151,8 @@ jobs:
         with:
           body_path: release-notes.md
           files: |
-            release/**/*.exe
-            release/**/*.zip
+            release/LinuxPracticeLab-Setup-x64.exe
+            release/LinuxPracticeLab-portable.zip
             release/dist/source/**
             release/SHA256SUMS
             release/licences/**

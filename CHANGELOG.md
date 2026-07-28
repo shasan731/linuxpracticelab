@@ -9,6 +9,8 @@ All notable changes to Linux Practice Lab are recorded here. The project follows
 
 - Publish the QEMU corresponding-source archive and generated SBOM files from their preserved
   `dist` paths inside the Windows release artifact.
+- Normalize installer and portable-package filenames before hashing and publishing them, keeping
+  `SHA256SUMS` identical to the public download names.
 
 ## [0.1.0] - 2026-07-28
 
