@@ -23,6 +23,7 @@ All notable changes to Linux Practice Lab are recorded here. The project follows
 
 - Set the Rust toolchain floor to 1.85, the first stable release with Cargo support for Edition
   2024 dependency manifests.
+- Made release checksums use the flat asset filenames users actually download from GitHub.
 
 [Unreleased]: https://github.com/shasan731/linuxpracticelab/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/shasan731/linuxpracticelab/releases/tag/v0.1.0
