@@ -301,7 +301,7 @@ async fn dns_resolution(ctx: &Ctx, v: &Validator) -> CheckOutcome {
         .observed("no answer");
     }
     if let Some(expected) = args::optional_string(v, "expect") {
-        if !answers.iter().any(|a| *a == expected) {
+        if !answers.contains(&expected) {
             return CheckOutcome::fail(
                 &v.kind,
                 format!("{name} resolves, but not to the expected address."),

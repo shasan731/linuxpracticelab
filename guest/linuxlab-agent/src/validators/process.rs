@@ -275,7 +275,7 @@ async fn process_signal_received(_ctx: &Ctx, v: &Validator) -> CheckOutcome {
         .map(str::trim)
         .filter(|l| !l.is_empty())
         .collect();
-    if seen.iter().any(|line| *line == expected) {
+    if seen.contains(&expected) {
         CheckOutcome::pass(&v.kind, format!("The process received {expected}."))
     } else {
         CheckOutcome::fail(

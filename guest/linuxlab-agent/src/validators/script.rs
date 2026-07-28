@@ -401,7 +401,7 @@ async fn unit_test_passes(ctx: &Ctx, v: &Validator) -> CheckOutcome {
                 .filter(|p| {
                     p.is_dir()
                         && p.file_name()
-                            .map_or(false, |n| n.to_string_lossy().starts_with("case-"))
+                            .is_some_and(|n| n.to_string_lossy().starts_with("case-"))
                 })
                 .collect()
         })

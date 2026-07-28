@@ -29,6 +29,8 @@ All notable changes to Linux Practice Lab are recorded here. The project follows
   cross-platform Clippy checks remain warning-free.
 - Made the Windows real-boot test helpers accept borrowed paths without unnecessary `PathBuf`
   coupling.
+- Updated guest validator lookups to current, allocation-free Rust idioms required by strict
+  Clippy checks.
 
 [Unreleased]: https://github.com/shasan731/linuxpracticelab/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/shasan731/linuxpracticelab/releases/tag/v0.1.0
