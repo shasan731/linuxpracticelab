@@ -25,6 +25,8 @@ All notable changes to Linux Practice Lab are recorded here. The project follows
   stabilized let-chain syntax used by the locked dependency graph.
 - Made release checksums use the flat asset filenames users actually download from GitHub.
 - Preserved Unix executable modes for guest, network, service, and lesson setup scripts.
+- Kept the Windows-only hardware-acceleration constructor out of non-Windows builds so strict
+  cross-platform Clippy checks remain warning-free.
 
 [Unreleased]: https://github.com/shasan731/linuxpracticelab/compare/v0.1.0...HEAD
 [0.1.0]: https://github.com/shasan731/linuxpracticelab/releases/tag/v0.1.0

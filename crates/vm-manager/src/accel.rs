@@ -16,6 +16,7 @@ pub struct AccelDecision {
 }
 
 impl AccelDecision {
+    #[cfg(windows)]
     fn hardware() -> Self {
         Self {
             mode: AccelMode::Whpx,
