@@ -175,6 +175,7 @@ pub fn expect_ok(response: AgentResponse) -> Result<AgentResponse> {
 #[cfg(test)]
 mod tests {
     use super::*;
+    #[cfg(windows)]
     use tokio::io::AsyncReadExt;
     use tokio::net::TcpListener;
 
